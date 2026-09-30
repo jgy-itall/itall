@@ -103,7 +103,7 @@
     left: 489.76px; top: 37.51px; width: 379.7px;
     aspect-ratio: 1 / 1;
     transform: rotate(-2.62deg);
-    mix-blend-mode: multiply;  /* 영상 배경을 흰색으로 보정해 둠 → 흰색은 사라지고 오브젝트만 그라데이션 위에 표시 */
+    mix-blend-mode: darken;    /* 영상 배경을 흰색으로 보정해 둠 → 흰색은 사라지고, 오브젝트는 배경색이 섞이지 않고 영상 색 그대로 표시 */
   }
   .kv__media canvas { display: block; width: 100%; height: 100%; }
   /* 원본 video는 canvas로 프레임만 공급 (화면에는 투명) — video에 직접 블렌딩하면
