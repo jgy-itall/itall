@@ -123,7 +123,7 @@
      · path    : 저장소 안 폴더명 (끝에 / 포함)
      · brand   : brands 키 (새 브랜드면 brands에도 추가 — 이름·컬러·배지 글자)
                  탭은 sparta → 스파르타, dorm → 기숙, 그 외 모든 브랜드 → 기타
-     · status  : "진행 중" | "검수" | "완료"  (완료 = 다크 썸네일)
+     · status  : "진행 중" | "검수" | "준비 중" | "완료"  (완료 = 다크 썸네일)
      · title   : 썸네일 큰 제목 — 줄 단위 배열 ["첫 줄", "둘째 줄"]
      · updated : 마지막 갱신일 YYYY-MM-DD (최신순 정렬 기준)
      ================================================================ -->
@@ -136,7 +136,7 @@
   },
   "projects": [
     {
-      "path": "sparta-jaesu-priority/", "brand": "sparta", "status": "진행 중",
+      "path": "sparta-jaesu-priority/", "brand": "sparta", "status": "준비 중",
       "title": ["2028 통학", "재수우선선발반"], "type": "Landing", "desc": "랜딩 전체 퍼블리싱 · 반응형",
       "label": "스파르타 · 통학 재수우선선발반", "updated": "2026-10-01"
     },
@@ -160,7 +160,7 @@
   var list = data.projects.slice().sort(function (a, b) { return b.updated.localeCompare(a.updated); });
   var grid = document.getElementById('grid');
   var tabs = document.querySelector('.tabs');
-  var STATUS = { '진행 중': '', '검수': ' status--review', '완료': ' status--done' };
+  var STATUS = { '진행 중': '', '검수': ' status--review', '준비 중': ' status--review', '완료': ' status--done' };
   var TABS = [
     { key: 'sparta', name: '스파르타', color: brands.sparta.color },
     { key: 'dorm',   name: '기숙',     color: brands.dorm.color },
