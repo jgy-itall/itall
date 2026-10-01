@@ -495,22 +495,6 @@
   .centers__brand--molip { color: #f2a400; }
   .centers__list li { font-size: 14px; line-height: 1.571; letter-spacing: 0.203px; color: var(--ink); word-break: keep-all; }
 
-  /* ---------- 우측 플로팅 (PC ≥1024) ---------- */
-  .float {
-    position: fixed; z-index: 100; right: 0; top: 50%; transform: translateY(-50%);
-    display: none; width: 90px; padding: 24px 0; border-radius: 24px 0 0 24px; background: #fff;
-    box-shadow: 0 0 12px rgba(0, 0, 0, .2); transition: transform .3s;
-  }
-  .float__list { display: flex; flex-direction: column; align-items: center; gap: 24px; }
-  .float__item { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 12px; font-weight: 700; line-height: 16px; color: #000; text-align: center; white-space: nowrap; }
-  .float__icon { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 8px; background: #fff1f2; }
-  .float__icon img { width: auto; height: 24px; }
-  .float__toggle { position: absolute; left: -9px; bottom: 34px; width: 16px; height: 16px; border-radius: 50%; background: #000; }
-  .float__toggle::before { content: ""; position: absolute; inset: 0; margin: auto; width: 5px; height: 5px; border: solid #fff; border-width: 0 0 1.5px 1.5px; transform: translateX(1px) rotate(-135deg); }
-  .float.is-collapsed { transform: translate(calc(100% - 8px), -50%); }
-  .float.is-collapsed .float__toggle::before { transform: translateX(-1px) rotate(45deg); }
-  @media (min-width: 1024px) { .float { display: block; } }
-
   /* ---------- 모바일 하단 바 (<1024) ---------- */
   .tabbar { position: sticky; bottom: 0; z-index: 40; background: #fff; border-top: 1px solid #e4e4e7; }
   .tabbar ul { display: flex; justify-content: space-around; }
@@ -595,7 +579,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .rail { scroll-behavior: auto; }
-    .change, .float, .to-top, .sys__btn::after, .fold__btn::after { transition: none; }
+    .change, .to-top, .sys__btn::after, .fold__btn::after { transition: none; }
   }
 
   /* ===== 1280 미만 — KV는 모바일 시안 기준으로 비례 (개발 페이지와 동일 전환점) ===== */
@@ -1217,18 +1201,6 @@
   </div>
 </dialog>
 
-<!-- ============ 우측 플로팅 (PC ≥1024) — 개발 서버 공통 컴포넌트 기준 ============ -->
-<nav class="float" id="float" aria-label="빠른 메뉴 (PC)">
-  <button class="float__toggle" type="button" aria-expanded="true" aria-controls="float-list" aria-label="빠른 메뉴 접기"></button>
-  <ul class="float__list" id="float-list">
-    <li><a class="float__item" href="https://www.itall.com/recruit/reservation"><span class="float__icon"><img src="assets/ui/floating/reservation.svg" alt="" width="26" height="24"></span>입학예약</a></li>
-    <li><a class="float__item" href="#"><span class="float__icon"><img src="assets/ui/floating/chat.svg" alt="" width="22" height="24"></span>채팅상담</a></li>
-    <li><a class="float__item" href="#"><span class="float__icon"><img src="assets/ui/floating/manual.webp" alt="" width="24" height="24"></span>잇올 매뉴얼</a></li>
-    <li><a class="float__item" href="https://www.itall.com/program/teachers"><span class="float__icon"><img src="assets/ui/floating/teachers.webp" alt="" width="16" height="24"></span>잇올 티처스</a></li>
-    <li><a class="float__item" href="#"><span class="float__icon"><img src="assets/ui/floating/event.svg" alt="" width="23" height="26"></span>이벤트</a></li>
-  </ul>
-</nav>
-
 <!-- ============ 모바일 하단 바 (<1024) ============ -->
 <nav class="tabbar" aria-label="빠른 메뉴 (모바일)">
   <ul>
@@ -1278,7 +1250,7 @@
   if (window.matchMedia('(max-width: 1023px)').matches) {
     document.querySelectorAll('.pacc__head').forEach(function (b) { b.setAttribute('aria-expanded', 'false'); });
   }
-  document.querySelectorAll('[aria-controls][aria-expanded]:not(.float__toggle)').forEach(function (btn) {
+  document.querySelectorAll('[aria-controls][aria-expanded]').forEach(function (btn) {
     var body = document.getElementById(btn.getAttribute('aria-controls'));
     if (!body) return;
     body.hidden = btn.getAttribute('aria-expanded') !== 'true';
@@ -1377,18 +1349,6 @@
       });
     }, { threshold: 0.4 });
     groups.forEach(function (g) { io.observe(g); });
-  }
-
-  /* ---------- 우측 플로팅 접기/펼치기 ---------- */
-  var float = document.getElementById('float');
-  if (float) {
-    var tg = float.querySelector('.float__toggle');
-    tg.addEventListener('click', function () {
-      var open = tg.getAttribute('aria-expanded') !== 'true';
-      tg.setAttribute('aria-expanded', String(open));
-      tg.setAttribute('aria-label', open ? '빠른 메뉴 접기' : '빠른 메뉴 펼치기');
-      float.classList.toggle('is-collapsed', !open);
-    });
   }
 
   /* ---------- 맨 위로: 스크롤 시 노출 ---------- */
