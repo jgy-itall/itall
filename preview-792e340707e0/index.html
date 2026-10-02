@@ -224,13 +224,12 @@
     font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0.0912px; color: var(--text-white);
   }
   /* 패널 아코디언 (특별 프로모션 / 유의사항) */
-  .pacc { padding: 20px 30px; }
-  .pacc--notice { padding: 20px; }
+  .pacc, .pacc--notice { padding: 20px 24px; }   /* 두 카드 화살표 세로 정렬 통일 */
   .pacc__head { display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; text-align: left; }
   .pacc__icon { flex: none; width: 38px; height: 34.4px; }
   .pacc__icon--circle { width: 40px; height: 40px; padding: 10px; border-radius: 50px; background: var(--fill); }
   .pacc__title { flex: 1; font-size: 20px; font-weight: 600; line-height: 1.4; letter-spacing: -0.24px; color: var(--ink-strong); }
-  .chev { flex: none; width: 16px; height: 16px; transition: transform .32s cubic-bezier(.4, 0, .2, 1); }
+  .chev { flex: none; width: 28px; height: 28px;   /* 본문 SYSTEM 아코디언 화살표와 동일 */ transition: transform .45s cubic-bezier(.65, 0, .35, 1); }
   [aria-expanded="true"] > .chev { transform: rotate(180deg); }
   .pacc__body { padding-top: 10px; }
   .pacc--notice .pacc__body { padding-top: 12px; padding-bottom: 4px; }
@@ -370,7 +369,7 @@
     font-size: 13px; font-weight: 500; line-height: 1.385; letter-spacing: 0.2522px; color: var(--ink-alt);
   }
   .fold__btn--white { background: #fff; color: var(--ink-neutral); }
-  .fold__btn::after { content: ""; width: 16px; height: 16px; background: url(assets/ui/ic_chevron_down_sm.svg) center / contain no-repeat; transition: transform .32s cubic-bezier(.4, 0, .2, 1); }
+  .fold__btn::after { content: ""; width: 16px; height: 16px; background: url(assets/ui/ic_chevron_down_sm.svg) center / contain no-repeat; transition: transform .45s cubic-bezier(.65, 0, .35, 1); }
   .fold__btn[aria-expanded="true"]::after { transform: rotate(180deg); }
   .fold__body { width: 100%; padding: 20px 28px; border: 1px solid var(--line); border-radius: 12px; background: var(--page-bg); }
   .fold__body--white { background: #fff; }
@@ -444,7 +443,7 @@
   .sys:has(.sys__btn[aria-expanded="true"]) { border-radius: 16px; }
   .sys__h { font: inherit; }
   .sys__btn { display: flex; align-items: center; gap: 24px; width: 100%; padding: 20px 24px; text-align: left; }
-  .sys__btn::after { content: ""; flex: none; width: 28px; height: 28px; background: url(assets/ui/ic_chevron_down_lg.svg) center / contain no-repeat; transition: transform .32s cubic-bezier(.4, 0, .2, 1); }
+  .sys__btn::after { content: ""; flex: none; width: 28px; height: 28px; background: url(assets/ui/ic_chevron_down_lg.svg) center / contain no-repeat; transition: transform .45s cubic-bezier(.65, 0, .35, 1); }
   .sys__btn[aria-expanded="true"]::after { transform: rotate(180deg); }
   .sys__icon { flex: none; width: 44px; height: 44px; object-fit: contain; }
   .sys__text { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -838,7 +837,7 @@
     .rail { scroll-behavior: auto; }
     .seg__pill, .seg--pill .seg__tab { transition: none; }
     [role="tabpanel"]:not([hidden]) { animation: none; }
-    .change, .to-top, .sys__btn::after, .fold__btn::after { transition: none; }
+    .change, .to-top { transition: none; }
   }
 
   /* ===== 1280 미만 — KV는 모바일 시안 기준으로 비례 (개발 페이지와 동일 전환점) ===== */
@@ -1945,10 +1944,10 @@
 
   /* ---------- 공통 아코디언: 기본 접힘 · 클릭 토글 (유의사항·기준 확인·패널은 개별 동작, SYSTEM은 하나만 펼침)
      펼침/접힘은 높이·여백·투명도를 함께 애니메이션해 부드럽게 내려오고 올라감 ---------- */
-  var EASE = 'cubic-bezier(.4, 0, .2, 1)', DUR = 320;
+  var EASE = 'cubic-bezier(.65, 0, .35, 1)', DUR = 450;   /* 처음과 끝이 느린 고른 곡선 — 내려오는 과정이 눈에 보이게 */
   function slide(body, open) {
     if (body._anim) body._anim.cancel();
-    if (reduce || !body.animate) { body.hidden = !open; return; }
+    if (!body.animate) { body.hidden = !open; return; }   /* 높이 전환은 작은 움직임이라 모션 최소화 설정에서도 유지 */
     body.hidden = false;
     var cs = getComputedStyle(body);
     var full = { height: body.offsetHeight + 'px', paddingTop: cs.paddingTop, paddingBottom: cs.paddingBottom, opacity: 1 };
