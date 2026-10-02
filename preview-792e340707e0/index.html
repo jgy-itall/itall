@@ -710,7 +710,7 @@
     .rail--space { margin: 0 -20px; padding: 0 20px; scroll-padding: 0 20px; }
     .space__note { margin-top: -8px; }
 
-    .sec--schedule { gap: 60px; }
+    .sec.sec--schedule { gap: 60px; }   /* .sec(공통 모바일)보다 우선 */
     .schedule { flex-direction: column; align-items: stretch; gap: 32px; }
     .schedule__text { width: auto; }
     .schedule__desc { font-size: 16px; }
@@ -723,17 +723,17 @@
     .lesson__badge { white-space: normal; text-align: center; }
     .class__notes { grid-template-columns: 1fr; margin-top: -8px; }
 
-    .sec--teacher { gap: 60px; }
+    .sec.sec--teacher { gap: 60px; }
     .teacher { gap: 24px; }
     .teacher__bar { flex-direction: column; align-items: stretch; }
     .seg__tab { flex: 1; width: auto; }
     .teacher__bar .pager { align-self: flex-start; }
     .rail--teacher { margin: 0 -20px; padding: 0 20px; scroll-padding: 0 20px; }
 
-    .sec--moment { padding: 60px 0 30px; gap: 24px; }
+    .sec.sec--moment { padding: 60px 0 30px; gap: 24px; }   /* 좌우 0 — 캐러셀이 화면 끝까지 */
     .sec--moment > .sec-head { padding: 0 20px; }
     .rail--moment { padding: 0 20px; scroll-padding: 0 20px; }
-    .sec--moment + .sec--scholar { padding-top: 30px; }
+    .sec--moment + .sec.sec--scholar { padding-top: 30px; }
 
     .dlg--wide { max-height: 500px; }
     .dlg--wide .dlg__inner { max-height: 500px; gap: 20px; }
