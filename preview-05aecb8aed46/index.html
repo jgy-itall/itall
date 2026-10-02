@@ -38,7 +38,8 @@
     --text-white: #f6f7f8;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: Pretendard, sans-serif; background: var(--page-bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+  body { word-break: keep-all; overflow-wrap: break-word;   /* 전체 어절 단위 줄바꿈 (긴 영문·숫자만 예외적으로 끊음) */
+         font-family: Pretendard, sans-serif; background: var(--page-bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
   a { color: inherit; text-decoration: none; }
   button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
   ul, ol { list-style: none; }
@@ -46,7 +47,7 @@
 
   /* ===== 페이지 타이틀 (top_title 6337:2797) ===== */
   .page-head {
-    max-width: 1344px; margin: 0 auto; padding: 40px 32px;
+    max-width: 1280px; margin: 0 auto; padding: 40px 32px;   /* 본문 컨테이너와 같은 폭 */
     display: flex; align-items: center; justify-content: space-between; gap: 24px;
   }
   .page-head__title { font-size: 36px; font-weight: 600; line-height: 1.334; letter-spacing: -0.972px; color: var(--ink-strong); white-space: nowrap; }
@@ -55,21 +56,23 @@
   .crumb__sep img { width: 8.2px; height: 14.8px; }
   .crumb [aria-current] { color: var(--ink-strong); }
 
-  /* ===== 레이아웃 — 개발 페이지와 동일: 1280 컨테이너 / lg(≥1024) 본문 + 우측 패널 ===== */
+  /* ===== 레이아웃 — 개발 페이지(develop.itall.com/recruit/2028-jaesu-priority) 실측과 동일 =====
+     ~767     본문 화면 끝까지 · 패널 위(좌우 20)
+     768~1023 본문·패널 최대 768 가운데 정렬
+     1024~    컨테이너 1280(좌우 32) · 본문(최대 847, 남는 폭 안에서 가운데) + 간격 20 + 패널 320 / 1280~ 349 */
   .layout {
-    max-width: 1280px; margin: 0 auto; padding: 22px 32px 60px;
+    max-width: 768px; margin: 0 auto; padding: 22px 0 60px;
     display: flex; flex-direction: column-reverse; gap: 28px;   /* 1024 미만: 패널이 본문 위 */
   }
   .layout__main { min-width: 0; display: flex; flex-direction: column; gap: 20px; }
   @media (min-width: 1024px) {
-    .layout { flex-direction: row; align-items: flex-start; gap: 20px; padding: 0 0 160px; }
-    .layout__main { flex: 1; min-width: 634px; }
+    .layout { max-width: 1280px; flex-direction: row; align-items: flex-start; gap: 20px; padding: 0 32px 160px; }
+    .layout__main { flex: 1; min-width: 634px; }   /* 1024에서 개발 페이지처럼 우측 여백 안으로 14px 넘침 (가로 스크롤 없음) */
+    .layout__main > * { width: 100%; max-width: 847px; margin-left: auto; margin-right: auto; }
     .panel { flex: none; width: 320px; }
   }
   @media (min-width: 1280px) {
-    .layout { max-width: 1344px; padding: 0 32px 160px; }
     .layout__main { min-width: 847px; }
-    .layout__main > * { width: 100%; max-width: 847px; margin-left: auto; margin-right: auto; }
     .panel { width: 349px; }
   }
 
@@ -222,13 +225,12 @@
     font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0.0912px; color: var(--text-white);
   }
   /* 패널 아코디언 (특별 프로모션 / 유의사항) */
-  .pacc { padding: 20px 30px; }
-  .pacc--notice { padding: 20px; }
+  .pacc, .pacc--notice { padding: 20px 24px; }   /* 두 카드 화살표 세로 정렬 통일 */
   .pacc__head { display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; text-align: left; }
   .pacc__icon { flex: none; width: 38px; height: 34.4px; }
   .pacc__icon--circle { width: 40px; height: 40px; padding: 10px; border-radius: 50px; background: var(--fill); }
   .pacc__title { flex: 1; font-size: 20px; font-weight: 600; line-height: 1.4; letter-spacing: -0.24px; color: var(--ink-strong); }
-  .chev { flex: none; width: 16px; height: 16px; transition: transform .2s; }
+  .chev { flex: none; width: 28px; height: 28px;   /* 본문 SYSTEM 아코디언 화살표와 동일 */ transition: transform .45s cubic-bezier(.65, 0, .35, 1); }
   [aria-expanded="true"] > .chev { transform: rotate(180deg); }
   .pacc__body { padding-top: 10px; }
   .pacc--notice .pacc__body { padding-top: 12px; padding-bottom: 4px; }
@@ -269,8 +271,8 @@
   }
   @media (max-width: 1023px) {
     .panel { padding: 0 20px; }
-    .page-head { padding: 24px 32px 0; }
-    .page-head__title { font-size: 24px; }
+    .page-head { max-width: 768px; padding: 24px 20px 0; }
+    .page-head__title { font-size: 22px; line-height: 1.45; }
     .crumb { display: none; }
   }
 
@@ -368,7 +370,7 @@
     font-size: 13px; font-weight: 500; line-height: 1.385; letter-spacing: 0.2522px; color: var(--ink-alt);
   }
   .fold__btn--white { background: #fff; color: var(--ink-neutral); }
-  .fold__btn::after { content: ""; width: 16px; height: 16px; background: url(assets/ui/ic_chevron_down_sm.svg) center / contain no-repeat; transition: transform .2s; }
+  .fold__btn::after { content: ""; width: 16px; height: 16px; background: url(assets/ui/ic_chevron_down_sm.svg) center / contain no-repeat; transition: transform .45s cubic-bezier(.65, 0, .35, 1); }
   .fold__btn[aria-expanded="true"]::after { transform: rotate(180deg); }
   .fold__body { width: 100%; padding: 20px 28px; border: 1px solid var(--line); border-radius: 12px; background: var(--page-bg); }
   .fold__body--white { background: #fff; }
@@ -384,7 +386,7 @@
   .stat { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 0 24px; text-align: center; }
   .stat + .stat { border-left: 1px solid var(--ink); }
   .stat__num { font-size: 100px; font-weight: 700; line-height: 1.1; letter-spacing: -4px; color: var(--point); font-variant-numeric: tabular-nums; }
-  .stat__label { font-size: 18px; font-weight: 600; line-height: 1.445; letter-spacing: -0.0036px; color: var(--ink); }
+  .stat__label { word-break: keep-all; font-size: 18px; font-weight: 600; line-height: 1.445; letter-spacing: -0.0036px; color: var(--ink); }
   .sec--result .fold { position: relative; width: 100%; }
 
   /* ---------- S6 REVIEW ---------- */
@@ -444,7 +446,7 @@
   .sys:has(.sys__btn[aria-expanded="true"]) { border-radius: 16px; }
   .sys__h { font: inherit; }
   .sys__btn { display: flex; align-items: center; gap: 24px; width: 100%; padding: 20px 24px; text-align: left; }
-  .sys__btn::after { content: ""; flex: none; width: 28px; height: 28px; background: url(assets/ui/ic_chevron_down_lg.svg) center / contain no-repeat; transition: transform .2s; }
+  .sys__btn::after { content: ""; flex: none; width: 28px; height: 28px; background: url(assets/ui/ic_chevron_down_lg.svg) center / contain no-repeat; transition: transform .45s cubic-bezier(.65, 0, .35, 1); }
   .sys__btn[aria-expanded="true"]::after { transform: rotate(180deg); }
   .sys__icon { flex: none; width: 44px; height: 44px; object-fit: contain; }
   .sys__text { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -513,7 +515,8 @@
   /* ---------- 모바일 하단 바 (<1024) ---------- */
   .tabbar { position: sticky; bottom: 0; z-index: 40; background: #fff; border-top: 1px solid #e4e4e7; }
   .tabbar ul { display: flex; justify-content: space-around; }
-  .tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; width: 74px; height: 60px; font-size: 11px; font-weight: 500; line-height: 1.4; color: #3f3f46; }
+  .tabbar li { flex: 1 1 0; max-width: 74px; min-width: 0; }   /* 370 미만 폭에서 줄어들어 가로 넘침 방지 */
+  .tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; width: 100%; white-space: nowrap; height: 60px; font-size: 11px; font-weight: 500; line-height: 1.4; color: #3f3f46; }
   .tabbar img { width: 24px; height: 24px; }
   @media (min-width: 1024px) { .tabbar { display: none; } }
 
@@ -594,7 +597,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .rail { scroll-behavior: auto; }
-    .change, .to-top, .sys__btn::after, .fold__btn::after { transition: none; }
+    .change, .to-top { transition: none; }
   }
 
   /* ===== 1280 미만 — KV는 모바일 시안 기준으로 비례 (개발 페이지와 동일 전환점) ===== */
@@ -658,6 +661,10 @@
     .wrap { border-radius: 0; }
   }
 
+  @media (max-width: 1023px) {
+    .strip { border-radius: 0; }   /* 화면 끝까지 붙는 띠배너는 모서리 없음 */
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .deco--red, .deco--gray { animation: none; }
   }
@@ -668,18 +675,18 @@
 <header class="page-head" id="top">
   <h1 class="page-head__title">2028학년도 통학 재수우선선발반</h1>
   <nav class="crumb" aria-label="현재 위치">
-    <a href="https://www.itall.com/">홈</a><span class="crumb__sep" aria-hidden="true"><img src="assets/ui/ic_crumb.svg" alt=""></span>
-    <a href="https://www.itall.com/recruit?tab=all">모집안내</a><span class="crumb__sep" aria-hidden="true"><img src="assets/ui/ic_crumb.svg" alt=""></span>
+    <a href="https://www.itall.com/" target="_blank" rel="noopener">홈<span class="sr-only"> (새 창)</span></a><span class="crumb__sep" aria-hidden="true"><img src="assets/ui/ic_crumb.svg" alt=""></span>
+    <a href="https://www.itall.com/recruit?tab=all" target="_blank" rel="noopener">모집안내<span class="sr-only"> (새 창)</span></a><span class="crumb__sep" aria-hidden="true"><img src="assets/ui/ic_crumb.svg" alt=""></span>
     <span aria-current="page">2028학년도 통학 재수우선선발반</span>
   </nav>
 </header>
 
 <div class="layout">
   <main class="layout__main">
-    <a class="strip strip--dorm" href="../sparta-jaesu-priority-dorm/">
+    <a class="strip strip--dorm" href="../sparta-jaesu-priority-dorm/" target="_blank" rel="noopener">
       <span class="strip__title">24시간 몰입 환경을 원한다면?</span>
       <span class="strip__link">기숙 재수우선선발반 <img src="assets/ui/ic_chevron_banner.svg" alt=""></span>
-    </a>
+    <span class="sr-only"> (새 창)</span></a>
 
     <div class="wrap">
       <div class="logo-bar">
@@ -932,8 +939,8 @@
         </section>
         <p class="review__note">* 해당 내용은 실제 잇올 재원생 합격 후기 중 일부를 발췌, 편집한 내용입니다.</p>
         <div class="cta-pair">
-          <a class="btn-box btn-box--point" href="https://www.itall.com/glory_honor/2026">2026 입시결과</a>
-          <a class="btn-box btn-box--black" href="https://www.itall.com/glory_honor/passing-story?page=1">2026 합격수기</a>
+          <a class="btn-box btn-box--point" href="https://www.itall.com/glory_honor/2026" target="_blank" rel="noopener">2026 입시결과<span class="sr-only"> (새 창)</span></a>
+          <a class="btn-box btn-box--black" href="https://www.itall.com/glory_honor/passing-story?page=1" target="_blank" rel="noopener">2026 합격수기<span class="sr-only"> (새 창)</span></a>
         </div>
       </section>
 
@@ -951,7 +958,7 @@
               <button class="pager__btn pager__btn--next" type="button" aria-label="다음 시설 사진"></button>
             </div>
           </div>
-          <section class="rail rail--space" id="rail-space" aria-roledescription="carousel" aria-label="시설 사진" data-autoplay="3000">
+          <section class="rail rail--space" id="rail-space" aria-roledescription="carousel" aria-label="시설 사진" data-autoplay="3000" data-loop>
             <ul class="rail__track">
               <li class="photo"><img src="assets/img/space_1.webp" alt="잇올 스파르타 교실형 학습 공간" width="300" height="185" loading="lazy"><span class="photo__label photo__label--sparta"><b>스파르타</b>ㅣ<b>교실형</b></span></li>
               <li class="photo"><img src="assets/img/space_2.webp" alt="잇올 몰입관 교실형 학습 공간" width="300" height="185" loading="lazy"><span class="photo__label photo__label--molip"><b>몰입관</b>ㅣ<b>교실형</b></span></li>
@@ -976,7 +983,7 @@
             <p class="kicker">SYSTEM</p>
             <h2 class="sec-title">하루하루, 놓치지 않는<br>몰입공부 시스템</h2>
           </div>
-          <ul class="sys-list">
+          <ul class="sys-list" data-accordion="single">
             <li class="sys">
               <h3 class="sys__h"><button class="sys__btn" type="button" aria-expanded="false" aria-controls="sys-life">
                 <img class="sys__icon" src="assets/img/sys_life.webp" alt="" width="42" height="44">
@@ -989,7 +996,7 @@
                   <li><div><p class="sys__row-title">학습 외 사이트 차단</p><p class="sys__row-desc">유튜브·SNS 차단 등 철저한 네트워크 관리</p></div></li>
                   <li><div><p class="sys__row-title">졸음·소음·친목관리</p><p class="sys__row-desc">관리자 정기 순찰로 졸음·소음·친목 상시 감독</p></div></li>
                   <li><div><p class="sys__row-title">식사관리</p><p class="sys__row-desc">검증된 식사 업체와 제휴</p></div><a class="btn-mini" href="https://www.modumeal.net/Modumeal_Main.asp" target="_blank" rel="noopener">식사 자세히 보기<span class="sr-only"> (새 창)</span></a></li>
-                  <li><div><p class="sys__row-title">환경관리</p><p class="sys__row-desc">잇올 클린테크 연구소 ‘올클’ 상시 관리</p></div><a class="btn-mini" href="https://www.itall.com/immersion/space">올클 자세히 보기</a></li>
+                  <li><div><p class="sys__row-title">환경관리</p><p class="sys__row-desc">잇올 클린테크 연구소 ‘올클’ 상시 관리</p></div><a class="btn-mini" href="https://www.itall.com/immersion/space" target="_blank" rel="noopener">올클 자세히 보기<span class="sr-only"> (새 창)</span></a></li>
                 </ul>
               </div>
             </li>
@@ -1004,7 +1011,7 @@
                   <li><div><p class="sys__row-title">3중 담임제</p><p class="sys__row-desc">생활 코치, 전문 교과 코치, 입시 소장의 3중 담임으로 함께 관리</p></div></li>
                   <li><div><p class="sys__row-title">실전바이오리듬</p><p class="sys__row-desc">변경된 2028학년도 수능 시간표에 맞춰 먼저 적응하는 프로그램</p></div></li>
                   <li><div><p class="sys__row-title">학교프로젝트</p><p class="sys__row-desc">실제 학교에서 미리 경험하는 대규모 수능 실전 시뮬레이션 (주관 엔컴 | 후원 잇올)</p></div></li>
-                  <li><div><p class="sys__row-title">콘텐츠</p><p class="sys__row-desc">강대K, 강대X, 더프, 서프, 이감, 상상 등 다양한 콘텐츠 제공</p></div><a class="btn-mini" href="https://www.itall.com/contents/672c65f37e5563cd327729df">자세히 보기</a></li>
+                  <li><div><p class="sys__row-title">콘텐츠</p><p class="sys__row-desc">강대K, 강대X, 더프, 서프, 이감, 상상 등 다양한 콘텐츠 제공</p></div><a class="btn-mini" href="https://www.itall.com/contents/672c65f37e5563cd327729df" target="_blank" rel="noopener">자세히 보기<span class="sr-only"> (새 창)</span></a></li>
                 </ul>
               </div>
             </li>
@@ -1018,7 +1025,7 @@
                   <li><div><p class="sys__row-title">입시전략 컨설팅</p><p class="sys__row-desc">데이터 기반 1:1 컨설팅으로 합격 로드맵 설계</p></div></li>
                   <li><div><p class="sys__row-title">빅데이터 입시 분석</p><p class="sys__row-desc">학과별 입결 데이터 분석부터 배치표·계산기·시크릿코드 등 다양한 TOOL 제공</p></div></li>
                   <li><div><p class="sys__row-title">입시콘서트</p><p class="sys__row-desc">시즌별 전국 단위 입시 설명회 &amp; 센터/캠프 단위 입시 간담회 진행</p></div></li>
-                  <li><div><p class="sys__row-title">2028 입시 정보 안내</p><p class="sys__row-desc">5등급제·통합형 수능 등 새로워진 2028 입시 변화, 빠짐없이 업데이트</p></div><a class="btn-mini" href="https://www.itall.com/immersion/admission-2028">자세히 보기</a></li>
+                  <li><div><p class="sys__row-title">2028 입시 정보 안내</p><p class="sys__row-desc">5등급제·통합형 수능 등 새로워진 2028 입시 변화, 빠짐없이 업데이트</p></div><a class="btn-mini" href="https://www.itall.com/immersion/admission-2028" target="_blank" rel="noopener">자세히 보기<span class="sr-only"> (새 창)</span></a></li>
                 </ul>
                 <ul class="sys__notes"><li>시기에 따라 프로그램 내용은 상이할 수 있습니다.</li><li>학습 및 입시 서비스는 합격전략 연구소 '잇올 랩'에서 제공됩니다.</li></ul>
               </div>
@@ -1059,7 +1066,7 @@
                 <li>명문대 멘토의 합격 노하우 전수</li>
                 <li>잇올 재원생이라면 누구나 무료</li>
               </ul>
-              <a class="link-arrow" href="https://www.itall.com/program/teachers">자세히 보기<span class="sr-only"> — 잇올 티처스</span></a>
+              <a class="link-arrow" href="https://www.itall.com/program/teachers" target="_blank" rel="noopener">자세히 보기<span class="sr-only"> — 잇올 티처스</span><span class="sr-only"> (새 창)</span></a>
             </div>
           </li>
           <li class="phone">
@@ -1073,7 +1080,7 @@
                 <li>주간 리포트, 학생과 학부모 모두에게</li>
                 <li>데이터 기반 맞춤 학습·입시 전략 수립</li>
               </ul>
-              <a class="link-arrow" href="https://www.itall.com/program/life-record">자세히 보기<span class="sr-only"> — 잇올 생활기록부</span></a>
+              <a class="link-arrow" href="https://www.itall.com/program/life-record" target="_blank" rel="noopener">자세히 보기<span class="sr-only"> — 잇올 생활기록부</span><span class="sr-only"> (새 창)</span></a>
             </div>
           </li>
         </ul>
@@ -1091,21 +1098,21 @@
             <li class="scholar__stat"><p class="scholar__line">잇올 장학 누적 수혜 인원 <span class="scholar__val"><span class="scholar__num" data-count="28">28</span>만 명</span></p><p class="scholar__base">* 2018년 01월 ~ 2026년 07월 기준</p></li>
             <li class="scholar__stat"><p class="scholar__line">잇올 장학 누적 장학금 <span class="scholar__val"><span class="scholar__num" data-count="330">330</span>억 원</span></p><p class="scholar__base">* 2018년 01월 ~ 2026년 07월 기준</p></li>
           </ul>
-          <a class="scholar__soon" href="https://www.itall.com/scholarship?tab=allkey">
+          <a class="scholar__soon" href="https://www.itall.com/scholarship?tab=allkey" target="_blank" rel="noopener">
             <span class="scholar__badge">COMING SOON</span>
             <span class="scholar__soon-title">2028 잇올 장학</span>
             <span class="scholar__soon-note">* 자세한 내용은 장학 페이지에서 확인 가능합니다.</span>
             <span class="scholar__soon-link">장학 자세히 보기</span>
-          </a>
+          <span class="sr-only"> (새 창)</span></a>
         </div>
       </section>
 
     </div>
 
-    <a class="strip strip--all" href="https://www.itall.com/recruit?tab=all">
+    <a class="strip strip--all" href="https://www.itall.com/recruit?tab=all" target="_blank" rel="noopener">
       <span class="strip__title">2028학년도 입시의 판은 잇올과 함께 선점하세요</span>
       <span class="strip__link">전체 모집 프로그램 보기 <img src="assets/ui/ic_chevron_banner.svg" alt=""></span>
-    </a>
+    <span class="sr-only"> (새 창)</span></a>
   </main>
 
   <aside class="panel" aria-label="모집 요약">
@@ -1117,7 +1124,7 @@
           <div class="summary__row summary__row--top"><dt>대상 센터/캠프</dt><dd>전국 잇올 스파르타,
 잇올 몰입관</dd></div>
         </dl>
-        <div class="summary__cta"><a class="btn-pill" href="https://www.itall.com/recruit/reservation">선착순 예약하기</a></div><!-- 상담 프로그램 "2028학년도 재수우선선발반" 선택 상태로 진입 필요 -->
+        <div class="summary__cta"><a class="btn-pill" href="https://www.itall.com/recruit/reservation" target="_blank" rel="noopener">선착순 예약하기<span class="sr-only"> (새 창)</span></a></div><!-- 상담 프로그램 "2028학년도 재수우선선발반" 선택 상태로 진입 필요 -->
       </div>
 
       <div class="pcard pacc">
@@ -1219,10 +1226,10 @@
 <!-- ============ 모바일 하단 바 (<1024) ============ -->
 <nav class="tabbar" aria-label="빠른 메뉴 (모바일)">
   <ul>
-    <li><a href="https://www.itall.com/recruit/reservation"><img src="assets/ui/mobile/entrance.svg" alt="" width="24" height="24">입학예약</a></li>
+    <li><a href="https://www.itall.com/recruit/reservation" target="_blank" rel="noopener"><img src="assets/ui/mobile/entrance.svg" alt="" width="24" height="24">입학예약<span class="sr-only"> (새 창)</span></a></li>
     <li><a href="#"><img src="assets/ui/mobile/counseling.svg" alt="" width="24" height="24">채팅상담</a></li>
     <li><a href="#"><img src="assets/ui/mobile/manual.svg" alt="" width="24" height="24">잇올 매뉴얼</a></li>
-    <li><a href="https://www.itall.com/program/teachers"><img src="assets/ui/mobile/teachers.svg" alt="" width="24" height="24">잇올 티처스</a></li>
+    <li><a href="https://www.itall.com/program/teachers" target="_blank" rel="noopener"><img src="assets/ui/mobile/teachers.svg" alt="" width="24" height="24">잇올 티처스<span class="sr-only"> (새 창)</span></a></li>
     <li><a href="#"><img src="assets/ui/mobile/event.svg" alt="" width="24" height="24">이벤트</a></li>
   </ul>
 </nav>
@@ -1260,15 +1267,36 @@
 (function () {
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---------- 공통 아코디언: 기본 접힘 · 클릭 토글 · 아코디언 간 연동 없음 ---------- */
+  /* ---------- 공통 아코디언: 기본 접힘 · 클릭 토글 (유의사항·기준 확인·패널은 개별 동작, SYSTEM은 하나만 펼침)
+     펼침/접힘은 높이·여백·투명도를 함께 애니메이션해 부드럽게 내려오고 올라감 ---------- */
+  var EASE = 'cubic-bezier(.65, 0, .35, 1)', DUR = 450;   /* 처음과 끝이 느린 고른 곡선 — 내려오는 과정이 눈에 보이게 */
+  function slide(body, open) {
+    if (body._anim) body._anim.cancel();
+    if (!body.animate) { body.hidden = !open; return; }   /* 높이 전환은 작은 움직임이라 모션 최소화 설정에서도 유지 */
+    body.hidden = false;
+    var cs = getComputedStyle(body);
+    var full = { height: body.offsetHeight + 'px', paddingTop: cs.paddingTop, paddingBottom: cs.paddingBottom, opacity: 1 };
+    var none = { height: '0px', paddingTop: '0px', paddingBottom: '0px', opacity: 0 };
+    body.style.overflow = 'hidden';
+    var a = body._anim = body.animate(open ? [none, full] : [full, none], { duration: DUR, easing: EASE });
+    a.onfinish = function () { body.style.overflow = ''; body._anim = null; if (!open) body.hidden = true; };
+    a.oncancel = function () { body.style.overflow = ''; };
+  }
   document.querySelectorAll('[aria-controls][aria-expanded]').forEach(function (btn) {
     var body = document.getElementById(btn.getAttribute('aria-controls'));
     if (!body) return;
     body.hidden = btn.getAttribute('aria-expanded') !== 'true';
     btn.addEventListener('click', function () {
       var open = btn.getAttribute('aria-expanded') !== 'true';
+      /* data-accordion="single" 그룹(SYSTEM): 하나 펼치면 이전에 펼친 항목은 접힘 */
+      var group = btn.closest('[data-accordion="single"]');
+      if (open && group) group.querySelectorAll('[aria-controls][aria-expanded="true"]').forEach(function (o) {
+        if (o === btn) return;
+        o.setAttribute('aria-expanded', 'false');
+        var b = document.getElementById(o.getAttribute('aria-controls')); if (b) slide(b, false);
+      });
       btn.setAttribute('aria-expanded', String(open));
-      body.hidden = !open;
+      slide(body, open);
     });
   });
 
@@ -1279,7 +1307,7 @@
     });
   });
 
-  /* ---------- 대상 센터/캠프 모달: 혜택 카드별 분리 호출 ---------- */
+  /* ---------- 모달: data-dialog 버튼으로 호출 ---------- */
   document.querySelectorAll('[data-dialog]').forEach(function (btn) {
     var dlg = document.getElementById(btn.dataset.dialog);
     if (!dlg || typeof dlg.showModal !== 'function') return;
@@ -1291,37 +1319,68 @@
     });
   });
 
-  /* ---------- 캐러셀: 좌우 버튼 1장씩 · 인덱스 표시 · (시설) 자동 롤링 ---------- */
+  /* ---------- 캐러셀: 좌우 버튼 1장씩 · 인덱스 표시 · (시설) 자동 롤링 + 무한 루프 ----------
+     data-loop: 앞뒤에 복제 세트를 붙여 마지막 다음에 1번이 이어서 나옴 (끝에서 되감기 없음) */
   document.querySelectorAll('[data-pager]').forEach(function (pager) {
     var rail = document.getElementById('rail-' + pager.dataset.pager);
     if (!rail) return;
-    var items = rail.querySelectorAll('.rail__track > li');
+    var track = rail.querySelector('.rail__track');
+    var items = track.querySelectorAll(':scope > li');
+    var n = items.length;
+    var loop = rail.hasAttribute('data-loop') && n > 1;
     var cur = pager.querySelector('.pager__cur');
     var prev = pager.querySelector('.pager__btn--prev');
     var next = pager.querySelector('.pager__btn--next');
-    var pad2 = function (n) { return (n < 10 ? '0' : '') + n; };
-    pager.querySelector('.pager__total').textContent = pad2(items.length);
+    var pad2 = function (v) { return (v < 10 ? '0' : '') + v; };
+    pager.querySelector('.pager__total').textContent = pad2(n);
 
-    function step() { return items.length > 1 ? items[1].offsetLeft - items[0].offsetLeft : rail.clientWidth; }
+    if (loop) {   /* [복제] [원본] [복제] — 복제본은 보조기기·탭 이동에서 제외 */
+      var before = document.createDocumentFragment(), after = document.createDocumentFragment();
+      items.forEach(function (li) {
+        [before, after].forEach(function (frag) {
+          var c = li.cloneNode(true);
+          c.setAttribute('aria-hidden', 'true'); c.inert = true;
+          frag.appendChild(c);
+        });
+      });
+      track.insertBefore(before, track.firstChild);
+      track.appendChild(after);
+    }
+    var all = track.querySelectorAll(':scope > li');
+    var base = loop ? n : 0;
+
+    function step() { return all.length > 1 ? all[1].offsetLeft - all[0].offsetLeft : rail.clientWidth; }
     function index() { return Math.round(rail.scrollLeft / step()); }
     function maxIndex() { return Math.round((rail.scrollWidth - rail.clientWidth) / step()); }
+    function real(i) { return ((i - base) % n + n) % n; }
+    function jump(i) { rail.scrollTo({ left: i * step(), behavior: 'auto' }); }
     function go(i) { rail.scrollTo({ left: i * step(), behavior: reduce ? 'auto' : 'smooth' }); }
+    function recenter() {   /* 복제 구간에 들어가면 같은 그림의 원본 위치로 순간 이동 (화면상 변화 없음) */
+      if (!loop) return;
+      var i = index();
+      if (i < n) jump(i + n); else if (i >= 2 * n) jump(i - n);
+    }
     function sync() {
       var i = index();
-      cur.textContent = pad2(Math.min(i + 1, items.length));
-      if (!rail.dataset.autoplay) { prev.disabled = i <= 0; next.disabled = i >= maxIndex(); }
+      cur.textContent = pad2(loop ? real(i) + 1 : Math.min(i + 1, n));
+      if (!loop && !rail.dataset.autoplay) { prev.disabled = i <= 0; next.disabled = i >= maxIndex(); }
     }
-    prev.addEventListener('click', function () { var i = index(); go(i <= 0 && rail.dataset.autoplay ? maxIndex() : i - 1); });
-    next.addEventListener('click', function () { var i = index(); go(i >= maxIndex() && rail.dataset.autoplay ? 0 : i + 1); });
-    rail.addEventListener('scroll', function () { window.requestAnimationFrame(sync); }, { passive: true });
-    window.addEventListener('resize', sync);
+    prev.addEventListener('click', function () { var i = index(); go(!loop && i <= 0 && rail.dataset.autoplay ? maxIndex() : i - 1); });
+    next.addEventListener('click', function () { var i = index(); go(!loop && i >= maxIndex() && rail.dataset.autoplay ? 0 : i + 1); });
+    var settle;
+    rail.addEventListener('scroll', function () {
+      window.requestAnimationFrame(sync);
+      clearTimeout(settle); settle = setTimeout(recenter, 140);   /* 스크롤이 멈춘 뒤 위치 보정 */
+    }, { passive: true });
+    window.addEventListener('resize', function () { if (loop) jump(base + real(index())); sync(); });
+    if (loop) jump(base);
     sync();
 
     /* 자동 롤링 — 마우스 오버 · 포커스 · 터치 중에는 정지, 모션 최소화 설정 시 미적용 */
     var delay = +rail.dataset.autoplay;
     if (delay && !reduce) {
       var timer = null, paused = false;
-      var tick = function () { if (!paused && !document.hidden) { var i = index(); go(i >= maxIndex() ? 0 : i + 1); } };
+      var tick = function () { if (!paused && !document.hidden) { var i = index(); go(!loop && i >= maxIndex() ? 0 : i + 1); } };
       var start = function () { stop(); timer = setInterval(tick, delay); };
       var stop = function () { if (timer) clearInterval(timer); timer = null; };
       [rail, pager].forEach(function (el) {
@@ -1361,6 +1420,69 @@
     }, { threshold: 0.4 });
     groups.forEach(function (g) { io.observe(g); });
   }
+
+  /* ---------- 탭 (강사진 캠프 · 기본 수업 모달): 클릭 · 좌우 화살표 키 ----------
+     선택 배경(알약)이 탭 사이를 미끄러지듯 이동 + 글자색 전환 + 패널 페이드 — 잇올 메인 '핫 클립' 탭 방식 */
+  document.querySelectorAll('[role="tablist"]').forEach(function (list) {
+    var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
+    var pill = document.createElement('span');
+    pill.className = 'seg__pill';
+    pill.setAttribute('aria-hidden', 'true');
+    list.insertBefore(pill, list.firstChild);
+    list.classList.add('seg--pill');
+    function active() { return tabs.filter(function (t) { return t.getAttribute('aria-selected') === 'true'; })[0] || tabs[0]; }
+    function movePill(tab, instant) {
+      if (instant) pill.style.transition = 'none';
+      pill.style.width = tab.offsetWidth + 'px';
+      pill.style.transform = 'translateX(' + tab.offsetLeft + 'px)';
+      if (instant) { void pill.offsetWidth; pill.style.transition = ''; }
+    }
+    function select(tab) {
+      tabs.forEach(function (t) {
+        var on = t === tab, panel = document.getElementById(t.getAttribute('aria-controls'));
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        if (panel) panel.hidden = !on;
+        var r = panel && panel.querySelector('.rail');
+        var pager = r && document.querySelector('[data-pager="' + r.id.replace('rail-', '') + '"]');
+        if (pager) pager.hidden = !on;
+      });
+      movePill(tab);
+      window.dispatchEvent(new Event('resize'));   /* 숨겨져 있던 캐러셀 인덱스 재계산 */
+    }
+    movePill(active(), true);
+    if ('ResizeObserver' in window) new ResizeObserver(function () { movePill(active(), true); }).observe(list);   /* 화면 폭 변경 · 모달 첫 열림 */
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () { select(tab); });
+      tab.addEventListener('keydown', function (e) {
+        var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!d) return;
+        var nx = tabs[(i + d + tabs.length) % tabs.length];
+        select(nx); nx.focus();
+      });
+    });
+  });
+
+  /* ---------- 캠프 주소 복사 ---------- */
+  var toast = document.querySelector('.toast'), toastTimer;
+  function notify(msg) {
+    if (!toast) return;
+    toast.textContent = msg; toast.classList.add('is-show');
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { toast.classList.remove('is-show'); }, 2000);
+  }
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.dataset.copy;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(function () { notify('주소가 복사되었습니다.'); }, function () { notify(text); });
+      } else {
+        var ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); notify('주소가 복사되었습니다.'); } catch (err) { notify(text); }
+        document.body.removeChild(ta);
+      }
+    });
+  });
 
   /* ---------- 맨 위로: 스크롤 시 노출 ---------- */
   var top = document.querySelector('.to-top');
