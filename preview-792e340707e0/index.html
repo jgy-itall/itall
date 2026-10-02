@@ -48,7 +48,7 @@
 
   /* ===== 페이지 타이틀 (top_title 6337:2797) ===== */
   .page-head {
-    max-width: 1344px; margin: 0 auto; padding: 40px 32px;
+    max-width: 1280px; margin: 0 auto; padding: 40px 32px;   /* 본문 컨테이너와 같은 폭 */
     display: flex; align-items: center; justify-content: space-between; gap: 24px;
   }
   .page-head__title { font-size: 36px; font-weight: 600; line-height: 1.334; letter-spacing: -0.972px; color: var(--ink-strong); white-space: nowrap; }
@@ -57,21 +57,23 @@
   .crumb__sep img { width: 8.2px; height: 14.8px; }
   .crumb [aria-current] { color: var(--ink-strong); }
 
-  /* ===== 레이아웃 — 개발 페이지와 동일: 1280 컨테이너 / lg(≥1024) 본문 + 우측 패널 ===== */
+  /* ===== 레이아웃 — 개발 페이지(develop.itall.com/recruit/2028-jaesu-priority) 실측과 동일 =====
+     ~767     본문 화면 끝까지 · 패널 위(좌우 20)
+     768~1023 본문·패널 최대 768 가운데 정렬
+     1024~    컨테이너 1280(좌우 32) · 본문(최대 847, 남는 폭 안에서 가운데) + 간격 20 + 패널 320 / 1280~ 349 */
   .layout {
-    max-width: 1280px; margin: 0 auto; padding: 22px 0 60px;   /* 1024 미만: 본문 좌우 여백 없이 화면 끝까지 */
+    max-width: 768px; margin: 0 auto; padding: 22px 0 60px;
     display: flex; flex-direction: column-reverse; gap: 28px;   /* 1024 미만: 패널이 본문 위 */
   }
   .layout__main { min-width: 0; display: flex; flex-direction: column; gap: 20px; }
   @media (min-width: 1024px) {
-    .layout { flex-direction: row; align-items: flex-start; gap: 20px; padding: 0 0 160px; }
-    .layout__main { flex: 1; min-width: 634px; }
+    .layout { max-width: 1280px; flex-direction: row; align-items: flex-start; gap: 20px; padding: 0 32px 160px; }
+    .layout__main { flex: 1; min-width: 634px; }   /* 1024에서 개발 페이지처럼 우측 여백 안으로 14px 넘침 (가로 스크롤 없음) */
+    .layout__main > * { width: 100%; max-width: 847px; margin-left: auto; margin-right: auto; }
     .panel { flex: none; width: 320px; }
   }
   @media (min-width: 1280px) {
-    .layout { max-width: 1344px; padding: 0 32px 160px; }
     .layout__main { min-width: 847px; }
-    .layout__main > * { width: 100%; max-width: 847px; margin-left: auto; margin-right: auto; }
     .panel { width: 349px; }
   }
 
@@ -270,8 +272,8 @@
   }
   @media (max-width: 1023px) {
     .panel { padding: 0 20px; }
-    .page-head { padding: 24px 20px 0; }
-    .page-head__title { font-size: 24px; }
+    .page-head { max-width: 768px; padding: 24px 20px 0; }
+    .page-head__title { font-size: 22px; line-height: 1.45; }
     .crumb { display: none; }
   }
 
@@ -755,7 +757,8 @@
   /* ---------- 모바일 하단 바 (<1024) ---------- */
   .tabbar { position: sticky; bottom: 0; z-index: 40; background: #fff; border-top: 1px solid #e4e4e7; }
   .tabbar ul { display: flex; justify-content: space-around; }
-  .tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; width: 74px; height: 60px; font-size: 11px; font-weight: 500; line-height: 1.4; color: #3f3f46; }
+  .tabbar li { flex: 1 1 0; max-width: 74px; min-width: 0; }   /* 370 미만 폭에서 줄어들어 가로 넘침 방지 */
+  .tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; width: 100%; white-space: nowrap; height: 60px; font-size: 11px; font-weight: 500; line-height: 1.4; color: #3f3f46; }
   .tabbar img { width: 24px; height: 24px; }
   @media (min-width: 1024px) { .tabbar { display: none; } }
 
