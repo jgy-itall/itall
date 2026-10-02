@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>KV 커튼 영상 테스트</title>
+  <link rel="preload" href="assets/kv_bg.webp" as="image" type="image/webp">
+  <style>
+    *,
+    *::before,
+    *::after { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+
+    body {
+      background: #f4f4f4;
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #111;
+    }
+
+    /* ── 비교 레이아웃: 가로 2열, 좁은 화면에서는 세로 ── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 32px;
+      max-width: 1280px;
+      margin: 40px auto;
+      padding: 0 24px;
+    }
+
+    @media (max-width: 800px) {
+      .compare-grid { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    .compare { min-width: 0; }
+
+    .compare__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .compare__title {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .compare__badge {
+      display: inline-block;
+      margin-right: 8px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: #888;
+      color: #fff;
+      font-size: 12px;
+      vertical-align: middle;
+    }
+
+    .compare--after .compare__badge { background: #1b4fd8; }
+
+    .compare__desc {
+      margin: 0 0 12px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #555;
+    }
+
+    .compare__desc code {
+      padding: 0 4px;
+      border-radius: 4px;
+      background: #e6e6e6;
+      font-size: 13px;
+    }
+
+    /* ── KV 컨테이너: 최대 847px (비교용으로 열 너비에 맞춰 축소) ── */
+    .kv {
+      position: relative;
+      width: 100%;
+      max-width: 847px;
+      aspect-ratio: 1920 / 1502;      /* 배경 이미지 원본 비율 → 847×663 */
+      overflow: hidden;
+      isolation: isolate;             /* 블렌드 범위를 KV 안으로 한정 */
+      background: #0b1430;
+    }
+
+    .kv__bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ── 인트로 영상 레이어
+         래퍼는 쌓임 맥락을 만들지 않음(z-index·opacity 없음)
+         → 각 canvas가 배경 이미지와 직접 블렌드됨 ── */
+    .kv__intro {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .kv__intro[hidden] { display: none; }
+
+    .kv__canvas {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      transition: opacity .8s ease;
+    }
+
+    .kv__canvas--matte { mix-blend-mode: lighten; }   /* 1단: 커튼 자리를 흰색으로 */
+    .kv__canvas--color { mix-blend-mode: darken; }    /* 2단: 흰색 위에 커튼 색 */
+    .kv__canvas[hidden] { display: none; }
+
+    .is-done .kv__canvas { opacity: 0; }
+
+    /* 첫 프레임 전까지 배경 노출 방지 */
+    .kv__cover {
+      position: absolute;
+      inset: 0;
+      background: #0e1a3a;
+    }
+
+    .is-ready .kv__cover { display: none; }
+
+    /* video는 디코딩 소스로만 사용 (위 절반 = 커튼 색, 아래 절반 = 매트) */
+    .kv__video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 2px;
+      height: 2px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .replay {
+      padding: 8px 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #fff;
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .replay:focus-visible { outline: 2px solid #1b4fd8; outline-offset: 2px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .kv__intro { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="compare-grid">
+    <section class="compare compare--before" aria-labelledby="title-before">
+      <div class="compare__head">
+        <h2 class="compare__title" id="title-before"><span class="compare__badge">이전</span>mix-blend-mode: darken</h2>
+        <button type="button" class="replay">영상 다시 재생</button>
+      </div>
+      <p class="compare__desc">흰 배경은 사라지지만, 배경 이미지가 어두워서 닫힌 커튼 위로 로고·<code>20</code> 등 배경이 비침.</p>
+
+      <div class="kv" data-mode="darken" aria-label="APOLLO 실리콘 실란트 20주년 (이전 버전)">
+        <img class="kv__bg" src="assets/kv_bg.webp" width="1920" height="1502"
+             alt="APOLLO Silicone Sealant 20th anniversary, BONDING FOR LIFE, 2023년 6월 15일 GEM CENTER">
+        <div class="kv__intro" aria-hidden="true">
+          <div class="kv__cover"></div>
+          <canvas class="kv__canvas kv__canvas--color"></canvas>
+          <video class="kv__video" src="assets/kv_curtain_stack.mp4"
+                 muted playsinline preload="auto" disablepictureinpicture></video>
+        </div>
+      </div>
+    </section>
+
+    <section class="compare compare--after" aria-labelledby="title-after">
+      <div class="compare__head">
+        <h2 class="compare__title" id="title-after"><span class="compare__badge">변경</span>2단 블렌드 (lighten + darken)</h2>
+        <button type="button" class="replay">영상 다시 재생</button>
+      </div>
+      <p class="compare__desc">매트 영상(lighten)으로 커튼 자리를 흰색으로 만든 뒤 커튼 영상(darken)을 얹음 → 배경이 비치지 않음. 픽셀 계산 없이 블렌드 모드만 사용.</p>
+
+      <div class="kv" data-mode="blend2" aria-label="APOLLO 실리콘 실란트 20주년">
+        <img class="kv__bg" src="assets/kv_bg.webp" width="1920" height="1502"
+             alt="APOLLO Silicone Sealant 20th anniversary, BONDING FOR LIFE, 2023년 6월 15일 GEM CENTER">
+        <div class="kv__intro" aria-hidden="true">
+          <div class="kv__cover"></div>
+          <canvas class="kv__canvas kv__canvas--matte"></canvas>
+          <canvas class="kv__canvas kv__canvas--color"></canvas>
+          <video class="kv__video" src="assets/kv_curtain_stack.mp4"
+                 muted playsinline preload="auto" disablepictureinpicture></video>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var reduce  = window.matchMedia('(prefers-reduced-motion: reduce)');
+      var hasRVFC = 'requestVideoFrameCallback' in HTMLVideoElement.prototype;
+
+      function initKV(kv, replay) {
+        var intro = kv.querySelector('.kv__intro');
+        var video = intro.querySelector('.kv__video');
+        var color = intro.querySelector('.kv__canvas--color');
+        var matte = intro.querySelector('.kv__canvas--matte');   // darken 단독이면 없음
+        var cctx  = color.getContext('2d');
+        var mctx  = matte && matte.getContext('2d');
+        var hideTimer;
+
+        // 영상 위 절반 = 커튼 색, 아래 절반 = 매트(흰색 = 커튼 자리)
+        function draw() {
+          var w = video.videoWidth;
+          var h = video.videoHeight / 2;
+          if (!w) return;
+          if (color.width !== w || color.height !== h) {
+            color.width = w; color.height = h;
+            if (matte) { matte.width = w; matte.height = h; }
+          }
+          cctx.drawImage(video, 0, 0, w, h, 0, 0, w, h);
+          if (mctx) mctx.drawImage(video, 0, h, w, h, 0, 0, w, h);
+          intro.classList.add('is-ready');
+        }
+
+        function loop() {
+          draw();
+          if (video.paused || video.ended) return;
+          if (hasRVFC) video.requestVideoFrameCallback(loop);
+          else requestAnimationFrame(loop);
+        }
+
+        // 1회 재생 후 페이드아웃 → 배경 이미지만 남김
+        function finish() {
+          intro.classList.add('is-done');
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(function () {
+            if (intro.classList.contains('is-done')) intro.hidden = true;
+          }, 850);
+        }
+
+        function play() {
+          if (reduce.matches) { intro.hidden = true; return; }
+          clearTimeout(hideTimer);
+          intro.hidden = false;
+          intro.classList.remove('is-done', 'is-ready');
+          video.currentTime = 0;
+          var p = video.play();
+          if (p && p.catch) p.catch(function () { intro.hidden = true; }); // 자동재생 차단 시 이미지만 노출
+          loop();
+        }
+
+        video.addEventListener('loadeddata', draw);
+        video.addEventListener('play', loop);
+        video.addEventListener('ended', function () { draw(); finish(); });
+        video.addEventListener('error', function () { intro.hidden = true; });
+
+        replay.addEventListener('click', play);
+        play();
+      }
+
+      Array.prototype.forEach.call(document.querySelectorAll('.compare'), function (section) {
+        initKV(section.querySelector('.kv'), section.querySelector('.replay'));
+      });
+    })();
+  </script>
+</body>
+</html>
