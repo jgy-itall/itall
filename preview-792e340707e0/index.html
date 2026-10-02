@@ -59,7 +59,7 @@
 
   /* ===== 레이아웃 — 개발 페이지와 동일: 1280 컨테이너 / lg(≥1024) 본문 + 우측 패널 ===== */
   .layout {
-    max-width: 1280px; margin: 0 auto; padding: 22px 32px 60px;
+    max-width: 1280px; margin: 0 auto; padding: 22px 0 60px;   /* 1024 미만: 본문 좌우 여백 없이 화면 끝까지 */
     display: flex; flex-direction: column-reverse; gap: 28px;   /* 1024 미만: 패널이 본문 위 */
   }
   .layout__main { min-width: 0; display: flex; flex-direction: column; gap: 20px; }
@@ -270,7 +270,7 @@
   }
   @media (max-width: 1023px) {
     .panel { padding: 0 20px; }
-    .page-head { padding: 24px 32px 0; }
+    .page-head { padding: 24px 20px 0; }
     .page-head__title { font-size: 24px; }
     .crumb { display: none; }
   }
@@ -900,6 +900,10 @@
     .strip__title { font-size: 18px; padding: 0; white-space: normal; }
     .strip__link { font-size: 14px; gap: 4px; }
     .wrap { border-radius: 0; }
+  }
+
+  @media (max-width: 1023px) {
+    .strip { border-radius: 0; }   /* 화면 끝까지 붙는 띠배너는 모서리 없음 */
   }
 
   @media (prefers-reduced-motion: reduce) {
