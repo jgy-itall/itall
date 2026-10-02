@@ -615,9 +615,9 @@
   .rail--teacher { margin: 0 -80px; padding: 0 80px; scroll-padding: 0 80px; }
   .rail--teacher .rail__track { gap: 20px; align-items: flex-start; }
   .tcard { flex: none; scroll-snap-align: start; width: 197px; display: flex; flex-direction: column; gap: 8px; }
-  /* 사진: 시안 회색 카드(SVG) 위에 기숙 사이트 원본 누끼 PNG — 높이 165 통일, 하단 중앙 정렬, 하단 모서리 30 잘림 */
+  /* 사진: 기숙 사이트와 동일 구조 — 회색 카드(SVG)는 하단 배경, 강사 원본 PNG는 자르지 않고 박스 높이에 맞춰(contain) 하단 중앙 */
   .tcard__photo { position: relative; display: block; width: 197px; height: 171px; margin-bottom: 12px; overflow: hidden; border-radius: 0 0 30px 30px; background: url(assets/ui/teacher_card.svg) center bottom / 197px 132px no-repeat; }
-  .tcard__photo img { position: absolute; left: 50%; bottom: 0; width: auto; max-width: none; height: 165px; transform: translateX(-50%); }
+  .tcard__photo img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: contain; object-position: center bottom; }
   .tcard__head { display: flex; align-items: center; gap: 8px; }
   .tcard__subj { padding: 2px 8px; border-radius: 30px; background: var(--point); font-size: 13px; font-weight: 600; line-height: 1.385; letter-spacing: 0.2522px; color: #fff; }
   .tcard__name { font-size: 18px; font-weight: 600; line-height: 1.445; letter-spacing: -0.0036px; color: var(--point); white-space: nowrap; }
@@ -1316,52 +1316,52 @@
             <section class="rail rail--teacher" id="rail-teacher-icheon" aria-roledescription="carousel" aria-label="이천캠프 강사진">
               <ul class="rail__track">
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_icheon_1.webp" alt="김태윤 수학 강사 사진" width="132" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_icheon_1.webp" alt="김태윤 수학 강사 사진" width="162" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">수학</span><strong class="tcard__name">김태윤 부원장</strong></p>
                 <ul class="tcard__career"><li>前 탑텐스터디 기숙학원 수학과 팀장</li><li>前 토즈스터디 기숙학원 교무부장</li><li>前 대치 공감학원</li><li>前 여주제일고 특강 출강</li><li>고려대학교 졸업</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_icheon_2.webp" alt="서창업 수학 강사 사진" width="167" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_icheon_2.webp" alt="서창업 수학 강사 사진" width="178" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">수학</span><strong class="tcard__name">서창업 교무부장</strong></p>
                 <ul class="tcard__career"><li>前 강남 청솔재수종합반</li><li>前 대치 오르비학원</li><li>前 대치 예섬학원 의치한</li><li>고려대학교 졸업</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_icheon_3.webp" alt="이효정 국어 강사 사진" width="134" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_icheon_3.webp" alt="이효정 국어 강사 사진" width="176" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">국어</span><strong class="tcard__name">이효정 선생님</strong></p>
                 <ul class="tcard__career"><li>前 이천토즈스터디 기숙학원</li><li>前 대치 하이퍼리뷰 독학재수학원</li><li>前 탑텐스터디 기숙학원</li><li>성균관대학교 및 동대학원 졸업</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_icheon_4.webp" alt="신우식 국어 강사 사진" width="139" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_icheon_4.webp" alt="신우식 국어 강사 사진" width="160" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">국어</span><strong class="tcard__name">신우식 선생님</strong></p>
                 <ul class="tcard__career"><li>現 세일학원</li><li>前 초석학원</li><li>前 깊은생각</li><li>前 스카이에듀 공교육</li><li>건국대학교 졸업</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_icheon_5.webp" alt="전근호 수학 강사 사진" width="139" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_icheon_5.webp" alt="전근호 수학 강사 사진" width="178" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">수학</span><strong class="tcard__name">전근호 선생님</strong></p>
                 <ul class="tcard__career"><li>前 서초 종로학원</li><li>前 대치 프린스턴학원</li><li>前 SM논술 대표강사</li><li>前 분당 스파르타 수리논술</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_icheon_6.webp" alt="한정훈 수학 강사 사진" width="139" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_icheon_6.webp" alt="한정훈 수학 강사 사진" width="178" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">수학</span><strong class="tcard__name">한정훈 선생님</strong></p>
                 <ul class="tcard__career"><li>前 노량진 중앙학원</li><li>前 스카이에듀 공교육</li><li>前 메가스터디 공교육</li><li>고려대학교 졸업</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_icheon_7.webp" alt="엄경화 영어 강사 사진" width="133" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_icheon_7.webp" alt="엄경화 영어 강사 사진" width="169" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">영어</span><strong class="tcard__name">엄경화 선생님</strong></p>
                 <ul class="tcard__career"><li>現 NE능률 교재편찬 및 감수위원</li><li>前 파워플러스 서초캠퍼스 원장</li><li>前 리젠영어학원 1대 원장</li><li>한국외국어대학교 졸업</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_icheon_8.webp" alt="한상철 사회 강사 사진" width="133" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_icheon_8.webp" alt="한상철 사회 강사 사진" width="197" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">사회</span><strong class="tcard__name">한상철 선생님</strong></p>
                 <ul class="tcard__career"><li>現 수경 출판사 자이스토리 검수위원</li><li>前 종로학원</li><li>前 대성학원</li><li>前 목동한신학원</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_icheon_9.webp" alt="신승호 과학 강사 사진" width="120" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_icheon_9.webp" alt="신승호 과학 강사 사진" width="160" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">과학</span><strong class="tcard__name">신승호 선생님</strong></p>
                 <ul class="tcard__career"><li>前 잠실 청솔학원</li><li>前 중계 대성학원</li><li>前 대치 아토즈학원</li><li>前 대치 미래인학원</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_icheon_10.webp" alt="이우열 과학 강사 사진" width="125" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_icheon_10.webp" alt="이우열 과학 강사 사진" width="160" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">과학</span><strong class="tcard__name">이우열 선생님</strong></p>
                 <ul class="tcard__career"><li>前 송파 청솔학원</li><li>前 이천청솔 기숙학원</li><li>前 광릉한샘 기숙학원</li><li>前 광주탑클래스 기숙학원</li></ul>
               </li>
@@ -1372,52 +1372,52 @@
             <section class="rail rail--teacher" id="rail-teacher-yeoju" aria-roledescription="carousel" aria-label="여주캠프 강사진">
               <ul class="rail__track">
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_yeoju_1.webp" alt="이주현 국어 강사 사진" width="167" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_yeoju_1.webp" alt="이주현 국어 강사 사진" width="178" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">국어</span><strong class="tcard__name">이주현 원장</strong></p>
                 <ul class="tcard__career"><li>現 상상국어연구소 검토위원</li><li>前 토즈스터디 기숙학원</li><li>前 목동 종로학원</li><li>前 탑텐스터디 기숙학원</li><li>서울대학교 졸업</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_yeoju_2.webp" alt="설민혁 수학 강사 사진" width="101" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_yeoju_2.webp" alt="설민혁 수학 강사 사진" width="178" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">수학</span><strong class="tcard__name">설민혁 교무부장</strong></p>
                 <ul class="tcard__career"><li>前 이천탑클래스기숙학원 수학과 팀장</li><li>前 대치 핵심MK학원</li><li>前 진명학원</li><li>고려대학교 졸업</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_yeoju_3.webp" alt="이병호 국어 강사 사진" width="143" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_yeoju_3.webp" alt="이병호 국어 강사 사진" width="178" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">국어</span><strong class="tcard__name">이병호 선생님</strong></p>
                 <ul class="tcard__career"><li>前 토즈스터디 기숙학원</li><li>前 이천탑클래스 기숙학원</li><li>前 종로학원 본원</li><li>서울대학교 및 동대학원 졸업</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_yeoju_4.webp" alt="이대성 국어 강사 사진" width="134" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_yeoju_4.webp" alt="이대성 국어 강사 사진" width="160" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">국어</span><strong class="tcard__name">이대성 선생님</strong></p>
                 <ul class="tcard__career"><li>前 강남 정일, 강남 중앙학원</li><li>前 이투스 기숙학원</li><li>前 평촌 청솔학원</li><li>前 남양주 대성학원</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_yeoju_5.webp" alt="주인환 수학 강사 사진" width="127" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_yeoju_5.webp" alt="주인환 수학 강사 사진" width="178" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">수학</span><strong class="tcard__name">주인환 선생님</strong></p>
                 <ul class="tcard__career"><li>前 강북 청솔학원</li><li>前 양평이투스 기숙학원</li><li>前 세일학원, 비상에듀학원</li><li>경희대학교 졸업</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_yeoju_6.webp" alt="박시완 수학 강사 사진" width="123" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_yeoju_6.webp" alt="박시완 수학 강사 사진" width="178" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">수학</span><strong class="tcard__name">박시완 선생님</strong></p>
                 <ul class="tcard__career"><li>前 이천청솔 기숙학원</li><li>前 청평 비타에듀학원</li><li>前 송파 청솔학원</li><li>서울시립대학교 졸업</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_yeoju_7.webp" alt="엄경화 영어 강사 사진" width="134" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_yeoju_7.webp" alt="엄경화 영어 강사 사진" width="178" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">영어</span><strong class="tcard__name">엄경화 선생님</strong></p>
                 <ul class="tcard__career"><li>現 NE능률 교재편찬 및 감수위원</li><li>前 파워플러스 서초캠퍼스 원장</li><li>前 리젠영어학원 1대 원장</li><li>한국외국어대학교 졸업</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_yeoju_8.webp" alt="한상철 사회 강사 사진" width="133" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_yeoju_8.webp" alt="한상철 사회 강사 사진" width="197" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">사회</span><strong class="tcard__name">한상철 선생님</strong></p>
                 <ul class="tcard__career"><li>現 수경 출판사 자이스토리 검수위원</li><li>前 종로학원</li><li>前 대성학원</li><li>前 목동한신학원</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_yeoju_9.webp" alt="신승호 과학 강사 사진" width="120" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_yeoju_9.webp" alt="신승호 과학 강사 사진" width="160" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">과학</span><strong class="tcard__name">신승호 선생님</strong></p>
                 <ul class="tcard__career"><li>前 잠실 청솔학원</li><li>前 중계 대성학원</li><li>前 대치 아토즈학원</li><li>前 대치 미래인학원</li></ul>
               </li>
               <li class="tcard">
-                <span class="tcard__photo"><img src="assets/img/t_yeoju_10.webp" alt="이우열 과학 강사 사진" width="125" height="165" loading="lazy"></span>
+                <span class="tcard__photo"><img src="assets/img/t_yeoju_10.webp" alt="이우열 과학 강사 사진" width="160" height="171" loading="lazy"></span>
                 <p class="tcard__head"><span class="tcard__subj">과학</span><strong class="tcard__name">이우열 선생님</strong></p>
                 <ul class="tcard__career"><li>前 송파 청솔학원</li><li>前 이천청솔 기숙학원</li><li>前 광릉한샘 기숙학원</li><li>前 광주탑클래스 기숙학원</li></ul>
               </li>
