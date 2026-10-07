@@ -106,7 +106,7 @@
   /* 띠배너 배경 = 시안(시안 페이지 6576:30129 / 6576:30728)을 글자 없이 내보낸 이미지 — 단색+텍스처 multiply·linear-burn 합성이 CSS로 불가해 미리 합성 */
   .strip--sparta { background: #fd4039 url(assets/img/strip_dorm_top_pc.webp) left center / 847px 83px no-repeat; }
   .strip--all  { background: #269336 url(assets/img/strip_dorm_bot_pc.webp) left center / 847px 83px no-repeat; }
-  .strip__title { font-size: 24px; font-weight: 700; line-height: 1.35; letter-spacing: 0.48px; white-space: nowrap; font-family: 'Itall', Pretendard, sans-serif; }   /* 시안 PC: Itall Bold 24 / 135% / 2% */
+  .strip__title { font-size: 24px; font-weight: 700; line-height: 1.35; letter-spacing: 0.48px; padding-top: 4px; white-space: nowrap; font-family: 'Itall', Pretendard, sans-serif; }   /* 시안 PC: Itall Bold 24 / 135% / 2% */
   .strip__link { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 600; line-height: 1.445; letter-spacing: -0.0036px; white-space: nowrap; }
   .strip__link img { width: 16px; height: 16px; }
 
@@ -1110,7 +1110,7 @@
 
   @media (max-width: 1279px) {
     .strip { height: auto; padding: 16px 20px; flex-direction: column; align-items: flex-start; gap: 4px; border-radius: 12px; background-size: cover; }
-    .strip__title { font-size: 18px; white-space: normal; font-family: Pretendard, sans-serif; }   /* 시안 MO는 Pretendard */
+    .strip__title { font-size: 18px; padding: 0; white-space: normal; font-family: Pretendard, sans-serif; }   /* 시안 MO는 Pretendard */
     .strip__link { font-size: 14px; gap: 4px; }
     .wrap { border-radius: 0; }
   }
