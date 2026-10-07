@@ -4,18 +4,25 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>KV 조명 애니메이션 테스트</title>
+  <title>2027 잇올 명예의 전당 — KV 조명 테스트</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
   <style>
     /*
-      KV 조명 애니메이션 테스트 (PC 전용, 컨테이너 1280)
-      레퍼런스: EBSi 2027 수능 D-100 이벤트 KV — 조명 스윙 + 반짝임
+      KV 조명 애니메이션 테스트 (PC 전용, KV 최대 1280)
+      - 사이트 틀: itall.com/events/30 실측 (상단 배너·GNB·타이틀·브레드크럼·배경 #F1F2F4·카드 radius 24)
+      - 레퍼런스: EBSi 2027 수능 D-100 이벤트 KV — 조명 스윙 + 반짝임
       - 소스는 2배수(2560 기준) → 화면에는 절반 크기
       - 조명: 빔 꼭짓점(조명 기구 위치)을 transform-origin으로 잡고 좌우 스윙 + 밝기 깜빡임
         LT/RT = 상단 좌/우, LB/RB = 하단 좌/우(Left/Right Bottom)
       - 반짝이: light_1 / light_2 교차 페이드
-      - 위치·크기는 1280 기준 px → calc(N * var(--u))
+      - KV 안 위치·크기는 1280 기준 px → calc(N * var(--u))
     */
+
+    /* 잇올 사이트 폰트 (나눔스퀘어 네오, 네이버 한글 CDN) */
+    @font-face { font-family: "nanumSquareNeo"; font-weight: 400; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-bRg.woff") format("woff"); }
+    @font-face { font-family: "nanumSquareNeo"; font-weight: 700; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-cBd.woff") format("woff"); }
+    @font-face { font-family: "nanumSquareNeo"; font-weight: 800; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-dEb.woff") format("woff"); }
+
     *,
     *::before,
     *::after { box-sizing: border-box; }
@@ -23,38 +30,284 @@
     html, body { margin: 0; }
 
     :root {
-      --u: calc(min(100vw, 1280px) / 1280);
-      --beam-opacity: 1;
+      --u: calc(min(100vw - 64px, 1280px) / 1280);   /* KV = 콘텐츠 영역(좌우 32), 최대 1280 */
+      --beam-top-opacity: .5;      /* 상단 빔 LT/RT */
+      --beam-bottom-opacity: 1;    /* 하단 빔 LB/RB */
+      --text: #3e3a39;
+      --text-sub: #97989a;
+      --page-bg: #f1f2f4;
     }
 
     body {
-      background: #111;
-      color: #fff;
-      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #fff;
+      color: var(--text);
+      font-family: nanumSquareNeo, Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       word-break: keep-all;
     }
 
-    /* ── 테스트 컨트롤 ── */
-    .ctrl {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 12px 24px;
-      padding: 16px;
-      background: #1c1c1c;
-      font-size: 14px;
+    a { color: inherit; text-decoration: none; }
+
+    /* ── 사이트 헤더 ── */
+    .site-header { position: sticky; top: 0; z-index: 100; }
+
+    .top-banner { background: #0f0f14; }
+
+    .top-banner__inner {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      max-width: 1100px;
+      height: 54px;
+      margin: 0 auto;
+      padding: 0 32px;
     }
 
+    .top-banner__item { display: flex; align-items: center; gap: 8px; }
+    .top-banner__item:nth-child(2) { justify-content: center; }
+    .top-banner__item:nth-child(3) { justify-content: flex-end; }
+    .top-banner__item img { display: block; width: auto; height: 18px; }
+    .top-banner__item span { font-size: 16px; font-weight: 800; line-height: 1.5; }
+
+    .c--red { color: #f93026; }
+    .c--yellow { color: #fcc800; }
+    .c--green { color: #00b450; }
+
+    .gnb {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 76px;
+      padding: 16px 60px;
+      background: #fff;
+    }
+
+    .gnb__brand { display: flex; flex-shrink: 0; align-items: center; }
+    .gnb__brand img { display: block; }
+
+    .gnb__family {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 0;
+      background: none;
+      cursor: pointer;
+    }
+
+    .gnb__menu { display: flex; gap: 30px; margin: 0; padding: 0; list-style: none; white-space: nowrap; }
+    .gnb__menu > li { position: relative; }
+    .gnb__menu > li > a { display: block; font-size: 16px; font-weight: 700; line-height: 1.5; }
+
+    /* 1차 메뉴 호버 → 2차 메뉴 (메뉴 가운데 정렬) */
+    .gnb__sub {
+      position: absolute;
+      top: 13px;                        /* GNB 행 기준 39px */
+      left: 50%;
+      display: none;
+      padding-top: 16px;
+      transform: translateX(-50%);
+    }
+
+    .gnb__menu > li:hover .gnb__sub,
+    .gnb__menu > li:focus-within .gnb__sub { display: block; }
+
+    .gnb__sub ul {
+      display: flex;
+      flex-direction: column;
+      min-width: 224px;
+      margin: 0;
+      padding: 16px 0;
+      border-radius: 24px;
+      background: #fff;
+      list-style: none;
+      filter: drop-shadow(0 8px 12px rgba(148, 148, 165, .36));
+    }
+
+    .gnb__sub a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 6px 32px;
+      color: #4d4847;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.5;
+      white-space: nowrap;
+    }
+
+    .gnb__sub a:hover,
+    .gnb__sub a:focus-visible { background: #f3f3f3; }
+
+    .badge {
+      display: inline-flex;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #c40f06;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .badge--dorm { background: #00b450; }
+
+    /* 패밀리 사이트 (⊙ 버튼 호버) */
+    .family { position: relative; }
+
+    .family__panel {
+      position: absolute;
+      top: 37px;
+      right: -60px;
+      z-index: 10;
+      padding-top: 10px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: opacity .3s cubic-bezier(.4, 0, .2, 1), transform .3s cubic-bezier(.4, 0, .2, 1), visibility .3s;
+    }
+
+    .family:hover .family__panel,
+    .family:focus-within .family__panel { opacity: 1; visibility: visible; transform: translateY(0); }
+
+    .family__box {
+      width: 250px;
+      padding: 12px 16px 41px;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 0 12px rgba(9, 13, 18, .16);
+    }
+
+    .family__list { margin: 0; padding: 0; list-style: none; }
+
+    .family__link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      border-bottom: 1px solid #e6e6e6;
+    }
+
+    .family__list li:last-child .family__link { border-bottom: 0; }
+    .family__brand { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+    .family__brand img { display: block; width: auto; height: 16px; }
+    .family__brand span { color: #7f7f7f; font-size: 13px; line-height: 1.5; }
+
+    .family__promo {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 16px;
+      border-radius: 16px;
+      background: #f8f8f8;
+    }
+
+    .family__promo p { margin: 0; font-size: 13px; line-height: 1.4; }
+    .family__promo p:first-child { color: #4d4847; }
+    .family__promo p:last-child { color: #7f7f7f; font-weight: 800; }
+
+    .gnb__menu .is-shine {
+      background: linear-gradient(90deg, #e6433b, #ff6b63, #fca5a5, #e6433b) 0 center / 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: shine 2s linear infinite;
+    }
+
+    @keyframes shine { to { background-position: 200% center; } }
+
+    .gnb__util { display: flex; flex-shrink: 0; align-items: center; gap: 16px; }
+
+    .gnb__dday {
+      padding: 4px 16px;
+      border-radius: 8px;
+      background: #0d0f14;
+      color: #fff;
+      font-family: Pretendard, sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .gnb__mail {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 118px;
+      height: 28px;
+      padding: 4px 18px;
+      border: 1px solid #e6e6e6;
+      border-radius: 6px;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    /* ── 페이지 타이틀 + 브레드크럼 ── */
+    .page { background: var(--page-bg); }
+
+    .page__inner {
+      max-width: calc(1280px + 64px);
+      margin: 0 auto;
+      padding: 40px 32px 80px;
+    }
+
+    .page__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 50px;
+      margin-bottom: 40px;
+    }
+
+    .page__title { margin: 0; font-size: 36px; font-weight: 800; line-height: 1.4; }
+
+    .breadcrumb ol { display: flex; align-items: center; margin: 0; padding: 0; list-style: none; }
+    .breadcrumb li { display: flex; align-items: center; font-size: 14px; font-weight: 700; line-height: 20px; }
+
+    .breadcrumb li + li::before {
+      content: "";
+      width: 24px;
+      height: 24px;
+      margin: 0 4px;
+      background: url("assets/gnb/ico_breadcrumbs_arrow.svg") center / contain no-repeat;
+    }
+
+    .breadcrumb__home img { display: block; margin-right: 4px; }
+    .breadcrumb li:nth-child(2) a { color: var(--text-sub); }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .event-card { border-radius: 24px; overflow: hidden; }
+
+    /* ── 테스트 컨트롤 (우하단 플로팅) ── */
+    .ctrl {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      background: rgba(20, 20, 20, .88);
+      color: #fff;
+      font-family: Pretendard, sans-serif;
+      font-size: 13px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+    }
+
+    .ctrl__title { margin: 0 0 4px; font-size: 12px; font-weight: 700; color: #aaa; }
     .ctrl label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
-    .ctrl input[type="range"] { width: 120px; }
+    .ctrl input[type="range"] { width: 100px; }
     .ctrl output { min-width: 32px; font-variant-numeric: tabular-nums; }
 
     /* ── KV ── */
-    .kv {
-      background: #0d0805;
-      overflow: hidden;
-    }
+    .kv { background: #0d0805; }
 
     .kv__inner {
       position: relative;
@@ -84,10 +337,10 @@
     /* ── 조명 빔 ── */
     .beam {
       z-index: 2;
-      opacity: var(--beam-opacity);
+      opacity: var(--beam-top-opacity);
       animation:
-        var(--swing) var(--dur) ease-in-out var(--delay, 0s) infinite alternate,
-        beam-flicker calc(var(--dur) * .7) ease-in-out var(--delay, 0s) infinite alternate;
+        var(--swing) var(--dur) ease-in-out var(--delay, 0s) infinite,
+        beam-flicker var(--flicker) ease-in-out var(--delay, 0s) infinite alternate;
     }
 
     /* 상단 좌 — 꼭짓점 = 좌상단 조명 기구 */
@@ -96,7 +349,7 @@
       left: calc(100 * var(--u));
       width: calc(555 * var(--u));
       transform-origin: 1% 1%;
-      --swing: swing-lt; --dur: 5s;
+      --swing: swing-lt; --dur: 7.4s; --flicker: 2.3s;
     }
 
     /* 상단 우 */
@@ -105,7 +358,7 @@
       right: calc(100 * var(--u));
       width: calc(555 * var(--u));
       transform-origin: 99% 1%;
-      --swing: swing-rt; --dur: 5.5s; --delay: -1.5s;
+      --swing: swing-rt; --dur: 8.9s; --flicker: 3.1s; --delay: -3.7s;
     }
 
     /* 하단 좌 — 꼭짓점 = 좌하단 */
@@ -114,7 +367,8 @@
       left: calc(60 * var(--u));
       width: calc(372 * var(--u));
       transform-origin: 0 100%;
-      --swing: swing-lb; --dur: 4.5s; --delay: -1s;
+      opacity: var(--beam-bottom-opacity);
+      --swing: swing-lb; --dur: 6.6s; --flicker: 1.9s; --delay: -2.2s;
     }
 
     /* 하단 우 */
@@ -123,13 +377,43 @@
       right: calc(60 * var(--u));
       width: calc(372 * var(--u));
       transform-origin: 100% 100%;
-      --swing: swing-rb; --dur: 4s; --delay: -2.5s;
+      opacity: var(--beam-bottom-opacity);
+      --swing: swing-rb; --dur: 9.7s; --flicker: 2.7s; --delay: -5.9s;
     }
 
-    @keyframes swing-lt { from { transform: rotate(-6deg); } to { transform: rotate(5deg); } }
-    @keyframes swing-rt { from { transform: rotate(6deg); }  to { transform: rotate(-5deg); } }
-    @keyframes swing-lb { from { transform: rotate(8deg); }  to { transform: rotate(-6deg); } }
-    @keyframes swing-rb { from { transform: rotate(-8deg); } to { transform: rotate(6deg); } }
+    /* 빔마다 꺾이는 지점·폭·주기를 다르게 → 서로 엇갈리며 불규칙하게 움직임 */
+    @keyframes swing-lt {
+      0%, 100% { transform: rotate(-10deg); }
+      18% { transform: rotate(12deg); }
+      34% { transform: rotate(-3deg); }
+      53% { transform: rotate(15deg); }
+      71% { transform: rotate(-15deg); }
+      86% { transform: rotate(4deg); }
+    }
+
+    @keyframes swing-rt {
+      0%, 100% { transform: rotate(7deg); }
+      21% { transform: rotate(-14deg); }
+      39% { transform: rotate(5deg); }
+      57% { transform: rotate(-8deg); }
+      78% { transform: rotate(15deg); }
+    }
+
+    @keyframes swing-lb {
+      0%, 100% { transform: rotate(-12deg); }
+      24% { transform: rotate(14deg); }
+      43% { transform: rotate(1deg); }
+      62% { transform: rotate(18deg); }
+      83% { transform: rotate(-9deg); }
+    }
+
+    @keyframes swing-rb {
+      0%, 100% { transform: rotate(10deg); }
+      14% { transform: rotate(-5deg); }
+      37% { transform: rotate(16deg); }
+      56% { transform: rotate(-16deg); }
+      79% { transform: rotate(6deg); }
+    }
 
     @keyframes beam-flicker {
       from { filter: brightness(1); }
@@ -169,40 +453,183 @@
     .kv.is-paused .fx { animation-play-state: paused; }
 
     @media (prefers-reduced-motion: reduce) {
-      .fx { animation: none; }
+      .fx,
+      .gnb__menu .is-shine { animation: none; }
     }
   </style>
 </head>
 <body>
+  <header class="site-header">
+    <div class="top-banner">
+      <div class="top-banner__inner">
+        <a class="top-banner__item" href="https://www.itall.com/recruit/2027_Bansu" target="_blank" rel="noopener">
+          <img src="assets/gnb/new-sparta-white.svg" width="101" height="18" alt="잇올 스파르타">
+          <img src="assets/gnb/new-study-cafe-white.svg" width="84" height="18" alt="잇올 몰입관">
+          <span class="c--red">반수반</span>
+        </a>
+        <a class="top-banner__item" href="https://www.itall.com/recruit/2027_winter" target="_blank" rel="noopener">
+          <img src="assets/gnb/new-sparta-white.svg" width="101" height="18" alt="잇올 스파르타">
+          <img src="assets/gnb/new-study-cafe-white.svg" width="84" height="18" alt="잇올 몰입관">
+          <span class="c--yellow">윈터스쿨</span>
+        </a>
+        <a class="top-banner__item" href="https://dormitory.itall.com/recruit/2027_winter" target="_blank" rel="noopener">
+          <img src="assets/gnb/new-dormitory-white.svg" width="98" height="18" alt="잇올 기숙학원">
+          <span class="c--green">윈터스쿨</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="gnb">
+      <div class="gnb__brand">
+        <a href="https://www.itall.com/" target="_blank" rel="noopener"><img src="assets/gnb/itall_logo.svg" width="134" height="24" alt="잇올 스파르타"></a>
+        <div class="family">
+          <button class="gnb__family" type="button" aria-label="패밀리 사이트" aria-haspopup="true"><img src="assets/gnb/ico_dropdown.svg" width="20" height="20" alt=""></button>
+          <div class="family__panel">
+            <div class="family__box">
+              <ul class="family__list">
+                <li><a class="family__link" href="https://www.itall.com/" target="_blank" rel="noopener"><span class="family__brand"><img src="assets/gnb/family-sparta.svg" width="89" height="16" alt="잇올 스파르타"><span>몰입의 기준을 세우다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+                <li><a class="family__link" href="https://www.itall.com/immersion-camp" target="_blank" rel="noopener"><span class="family__brand"><img src="assets/gnb/family-study-cafe.svg" width="75" height="16" alt="잇올 몰입관"><span>몰입의 경험을 최적화하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+                <li><a class="family__link" href="https://dormitory.itall.com" target="_blank" rel="noopener"><span class="family__brand"><img src="assets/gnb/family-dormitory.svg" width="87" height="16" alt="잇올 기숙학원"><span>몰입의 일상을 완성하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+              </ul>
+              <a class="family__promo" href="https://www.itall.com/contents/mentorings" target="_blank" rel="noopener">
+                <p>명문대 타이틀을 수익과 커리어로 전환하는 선택</p>
+                <p>명문대 멘토(CA) 모집중</p>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <nav aria-label="주 메뉴">
+        <ul class="gnb__menu">
+          <li>
+            <a href="https://www.itall.com/immersion/system" target="_blank" rel="noopener">몰입공부 시스템</a>
+          <div class="gnb__sub">
+            <ul>
+                <li><a href="https://www.itall.com/immersion/system" target="_blank" rel="noopener">몰입공부 시스템</a></li>
+                <li><a href="https://www.itall.com/immersion/space" target="_blank" rel="noopener">공간/생활</a></li>
+                <li><a href="https://www.itall.com/immersion/study" target="_blank" rel="noopener">학습/입시/콘텐츠</a></li>
+                <li><a href="https://www.itall.com/immersion/billboard" target="_blank" rel="noopener">빌보드/부트캠프</a></li>
+                <li><a href="https://www.itall.com/immersion/ai" target="_blank" rel="noopener">티처스/잇생부</a></li>
+                <li><a href="https://www.itall.com/immersion/admission-2028" target="_blank" rel="noopener">2028 입시정보</a></li>
+            </ul>
+          </div>
+          </li>
+          <li>
+            <a href="https://www.itall.com/direct-center" target="_blank" rel="noopener"><span class="is-shine">직영 센터/캠프</span></a>
+          </li>
+          <li>
+            <a href="https://www.itall.com/recruit" target="_blank" rel="noopener">모집안내</a>
+          <div class="gnb__sub">
+            <ul>
+                <li><a href="https://www.itall.com/recruit/2027_winter" target="_blank" rel="noopener">스파르타/몰입관 윈터스쿨<span class="badge">모집중</span></a></li>
+                <li><a href="https://www.itall.com/recruit/2027_Bansu" target="_blank" rel="noopener">스파르타/몰입관 반수반<span class="badge">마감임박</span></a></li>
+                <li><a href="https://www.itall.com/recruit/highschool-final-exam-pass" target="_blank" rel="noopener">스파르타/몰입관 고등 기말고사패스<span class="badge">모집중</span></a></li>
+                <li><a href="https://www.itall.com/recruit/high_immersion" target="_blank" rel="noopener">스파르타/몰입관 고등 몰입 관리반<span class="badge">상시모집</span></a></li>
+                <li><a href="https://dormitory.itall.com/recruit/2027_winter" target="_blank" rel="noopener">기숙 윈터스쿨<span class="badge badge--dorm">모집중</span></a></li>
+                <li><a href="https://dormitory.itall.com/recruit/2027-jaesu" target="_blank" rel="noopener">기숙 재수정규반<span class="badge badge--dorm">대기접수</span></a></li>
+            </ul>
+          </div>
+          </li>
+          <li>
+            <a href="https://www.itall.com/glory_honor" target="_blank" rel="noopener">입시 결과</a>
+          <div class="gnb__sub">
+            <ul>
+                <li><a href="https://www.itall.com/glory_honor" target="_blank" rel="noopener">입시 결과</a></li>
+                <li><a href="https://www.itall.com/glory_honor/perfect-story" target="_blank" rel="noopener">수능 만점자 스토리</a></li>
+                <li><a href="https://www.itall.com/glory_honor/passing-story" target="_blank" rel="noopener">합격 수기</a></li>
+            </ul>
+          </div>
+          </li>
+          <li>
+            <a href="https://www.itall.com/scholarship" target="_blank" rel="noopener">장학</a>
+          <div class="gnb__sub">
+            <ul>
+                <li><a href="https://www.itall.com/scholarship?tab=allkey" target="_blank" rel="noopener">올키 장학</a></li>
+                <li><a href="https://www.itall.com/scholarship?tab=foundation" target="_blank" rel="noopener">백태규백다애 장학회</a></li>
+                <li><a href="https://www.itall.com/scholarship?tab=principal-recommendation" target="_blank" rel="noopener">원장추천 특별장학</a></li>
+            </ul>
+          </div>
+          </li>
+          <li>
+            <a href="https://www.itall.com/customer-service" target="_blank" rel="noopener">고객센터</a>
+          <div class="gnb__sub">
+            <ul>
+                <li><a href="https://www.itall.com/customer-service?tab=faq" target="_blank" rel="noopener">자주 하는 질문</a></li>
+                <li><a href="https://www.itall.com/customer-service?tab=online-consultant" target="_blank" rel="noopener">온라인 상담</a></li>
+                <li><a href="https://www.itall.com/customer-service?tab=story" target="_blank" rel="noopener">잇올 스토리</a></li>
+                <li><a href="https://www.itall.com/customer-service?tab=bamboo" target="_blank" rel="noopener">잇올 대나무숲</a></li>
+                <li><a href="https://www.itall.com/customer-service?tab=notice" target="_blank" rel="noopener">공지사항</a></li>
+            </ul>
+          </div>
+          </li>
+          <li>
+            <a href="https://www.itall.com/contents" target="_blank" rel="noopener">콘텐츠</a>
+          </li>
+          <li>
+            <a href="https://www.itall.com/events" target="_blank" rel="noopener">이벤트</a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="gnb__util">
+        <span class="gnb__dday">수능 <span id="dday">D-43</span></span>
+        <span class="gnb__mail">의장 직통메일</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="page__inner">
+      <div class="page__head">
+        <h1 class="page__title">2027 잇올 명예의 전당</h1>
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <ol>
+            <li><a class="breadcrumb__home" href="https://www.itall.com/main" target="_blank" rel="noopener"><img src="assets/gnb/ico_breadcrumbs_home.svg" width="20" height="20" alt="메인"></a></li>
+            <li><a href="https://www.itall.com/events" target="_blank" rel="noopener">이벤트/혜택</a></li>
+            <li><span aria-current="page">2027 잇올 명예의 전당</span></li>
+          </ol>
+        </nav>
+      </div>
+
+      <div class="event-card">
+        <section class="kv" id="kv" aria-label="2027 명예의 전당 키비주얼">
+          <div class="kv__inner">
+            <img class="kv__bg" src="assets/kv_bg.webp" width="1280" height="747"
+                 alt="2027 명예의 전당 최대 2억원 규모 장학·합격 축하금. 여러분이 잇올의 자랑입니다. 치열했던 노력의 순간들, 그 끝에서 완성 합격. 잇올은 여러분의 1년을 기억합니다.">
+
+            <img class="fx beam beam--lt" src="assets/spotlight_LT.webp" width="555" height="564" alt="" aria-hidden="true">
+            <img class="fx beam beam--rt" src="assets/spotlight_RT.webp" width="555" height="564" alt="" aria-hidden="true">
+            <img class="fx beam beam--lb" src="assets/spotlight_LB.webp" width="372" height="220" alt="" aria-hidden="true">
+            <img class="fx beam beam--rb" src="assets/spotlight_RB.webp" width="372" height="220" alt="" aria-hidden="true">
+
+            <img class="fx sparkle sparkle--1" src="assets/light_1.webp" width="554" height="189" alt="" aria-hidden="true">
+            <img class="fx sparkle sparkle--2" src="assets/light_2.webp" width="560" height="283" alt="" aria-hidden="true">
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
   <div class="ctrl" role="group" aria-label="테스트 컨트롤">
+    <p class="ctrl__title">KV 효과 테스트</p>
     <label><input type="checkbox" id="tgBeam" aria-label="조명 빔" checked> 조명 빔</label>
     <label><input type="checkbox" id="tgSparkle" aria-label="반짝이" checked> 반짝이</label>
     <label><input type="checkbox" id="tgPause" aria-label="일시정지"> 일시정지</label>
-    <label>빔 투명도 <input type="range" id="rgBeam" aria-label="빔 투명도" min="0" max="1" step=".05" value="1"> <output id="beamOut">1</output></label>
+    <label>상단 빔 <input type="range" class="js-opacity" data-var="--beam-top-opacity" aria-label="상단 빔 투명도" min="0" max="1" step=".05" value=".5"> <output>0.5</output></label>
+    <label>하단 빔 <input type="range" class="js-opacity" data-var="--beam-bottom-opacity" aria-label="하단 빔 투명도" min="0" max="1" step=".05" value="1"> <output>1</output></label>
   </div>
-
-  <main>
-    <section class="kv" id="kv" aria-label="2027 명예의 전당">
-      <div class="kv__inner">
-        <img class="kv__bg" src="assets/kv_bg.webp" width="1280" height="747"
-             alt="2027 명예의 전당 최대 2억원 규모 장학·합격 축하금. 여러분이 잇올의 자랑입니다. 치열했던 노력의 순간들, 그 끝에서 완성 합격. 잇올은 여러분의 1년을 기억합니다.">
-
-        <img class="fx beam beam--lt" src="assets/spotlight_LT.webp" width="555" height="564" alt="" aria-hidden="true">
-        <img class="fx beam beam--rt" src="assets/spotlight_RT.webp" width="555" height="564" alt="" aria-hidden="true">
-        <img class="fx beam beam--lb" src="assets/spotlight_LB.webp" width="372" height="220" alt="" aria-hidden="true">
-        <img class="fx beam beam--rb" src="assets/spotlight_RB.webp" width="372" height="220" alt="" aria-hidden="true">
-
-        <img class="fx sparkle sparkle--1" src="assets/light_1.webp" width="554" height="189" alt="" aria-hidden="true">
-        <img class="fx sparkle sparkle--2" src="assets/light_2.webp" width="560" height="283" alt="" aria-hidden="true">
-      </div>
-    </section>
-  </main>
 
   <script>
     (function () {
       'use strict';
       var kv = document.getElementById('kv');
       var root = document.documentElement;
+
+      // 수능 D-day (2027학년도 수능 2026-11-19)
+      var today = new Date(new Date().toDateString());
+      var dday = Math.round((new Date(2026, 10, 19) - today) / 864e5);
+      document.getElementById('dday').textContent = dday > 0 ? 'D-' + dday : 'D-DAY';
 
       function bindToggle(id, cls, invert) {
         document.getElementById(id).addEventListener('change', function (e) {
@@ -213,10 +640,12 @@
       bindToggle('tgSparkle', 'no-sparkle', true);
       bindToggle('tgPause', 'is-paused', false);
 
-      var out = document.getElementById('beamOut');
-      document.getElementById('rgBeam').addEventListener('input', function (e) {
-        root.style.setProperty('--beam-opacity', e.target.value);
-        out.textContent = e.target.value;
+      document.querySelectorAll('.js-opacity').forEach(function (range) {
+        var out = range.nextElementSibling;
+        range.addEventListener('input', function () {
+          root.style.setProperty(range.dataset.var, range.value);
+          out.textContent = range.value;
+        });
       });
     })();
   </script>
