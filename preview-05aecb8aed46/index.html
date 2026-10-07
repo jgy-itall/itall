@@ -14,6 +14,19 @@
     font-display: swap;
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');
   }
+  /* 잇올체 (260123 최종 웹폰트) — Bold 파일 내부 weight가 400이라 700으로 명시해 가짜 굵기 방지 */
+  @font-face {
+    font-family: 'Itall';
+    font-weight: 400;
+    font-display: swap;
+    src: url('assets/fonts/Itall.woff2') format('woff2'), url('assets/fonts/Itall.woff') format('woff');
+  }
+  @font-face {
+    font-family: 'Itall';
+    font-weight: 700;
+    font-display: swap;
+    src: url('assets/fonts/Itall-Bold.woff2') format('woff2'), url('assets/fonts/Itall-Bold.woff') format('woff');
+  }
 </style>
 <style>
   /* ===================================================================
@@ -91,7 +104,7 @@
   /* 배경 = 시안 텍스처(리니어 번 합성)를 미리 구운 이미지 — CSS에 linear-burn이 없어 사전 합성 */
   .strip--dorm { background: #009d78 url(assets/img/strip_dorm.webp) left center / 847px 83px no-repeat; }
   .strip--all  { background: var(--primary) url(assets/img/strip_all.webp) left center / 847px 83px no-repeat; }
-  .strip__title { font-size: 24px; font-weight: 700; line-height: 1.35; letter-spacing: 0.48px; white-space: nowrap; }   /* 시안 Itall Bold → Pretendard 대체 */
+  .strip__title { font-size: 24px; font-weight: 700; line-height: 1.35; letter-spacing: 0.48px; white-space: nowrap; font-family: 'Itall', Pretendard, sans-serif; }   /* 시안 PC: Itall Bold 24 / 135% / 2% */
   .strip__link { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 600; line-height: 1.445; letter-spacing: -0.0036px; white-space: nowrap; }
   .strip__link img { width: 16px; height: 16px; }
 
@@ -852,7 +865,7 @@
 
   @media (max-width: 1279px) {
     .strip { height: auto; padding: 16px 20px; flex-direction: column; align-items: flex-start; gap: 4px; border-radius: 12px; background-size: cover; }
-    .strip__title { font-size: 18px; white-space: normal; }
+    .strip__title { font-size: 18px; white-space: normal; font-family: Pretendard, sans-serif; }   /* 시안 MO는 Pretendard */
     .strip__link { font-size: 14px; gap: 4px; }
     .wrap { border-radius: 0; }
   }
