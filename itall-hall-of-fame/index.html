@@ -33,6 +33,8 @@
       --u: calc(min(100vw - 64px, 1280px) / 1280);   /* KV = 콘텐츠 영역(좌우 32), 최대 1280 */
       --beam-top-opacity: .5;      /* 상단 빔 LT/RT */
       --beam-bottom-opacity: 1;    /* 하단 빔 LB/RB */
+      --beam-top-speed: 1;         /* 움직임 속도 배수 (2 = 2배 빠르게) */
+      --beam-bottom-speed: 1;
       --text: #3e3a39;
       --text-sub: #97989a;
       --page-bg: #f1f2f4;
@@ -302,6 +304,7 @@
     }
 
     .ctrl__title { margin: 0 0 4px; font-size: 12px; font-weight: 700; color: #aaa; }
+    .ctrl__title--sub { margin-top: 8px; }
     .ctrl label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
     .ctrl input[type="range"] { width: 100px; }
     .ctrl output { min-width: 32px; font-variant-numeric: tabular-nums; }
@@ -338,9 +341,10 @@
     .beam {
       z-index: 2;
       opacity: var(--beam-top-opacity);
+      --speed: var(--beam-top-speed);
       animation:
-        var(--swing) var(--dur) ease-in-out var(--delay, 0s) infinite,
-        beam-flicker var(--flicker) ease-in-out var(--delay, 0s) infinite alternate;
+        var(--swing) calc(var(--dur) / var(--speed)) ease-in-out var(--delay, 0s) infinite alternate,
+        beam-flicker calc(var(--dur) * .7 / var(--speed)) ease-in-out var(--delay, 0s) infinite alternate;
     }
 
     /* 상단 좌 — 꼭짓점 = 좌상단 조명 기구 */
@@ -349,7 +353,7 @@
       left: calc(100 * var(--u));
       width: calc(555 * var(--u));
       transform-origin: 1% 1%;
-      --swing: swing-lt; --dur: 7.4s; --flicker: 2.3s;
+      --swing: swing-lt; --dur: 3.2s;
     }
 
     /* 상단 우 */
@@ -358,7 +362,7 @@
       right: calc(100 * var(--u));
       width: calc(555 * var(--u));
       transform-origin: 99% 1%;
-      --swing: swing-rt; --dur: 8.9s; --flicker: 3.1s; --delay: -3.7s;
+      --swing: swing-rt; --dur: 3.6s; --delay: -1.5s;
     }
 
     /* 하단 좌 — 꼭짓점 = 좌하단 */
@@ -368,7 +372,8 @@
       width: calc(372 * var(--u));
       transform-origin: 0 100%;
       opacity: var(--beam-bottom-opacity);
-      --swing: swing-lb; --dur: 6.6s; --flicker: 1.9s; --delay: -2.2s;
+      --speed: var(--beam-bottom-speed);
+      --swing: swing-lb; --dur: 2.8s; --delay: -1s;
     }
 
     /* 하단 우 */
@@ -378,42 +383,14 @@
       width: calc(372 * var(--u));
       transform-origin: 100% 100%;
       opacity: var(--beam-bottom-opacity);
-      --swing: swing-rb; --dur: 9.7s; --flicker: 2.7s; --delay: -5.9s;
+      --speed: var(--beam-bottom-speed);
+      --swing: swing-rb; --dur: 3s; --delay: -2.2s;
     }
 
-    /* 빔마다 꺾이는 지점·폭·주기를 다르게 → 서로 엇갈리며 불규칙하게 움직임 */
-    @keyframes swing-lt {
-      0%, 100% { transform: rotate(-10deg); }
-      18% { transform: rotate(12deg); }
-      34% { transform: rotate(-3deg); }
-      53% { transform: rotate(15deg); }
-      71% { transform: rotate(-15deg); }
-      86% { transform: rotate(4deg); }
-    }
-
-    @keyframes swing-rt {
-      0%, 100% { transform: rotate(7deg); }
-      21% { transform: rotate(-14deg); }
-      39% { transform: rotate(5deg); }
-      57% { transform: rotate(-8deg); }
-      78% { transform: rotate(15deg); }
-    }
-
-    @keyframes swing-lb {
-      0%, 100% { transform: rotate(-12deg); }
-      24% { transform: rotate(14deg); }
-      43% { transform: rotate(1deg); }
-      62% { transform: rotate(18deg); }
-      83% { transform: rotate(-9deg); }
-    }
-
-    @keyframes swing-rb {
-      0%, 100% { transform: rotate(10deg); }
-      14% { transform: rotate(-5deg); }
-      37% { transform: rotate(16deg); }
-      56% { transform: rotate(-16deg); }
-      79% { transform: rotate(6deg); }
-    }
+    @keyframes swing-lt { from { transform: rotate(-16deg); } to { transform: rotate(14deg); } }
+    @keyframes swing-rt { from { transform: rotate(16deg); }  to { transform: rotate(-14deg); } }
+    @keyframes swing-lb { from { transform: rotate(18deg); }  to { transform: rotate(-16deg); } }
+    @keyframes swing-rb { from { transform: rotate(-18deg); } to { transform: rotate(16deg); } }
 
     @keyframes beam-flicker {
       from { filter: brightness(1); }
@@ -616,8 +593,12 @@
     <label><input type="checkbox" id="tgBeam" aria-label="조명 빔" checked> 조명 빔</label>
     <label><input type="checkbox" id="tgSparkle" aria-label="반짝이" checked> 반짝이</label>
     <label><input type="checkbox" id="tgPause" aria-label="일시정지"> 일시정지</label>
+    <p class="ctrl__title ctrl__title--sub">투명도</p>
     <label>상단 빔 <input type="range" class="js-opacity" data-var="--beam-top-opacity" aria-label="상단 빔 투명도" min="0" max="1" step=".05" value=".5"> <output>0.5</output></label>
     <label>하단 빔 <input type="range" class="js-opacity" data-var="--beam-bottom-opacity" aria-label="하단 빔 투명도" min="0" max="1" step=".05" value="1"> <output>1</output></label>
+    <p class="ctrl__title ctrl__title--sub">움직임 속도 (배)</p>
+    <label>상단 빔 <input type="range" class="js-opacity" data-var="--beam-top-speed" aria-label="상단 빔 움직임 속도" min=".25" max="3" step=".25" value="1"> <output>1</output></label>
+    <label>하단 빔 <input type="range" class="js-opacity" data-var="--beam-bottom-speed" aria-label="하단 빔 움직임 속도" min=".25" max="3" step=".25" value="1"> <output>1</output></label>
   </div>
 
   <script>
