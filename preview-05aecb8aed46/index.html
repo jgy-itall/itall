@@ -91,7 +91,7 @@
   /* 배경 = 시안 텍스처(리니어 번 합성)를 미리 구운 이미지 — CSS에 linear-burn이 없어 사전 합성 */
   .strip--dorm { background: #009d78 url(assets/img/strip_dorm.webp) left center / 847px 83px no-repeat; }
   .strip--all  { background: var(--primary) url(assets/img/strip_all.webp) left center / 847px 83px no-repeat; }
-  .strip__title { font-size: 24px; font-weight: 700; line-height: 1.35; letter-spacing: 0.48px; padding-top: 4px; white-space: nowrap; }   /* 시안 Itall Bold → Pretendard 대체 */
+  .strip__title { font-size: 24px; font-weight: 700; line-height: 1.35; letter-spacing: 0.48px; white-space: nowrap; }   /* 시안 Itall Bold → Pretendard 대체 */
   .strip__link { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 600; line-height: 1.445; letter-spacing: -0.0036px; white-space: nowrap; }
   .strip__link img { width: 16px; height: 16px; }
 
@@ -852,7 +852,7 @@
 
   @media (max-width: 1279px) {
     .strip { height: auto; padding: 16px 20px; flex-direction: column; align-items: flex-start; gap: 4px; border-radius: 12px; background-size: cover; }
-    .strip__title { font-size: 18px; padding: 0; white-space: normal; }
+    .strip__title { font-size: 18px; white-space: normal; }
     .strip__link { font-size: 14px; gap: 4px; }
     .wrap { border-radius: 0; }
   }
