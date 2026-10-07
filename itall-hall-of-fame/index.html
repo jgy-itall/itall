@@ -13,6 +13,7 @@
       - 레퍼런스: EBSi 2027 수능 D-100 이벤트 KV — 조명 스윙 + 반짝임
       - 소스는 2배수(2560 기준) → 화면에는 절반 크기
       - 조명: 빔 꼭짓점(조명 기구 위치)을 transform-origin으로 잡고 좌우 스윙 + 밝기 깜빡임
+        빔 이미지는 원본(spotlight_*.png)의 투명도를 2배로 올린 *_x2.png 사용 — 원본이 최대 21%로 옅어 '더 진하게' 요청 반영
         LT/RT = 상단 좌/우, LB/RB = 하단 좌/우(Left/Right Bottom) — 각 모서리에 붙임
       - 반짝이: light_1 / light_2 교차 페이드 (KV 크기 이미지를 KV 전체에 덮음)
       - KV 효과 위치·크기는 KV 박스 기준 % (가로 ÷1280, 세로 ÷747) — 스크롤바·화면 폭과 무관하게 KV와 함께 비례
@@ -756,10 +757,10 @@
             <img class="kv__bg" src="assets/kv_bg.webp" width="1280" height="747"
                  alt="2027 명예의 전당 최대 2억원 규모 장학·합격 축하금. 여러분이 잇올의 자랑입니다. 치열했던 노력의 순간들, 그 끝에서 완성 합격. 잇올은 여러분의 1년을 기억합니다.">
 
-            <img class="fx beam beam--lt" src="assets/spotlight_LT.webp" width="443" height="448" alt="" aria-hidden="true">
-            <img class="fx beam beam--rt" src="assets/spotlight_RT.webp" width="443" height="449" alt="" aria-hidden="true">
-            <img class="fx beam beam--lb" src="assets/spotlight_LB.webp" width="370" height="225" alt="" aria-hidden="true">
-            <img class="fx beam beam--rb" src="assets/spotlight_RB.webp" width="370" height="225" alt="" aria-hidden="true">
+            <img class="fx beam beam--lt" src="assets/spotlight_LT_x2.webp" width="443" height="448" alt="" aria-hidden="true">
+            <img class="fx beam beam--rt" src="assets/spotlight_RT_x2.webp" width="443" height="449" alt="" aria-hidden="true">
+            <img class="fx beam beam--lb" src="assets/spotlight_LB_x2.webp" width="370" height="225" alt="" aria-hidden="true">
+            <img class="fx beam beam--rb" src="assets/spotlight_RB_x2.webp" width="370" height="225" alt="" aria-hidden="true">
 
             <img class="fx sparkle sparkle--1" src="assets/light_1.webp" width="1280" height="747" alt="" aria-hidden="true">
             <img class="fx sparkle sparkle--2" src="assets/light_2.webp" width="1280" height="747" alt="" aria-hidden="true">
