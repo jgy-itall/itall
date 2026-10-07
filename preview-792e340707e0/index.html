@@ -90,8 +90,9 @@
     height: 83px; padding: 0 32px; border-radius: 16px; color: #fff;
   }
   /* 배경 = 시안 텍스처(리니어 번 합성)를 미리 구운 이미지 — CSS에 linear-burn이 없어 사전 합성 */
-  .strip--sparta { background: #fd4039 url(assets/img/strip_all.webp) left center / 847px 83px no-repeat; }
-  .strip--all  { background: var(--dorm-strong) url(assets/img/strip_dorm.webp) left center / 847px 83px no-repeat; }
+  /* 띠배너 배경 = 시안(시안 페이지 6576:30129 / 6576:30728)을 글자 없이 내보낸 이미지 — 단색+텍스처 multiply·linear-burn 합성이 CSS로 불가해 미리 합성 */
+  .strip--sparta { background: #fd4039 url(assets/img/strip_dorm_top_pc.webp) left center / 847px 83px no-repeat; }
+  .strip--all  { background: #269336 url(assets/img/strip_dorm_bot_pc.webp) left center / 847px 83px no-repeat; }
   .strip__title { font-size: 24px; font-weight: 700; line-height: 1.35; letter-spacing: 0.48px; white-space: nowrap; }   /* 시안 Itall Bold → Pretendard 대체 */
   .strip__link { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 600; line-height: 1.445; letter-spacing: -0.0036px; white-space: nowrap; }
   .strip__link img { width: 16px; height: 16px; }
@@ -1104,6 +1105,10 @@
   @media (max-width: 1023px) {
     .strip { border-radius: 0; }   /* 화면 끝까지 붙는 띠배너는 모서리 없음 */
   }
+  @media (max-width: 767px) {
+    .strip--sparta { background-image: url(assets/img/strip_dorm_top_mo.webp); }   /* 시안 MO 6576:32163 */
+    .strip--all { background-image: url(assets/img/strip_dorm_bot_mo.webp); }       /* 시안 MO 6576:32174 */
+  }
 
   @media (prefers-reduced-motion: reduce) {
     .deco--red, .deco--gray { animation: none; }
@@ -1433,7 +1438,7 @@
 <div class="layout">
   <main class="layout__main">
     <a class="strip strip--sparta" href="../sparta-jaesu-priority/" target="_blank" rel="noopener">
-      <span class="strip__title">24시간 몰입 환경을 원한다면?</span>
+      <span class="strip__title">가까운 거리에서 통학하고 싶다면?</span>
       <span class="strip__link">통학 재수우선선발반 <img src="assets/ui/ic_chevron_banner.svg" alt=""></span>
     <span class="sr-only"> (새 창)</span></a>
 
