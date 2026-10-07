@@ -51,11 +51,17 @@
     max-width: 1280px; margin: 0 auto; padding: 40px 32px;   /* 본문 컨테이너와 같은 폭 */
     display: flex; align-items: center; justify-content: space-between; gap: 24px;
   }
-  .page-head__title { font-size: 36px; font-weight: 600; line-height: 1.334; letter-spacing: -0.972px; color: var(--ink-strong); white-space: nowrap; }
-  .crumb { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0.0912px; color: var(--ink-assist); white-space: nowrap; }
-  .crumb__sep { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
-  .crumb__sep img { width: 8.2px; height: 14.8px; }
-  .crumb [aria-current] { color: var(--ink-strong); }
+  /* 타이틀 + 브레드크럼 — 잇올 실사이트 컴포넌트 (itall.com/events/30 실측) */
+  .page-head__title { display: flex; align-items: flex-start; gap: 4px; margin: 0; font-family: nanumSquareNeo, Pretendard, sans-serif; font-size: 36px; font-weight: 800; line-height: 1.4; color: #3e3a39; white-space: nowrap; }
+  .page-head__back { display: none; flex-shrink: 0; margin-top: 5px; }
+  .page-head__back img { display: block; }
+  .crumb ol { display: flex; align-items: center; margin: 0; padding: 0; list-style: none; }
+  .crumb li { display: flex; align-items: center; font-family: nanumSquareNeo, Pretendard, sans-serif; font-size: 14px; font-weight: 700; line-height: 20px; color: #3e3a39; white-space: nowrap; }
+  .crumb li + li::before { content: ""; width: 24px; height: 24px; margin: 0 4px; background: url("assets/gnb/ico_breadcrumbs_arrow.svg") center / contain no-repeat; }
+  .crumb__home img { display: block; margin-right: 4px; }
+  .crumb li:nth-child(2) a { color: #97989a; }
+  .crumb a { color: inherit; text-decoration: none; }
+  .crumb a:hover { text-decoration: underline; }
 
   /* ===== 레이아웃 — 개발 페이지(develop.itall.com/recruit/2028-jaesu-priority) 실측과 동일 =====
      ~767     본문 화면 끝까지 · 패널 위(좌우 20)
@@ -272,8 +278,9 @@
   }
   @media (max-width: 1023px) {
     .panel { padding: 0 20px; }
-    .page-head { max-width: 768px; padding: 24px 20px 0; }
-    .page-head__title { font-size: 22px; line-height: 1.45; }
+    .page-head { max-width: 768px; padding: 28px 20px 0; }
+    .page-head__title { font-size: 22px; white-space: normal; }
+    .page-head__back { display: block; }
     .crumb { display: none; }
   }
 
@@ -1398,11 +1405,13 @@
 
 
 <header class="page-head" id="top" aria-label="페이지 제목">
-  <h1 class="page-head__title">2028학년도 기숙 재수우선선발반</h1>
+  <h1 class="page-head__title"><a class="page-head__back" href="https://dormitory.itall.com/recruit?tab=all" aria-label="모집안내로 돌아가기" target="_blank" rel="noopener"><img src="assets/gnb/ico_arrow_back_red.svg" width="20" height="20" alt=""><span class="sr-only"> (새 창)</span></a>2028학년도 기숙 재수우선선발반</h1>
   <nav class="crumb" aria-label="현재 위치">
-    <a href="https://dormitory.itall.com/" target="_blank" rel="noopener">홈<span class="sr-only"> (새 창)</span></a><span class="crumb__sep" aria-hidden="true"><img src="assets/ui/ic_crumb.svg" alt=""></span>
-    <a href="https://dormitory.itall.com/recruit?tab=all" target="_blank" rel="noopener">모집안내<span class="sr-only"> (새 창)</span></a><span class="crumb__sep" aria-hidden="true"><img src="assets/ui/ic_crumb.svg" alt=""></span>
-    <span aria-current="page">2028학년도 기숙 재수우선선발반</span>
+    <ol>
+      <li><a class="crumb__home" href="https://dormitory.itall.com/" target="_blank" rel="noopener"><img src="assets/gnb/ico_breadcrumbs_home.svg" width="20" height="20" alt="메인"><span class="sr-only"> (새 창)</span></a></li>
+      <li><a href="https://dormitory.itall.com/recruit?tab=all" target="_blank" rel="noopener">모집안내<span class="sr-only"> (새 창)</span></a></li>
+      <li><span aria-current="page">2028학년도 기숙 재수우선선발반</span></li>
+    </ol>
   </nav>
 </header>
 
