@@ -1359,7 +1359,8 @@
       opener = trigger;
       layer.hidden = false;
       root.classList.add('gnb-lock');
-      requestAnimationFrame(function () { layer.classList.add('is-open'); });
+      void layer.offsetWidth;   /* 표시 직후 스타일 확정 → 페이드 전환이 프레임 타이밍과 무관하게 동작 */
+      layer.classList.add('is-open');
       if (trigger.hasAttribute('aria-expanded')) trigger.setAttribute('aria-expanded', 'true');
       var first = layer.querySelector('a, button');
       if (first) first.focus({ preventScroll: true });
@@ -2455,6 +2456,7 @@
     a.oncancel = function () { body.style.overflow = ''; };
   }
   document.querySelectorAll('[aria-controls][aria-expanded]').forEach(function (btn) {
+    if (btn.closest('.site-head, .gnb-m')) return;   /* GNB 버튼(햄버거·모바일 메뉴 아코디언)은 GNB 스크립트가 처리 — 중복 바인딩 시 열리자마자 닫힘 */
     var body = document.getElementById(btn.getAttribute('aria-controls'));
     if (!body) return;
     body.hidden = btn.getAttribute('aria-expanded') !== 'true';
