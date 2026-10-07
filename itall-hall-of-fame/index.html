@@ -13,8 +13,8 @@
       - 레퍼런스: EBSi 2027 수능 D-100 이벤트 KV — 조명 스윙 + 반짝임
       - 소스는 2배수(2560 기준) → 화면에는 절반 크기
       - 조명: 빔 꼭짓점(조명 기구 위치)을 transform-origin으로 잡고 좌우 스윙 + 밝기 깜빡임
-        LT/RT = 상단 좌/우, LB/RB = 하단 좌/우(Left/Right Bottom)
-      - 반짝이: light_1 / light_2 교차 페이드
+        LT/RT = 상단 좌/우, LB/RB = 하단 좌/우(Left/Right Bottom) — 각 모서리에 붙임
+      - 반짝이: light_1 / light_2 교차 페이드 (KV 크기 이미지를 KV 전체에 덮음)
       - KV 효과 위치·크기는 KV 박스 기준 % (가로 ÷1280, 세로 ÷747) — 스크롤바·화면 폭과 무관하게 KV와 함께 비례
     */
 
@@ -351,41 +351,39 @@
         beam-flicker calc(var(--dur) * .7 / var(--speed)) ease-in-out var(--delay, 0s) infinite alternate;
     }
 
-    /* 상단 좌 — 꼭짓점 = 좌상단 조명 기구 */
-    .beam--lt {
-      top: 5.3548%;   /* 40px */
-      left: 7.8125%;   /* 100px */
-      width: 43.3594%;   /* 555px */
+    /* 빔 4개 — 각 모서리에 붙이고, 빔 꼭짓점(모서리 쪽)을 회전 중심으로 스윙
+       크기는 KV 기준 % (2배수 소스 ÷2 ÷1280) */
+    .beam--lt {               /* 443×448 */
+      top: 0;
+      left: 0;
+      width: 34.6094%;
       transform-origin: 1% 1%;
       --swing: swing-lt; --dur: 3.2s;
     }
 
-    /* 상단 우 */
-    .beam--rt {
-      top: 5.3548%;   /* 40px */
-      right: 7.8125%;   /* 100px */
-      width: 43.3594%;   /* 555px */
+    .beam--rt {               /* 442.5×448.5 */
+      top: 0;
+      right: 0;
+      width: 34.5703%;
       transform-origin: 99% 1%;
       --swing: swing-rt; --dur: 3.6s; --delay: -1.5s;
     }
 
-    /* 하단 좌 — 꼭짓점 = 좌하단 */
-    .beam--lb {
-      bottom: 5.3548%;   /* 40px */
-      left: 4.6875%;   /* 60px */
-      width: 29.0625%;   /* 372px */
-      transform-origin: 0 100%;
+    .beam--lb {               /* 312×202 */
+      bottom: 0;
+      left: 0;
+      width: 24.375%;
+      transform-origin: 1% 99%;
       opacity: var(--beam-bottom-opacity);
       --speed: var(--beam-bottom-speed);
       --swing: swing-lb; --dur: 2.8s; --delay: -1s;
     }
 
-    /* 하단 우 */
-    .beam--rb {
-      bottom: 5.3548%;   /* 40px */
-      right: 4.6875%;   /* 60px */
-      width: 29.0625%;   /* 372px */
-      transform-origin: 100% 100%;
+    .beam--rb {               /* 311.5×202 */
+      bottom: 0;
+      right: 0;
+      width: 24.3359%;
+      transform-origin: 99% 99%;
       opacity: var(--beam-bottom-opacity);
       --speed: var(--beam-bottom-speed);
       --swing: swing-rb; --dur: 3s; --delay: -2.2s;
@@ -407,24 +405,15 @@
       animation: twinkle var(--dur) ease-in-out var(--delay, 0s) infinite;
     }
 
-    /* 위치: 시안 반짝임 좌표에 맞춤 (2배수 소스 기준 ÷2, px → KV 기준 %) */
-    .sparkle--1 {
-      top: 36.6801%;   /* 274px */
-      left: 27.3438%;   /* 350px */
-      width: 43.2812%;   /* 554px */
-      --dur: 3s;
-    }
+    /* 반짝이 2장 — KV와 같은 크기(2560×1494)로 제작돼 위치가 이미지에 포함 → KV 전체에 그대로 덮음 */
+    .sparkle--1,
+    .sparkle--2 { inset: 0; width: 100%; height: 100%; }
+    .sparkle--1 { --dur: 3s; }
+    .sparkle--2 { --dur: 3s; --delay: -1.5s; }
 
-    .sparkle--2 {
-      top: 28.9157%;   /* 216px */
-      left: 33.6719%;   /* 431px */
-      width: 43.75%;   /* 560px */
-      --dur: 3s; --delay: -1.5s;
-    }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 0; transform: scale(.96); }
-      50%      { opacity: 1; transform: scale(1); }
+    @keyframes twinkle {          /* 크기 변화 없이 투명도만 — 위치 고정 */
+      0%, 100% { opacity: 0; }
+      50%      { opacity: 1; }
     }
 
     /* 컨트롤 토글 */
@@ -767,13 +756,13 @@
             <img class="kv__bg" src="assets/kv_bg.webp" width="1280" height="747"
                  alt="2027 명예의 전당 최대 2억원 규모 장학·합격 축하금. 여러분이 잇올의 자랑입니다. 치열했던 노력의 순간들, 그 끝에서 완성 합격. 잇올은 여러분의 1년을 기억합니다.">
 
-            <img class="fx beam beam--lt" src="assets/spotlight_LT.webp" width="555" height="564" alt="" aria-hidden="true">
-            <img class="fx beam beam--rt" src="assets/spotlight_RT.webp" width="555" height="564" alt="" aria-hidden="true">
-            <img class="fx beam beam--lb" src="assets/spotlight_LB.webp" width="372" height="220" alt="" aria-hidden="true">
-            <img class="fx beam beam--rb" src="assets/spotlight_RB.webp" width="372" height="220" alt="" aria-hidden="true">
+            <img class="fx beam beam--lt" src="assets/spotlight_LT.webp" width="443" height="448" alt="" aria-hidden="true">
+            <img class="fx beam beam--rt" src="assets/spotlight_RT.webp" width="443" height="449" alt="" aria-hidden="true">
+            <img class="fx beam beam--lb" src="assets/spotlight_LB.webp" width="312" height="202" alt="" aria-hidden="true">
+            <img class="fx beam beam--rb" src="assets/spotlight_RB.webp" width="312" height="202" alt="" aria-hidden="true">
 
-            <img class="fx sparkle sparkle--1" src="assets/light_1.webp" width="554" height="189" alt="" aria-hidden="true">
-            <img class="fx sparkle sparkle--2" src="assets/light_2.webp" width="560" height="283" alt="" aria-hidden="true">
+            <img class="fx sparkle sparkle--1" src="assets/light_1.webp" width="1280" height="747" alt="" aria-hidden="true">
+            <img class="fx sparkle sparkle--2" src="assets/light_2.webp" width="1280" height="747" alt="" aria-hidden="true">
           </div>
         </section>
       </div>
