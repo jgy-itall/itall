@@ -409,8 +409,7 @@
   .gnb-bar__menu { margin-left: 16px; }
 
   /* 전체 메뉴 */
-  .gnb-m { position: fixed; inset: 0; z-index: 1001; overflow-y: auto; padding-bottom: 20px; background: #fff; opacity: 0; transition: opacity .3s ease; }
-  .gnb-m.is-open { opacity: 1; }
+  .gnb-m { position: fixed; inset: 0; z-index: 1001; overflow-y: auto; overscroll-behavior: contain; padding-bottom: 20px; background: #fff; transform: translateZ(0); }
   .gnb-m__top { display: flex; align-items: center; justify-content: space-between; height: 68px; padding: 0 20px; }
   .gnb-m__util { display: flex; align-items: center; gap: 12px; }
   .gnb-m__close { margin-left: 4px; }
@@ -467,7 +466,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .gnb__shine, .gnb-m__sub { animation: none; }
-    .gnb-m, .gnb-sheet__dim, .gnb-sheet__panel, .gnb__family-panel { transition: none; }
+    .gnb-sheet__dim, .gnb-sheet__panel, .gnb__family-panel { transition: none; }
   }
   /* ============ /잇올 사이트 GNB ============ */
 
@@ -1105,14 +1104,21 @@
     var menu = document.getElementById('gnb-m');
     var sheet = document.getElementById('gnb-sheet');
     var opener = null;
+    var openedAt = 0;
+
+    /* 레이어 열림/닫힘 알림 — 랜딩 KV 영상은 이 이벤트로 일시정지(모바일에서 영상 위 고정 레이어 깜빡임 방지) */
+    function notify(isOpen) { document.dispatchEvent(new CustomEvent('gnb:toggle', { detail: { open: isOpen } })); }
 
     function open(layer, trigger) {
+      clearTimeout(layer._closeTimer);   /* 직전 닫기 타이머가 남아 있으면 다시 연 레이어를 숨기므로 취소 */
       opener = trigger;
+      openedAt = Date.now();
       layer.hidden = false;
       root.classList.add('gnb-lock');
-      void layer.offsetWidth;   /* 표시 직후 스타일 확정 → 페이드 전환이 프레임 타이밍과 무관하게 동작 */
+      void layer.offsetWidth;
       layer.classList.add('is-open');
       if (trigger.hasAttribute('aria-expanded')) trigger.setAttribute('aria-expanded', 'true');
+      notify(true);
       var first = layer.querySelector('a, button');
       if (first) first.focus({ preventScroll: true });
     }
@@ -1120,17 +1126,22 @@
       layer.classList.remove('is-open');
       root.classList.remove('gnb-lock');
       var done = function () { layer.hidden = true; };
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) done(); else setTimeout(done, 300);
+      clearTimeout(layer._closeTimer);
+      if (layer === menu || window.matchMedia('(prefers-reduced-motion: reduce)').matches) done();   /* 전체 메뉴는 즉시 (실사이트 동일) */
+      else layer._closeTimer = setTimeout(done, 300);
+      notify(false);
       if (opener) {
         if (opener.hasAttribute('aria-expanded')) opener.setAttribute('aria-expanded', 'false');
         opener.focus({ preventScroll: true });
       }
     }
+    /* ☰ 자리에 ✕가 겹쳐 있어 터치 직후 따라오는 탭(더블탭·고스트 클릭)이 바로 닫지 않게 */
+    function guarded(fn) { return function () { if (Date.now() - openedAt < 400) return; fn(); }; }
 
     document.querySelector('.js-menu-open').addEventListener('click', function (e) { open(menu, e.currentTarget); });
-    menu.querySelector('.js-menu-close').addEventListener('click', function () { close(menu); });
+    menu.querySelector('.js-menu-close').addEventListener('click', guarded(function () { close(menu); }));
     document.querySelector('.js-sheet-open').addEventListener('click', function (e) { open(sheet, e.currentTarget); });
-    sheet.querySelector('.js-sheet-close').addEventListener('click', function () { close(sheet); });
+    sheet.querySelector('.js-sheet-close').addEventListener('click', guarded(function () { close(sheet); }));
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
       if (!sheet.hidden) close(sheet); else if (!menu.hidden) close(menu);
@@ -1148,8 +1159,9 @@
     /* PC로 넓어지면 모바일 레이어 정리 */
     window.matchMedia('(min-width: 1024px)').addEventListener('change', function (mq) {
       if (!mq.matches) return;
-      [menu, sheet].forEach(function (layer) { layer.classList.remove('is-open'); layer.hidden = true; });
+      [menu, sheet].forEach(function (layer) { clearTimeout(layer._closeTimer); layer.classList.remove('is-open'); layer.hidden = true; });
       root.classList.remove('gnb-lock');
+      notify(false);
     });
   })();
 </script>
@@ -1746,7 +1758,13 @@
   }
   var start = function () { var pr = video.play(); if (pr) pr.catch(function () {}); };
   start();
-  document.addEventListener('visibilitychange', function () { if (!document.hidden) start(); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && !gnbOpen) start(); });
+  /* 모바일 GNB(전체 메뉴·패밀리 시트) 열려 있는 동안 영상 정지 — 영상 위 고정 레이어 깜빡임 방지 */
+  var gnbOpen = false;
+  document.addEventListener('gnb:toggle', function (e) {
+    gnbOpen = e.detail.open;
+    if (gnbOpen) video.pause(); else start();
+  });
 })();
 </script>
 <script>
