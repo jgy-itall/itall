@@ -31,7 +31,7 @@
 
     :root {
       --u: calc(min(100vw - 64px, 1280px) / 1280);   /* KV = 콘텐츠 영역(좌우 32), 최대 1280 */
-      --beam-top-opacity: .5;      /* 상단 빔 LT/RT */
+      --beam-top-opacity: 1;       /* 상단 빔 LT/RT — 새 소스(피치/주황 톤)는 완성 예시처럼 100%로 */
       --beam-bottom-opacity: 1;    /* 하단 빔 LB/RB */
       --beam-top-speed: 1;         /* 움직임 속도 배수 (2 = 2배 빠르게) */
       --beam-bottom-speed: 1;
@@ -775,7 +775,7 @@
     <label><input type="checkbox" id="tgSparkle" aria-label="반짝이" checked> 반짝이</label>
     <label><input type="checkbox" id="tgPause" aria-label="일시정지"> 일시정지</label>
     <p class="ctrl__title ctrl__title--sub">투명도</p>
-    <div class="ctrl__row"><label>상단 빔 <input type="range" class="js-opacity" data-var="--beam-top-opacity" aria-label="상단 빔 투명도" min="0" max="1" step=".05" value=".5"></label> <output>0.5</output></div>
+    <div class="ctrl__row"><label>상단 빔 <input type="range" class="js-opacity" data-var="--beam-top-opacity" aria-label="상단 빔 투명도" min="0" max="1" step=".05" value="1"></label> <output>1</output></div>
     <div class="ctrl__row"><label>하단 빔 <input type="range" class="js-opacity" data-var="--beam-bottom-opacity" aria-label="하단 빔 투명도" min="0" max="1" step=".05" value="1"></label> <output>1</output></div>
     <p class="ctrl__title ctrl__title--sub">움직임 속도 (배)</p>
     <div class="ctrl__row"><label>상단 빔 <input type="range" class="js-opacity" data-var="--beam-top-speed" aria-label="상단 빔 움직임 속도" min=".25" max="3" step=".25" value="1"></label> <output>1</output></div>
