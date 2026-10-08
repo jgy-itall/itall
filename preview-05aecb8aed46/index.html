@@ -7,6 +7,7 @@
 <title>2028학년도 통학 재수우선선발반 - 잇올 스파르타</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11.2.10/swiper-bundle.min.css">
 <style>
   @font-face {
     font-family: 'GmarketSans';
@@ -731,6 +732,17 @@
   .to-top { position: fixed; z-index: 50; right: 20px; bottom: 76px; width: 48px; height: 48px; opacity: 0; pointer-events: none; transition: opacity .3s; }
   .to-top.is-show { opacity: 1; pointer-events: auto; }
   @media (min-width: 1024px) { .to-top { right: 40px; bottom: 40px; } }
+
+  /* ---------- 캐러셀 · Swiper 적용 시 (개발 페이지와 동일 배치) — 네이티브 스크롤 설정 해제 ---------- */
+  .rail.swiper { overflow: hidden; scroll-snap-type: none; padding: 0; scroll-padding: 0; align-self: stretch; min-width: 0; }   /* Swiper 기본 margin auto 대신 아래 여백으로 폭 고정 */
+  .rail.swiper .rail__track { gap: 0; width: 100%; }
+  .rail.swiper .swiper-slide { flex-shrink: 0; height: auto; }
+  .rail--review.swiper, .rail--moment.swiper { margin: 0 0 0 80px; }   /* 제목 시작선에서 왼쪽 잘림, 오른쪽은 끝까지 */
+  .rail--teacher.swiper { margin: 0 -80px 0 0; }
+  @media (max-width: 1279px) {
+    .rail--review.swiper, .rail--moment.swiper { margin: 0 0 0 20px; }
+    .rail--teacher.swiper { margin: 0 -20px 0 0; }
+  }
 
   /* ===================================================================
      1280 미만 — 모바일 시안(390) 값
@@ -1782,6 +1794,7 @@
   });
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11.2.10/swiper-bundle.min.js"></script>
 <script>
 (function () {
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1839,11 +1852,53 @@
     });
   });
 
-  /* ---------- 캐러셀: 좌우 버튼 1장씩 · 인덱스 표시 · (시설) 자동 롤링 + 무한 루프 ----------
+  /* ---------- 캐러셀 (기본): Swiper 11 — 개발 페이지와 동일 설정 ----------
+     공통   loop(양방향 무한) · slidesPerView auto · 전환 0.3초 · 터치/마우스 드래그
+     REVIEW 제목 시작선에서 왼쪽 잘림 · 간격 16
+     SPACE  양쪽 끝까지 · 자동재생 4초(마우스 올려도 계속) · 1280 이상 첫 장 80px 들여서 시작 · 간격 16
+     강사진·MOMENT(기숙) REVIEW와 같은 방식 · 간격 20 */
+  function initSwiper(pager, rail) {
+    var track = rail.querySelector('.rail__track');
+    var items = Array.prototype.slice.call(track.children);
+    var n = items.length;
+    var cur = pager.querySelector('.pager__cur');
+    var pad2 = function (v) { return (v < 10 ? '0' : '') + v; };
+    pager.querySelector('.pager__total').textContent = pad2(n);
+    /* 장수가 적으면 루프가 끊기지 않도록 복제 세트 추가 (보조기기·탭 이동 제외) */
+    while (track.children.length < 6) {
+      items.forEach(function (li) {
+        var c = li.cloneNode(true);
+        c.setAttribute('aria-hidden', 'true'); c.inert = true;
+        track.appendChild(c);
+      });
+    }
+    rail.classList.add('swiper');
+    track.classList.add('swiper-wrapper');
+    Array.prototype.forEach.call(track.children, function (li) { li.classList.add('swiper-slide'); });
+    var isSpace = rail.classList.contains('rail--space');
+    var gap = rail.classList.contains('rail--teacher') || rail.classList.contains('rail--moment') ? 20 : 16;
+    var opts = {
+      loop: true, slidesPerView: 'auto', spaceBetween: gap, speed: 300,
+      observer: true, observeParents: true,   /* 숨겨진 탭(여주캠프)에서 보일 때 크기 재계산 */
+      a11y: { enabled: false },               /* 목록(ul/li) 구조와 자체 인덱스 안내(aria-live) 유지 */
+      on: { realIndexChange: function (s) { cur.textContent = pad2(s.realIndex % n + 1); } }
+    };
+    if (isSpace) {
+      opts.breakpoints = { 1280: { slidesOffsetBefore: 80 } };
+      if (!reduce) opts.autoplay = { delay: 4000, disableOnInteraction: false };
+    }
+    var sw = new window.Swiper(rail, opts);
+    pager.querySelector('.pager__btn--prev').addEventListener('click', function () { sw.slidePrev(); });
+    pager.querySelector('.pager__btn--next').addEventListener('click', function () { sw.slideNext(); });
+    cur.textContent = pad2(sw.realIndex % n + 1);
+  }
+
+  /* ---------- 캐러셀 (대체): 좌우 버튼 1장씩 · 인덱스 표시 · (시설) 자동 롤링 + 무한 루프 ----------
      data-loop: 앞뒤에 복제 세트를 붙여 마지막 다음에 1번이 이어서 나옴 (끝에서 되감기 없음) */
   document.querySelectorAll('[data-pager]').forEach(function (pager) {
     var rail = document.getElementById('rail-' + pager.dataset.pager);
     if (!rail) return;
+    if (window.Swiper) { initSwiper(pager, rail); return; }   /* 기본: Swiper (아래는 로드 실패 시 대체 동작) */
     var track = rail.querySelector('.rail__track');
     var items = track.querySelectorAll(':scope > li');
     var n = items.length;
