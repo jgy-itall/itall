@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8">
+  <link rel="icon" href="data:,">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <title>2027 잇올 명예의 전당 — KV 조명 테스트</title>
@@ -417,6 +418,15 @@
       50%      { opacity: 1; }
     }
 
+    .kv__inner > picture { display: contents; }   /* picture 래퍼가 배치에 끼어들지 않게 */
+
+    /* ── 767px 이하: 모바일 KV (390×406) — 빔 크기 = MO 소스 ÷ 390 ── */
+    @media (max-width: 767px) {
+      .kv__inner { aspect-ratio: 390 / 406; }
+      .beam--lt, .beam--rt { width: 51.7949%; }   /* 202×204 */
+      .beam--lb, .beam--rb { width: 51.0256%; }   /* 199×105 */
+    }
+
     /* 컨트롤 토글 */
     .kv.no-beam .beam,
     .kv.no-sparkle .sparkle { display: none; }
@@ -474,12 +484,12 @@
     .money--gold, .money--silver, .money--gold-s { -webkit-background-clip: text; background-clip: text; color: transparent; }
     .money--gold, .money--gold-s {
       background-image: linear-gradient(90deg, rgba(218, 158, 29, .5), rgba(218, 158, 29, .5)), linear-gradient(135.66deg, #fff5e3 3%, #e6d2ae 10%, #fff5e3 16%, #d4af6d 24%, #e6d2ae 28%, #fff5e3 36%, #d2af72 45%, #fff1de 57%, #ceab6c 62%, #e6d2ae 66%, #fff 71%, #e6d2ae 80%, #cca96b 82%, #fff4e9 85%, #ffdcb9 97%, #cfaa67 100%), linear-gradient(#9c6a12, #9c6a12);
-      filter: drop-shadow(0 2px 2px rgba(81, 31, 32, .4));
+      filter: url(#fx-gold);   /* 안쪽 그림자 #400f0f 46% (-1,-1) + 바깥 그림자 #511f20 40% (0,2,2) */
     }
-    .money--gold-s { background-image: linear-gradient(90deg, rgba(173, 86, 0, .5), rgba(173, 86, 0, .5)), linear-gradient(135deg, #fff5e3 3%, #e6d2ae 10%, #fff5e3 16%, #d4af6d 24%, #e6d2ae 28%, #fff5e3 36%, #d2af72 45%, #fff1de 57%, #ceab6c 62%, #e6d2ae 66%, #fff 71%, #e6d2ae 80%, #cca96b 82%, #fff4e9 85%, #ffdcb9 97%, #cfaa67 100%), linear-gradient(#0d0f14, #0d0f14); filter: none; }
+    .money--gold-s { background-image: linear-gradient(90deg, rgba(173, 86, 0, .5), rgba(173, 86, 0, .5)), linear-gradient(135deg, #fff5e3 3%, #e6d2ae 10%, #fff5e3 16%, #d4af6d 24%, #e6d2ae 28%, #fff5e3 36%, #d2af72 45%, #fff1de 57%, #ceab6c 62%, #e6d2ae 66%, #fff 71%, #e6d2ae 80%, #cca96b 82%, #fff4e9 85%, #ffdcb9 97%, #cfaa67 100%), linear-gradient(#0d0f14, #0d0f14); filter: url(#fx-gold-in); }
     .money--silver {
       background-image: linear-gradient(90deg, rgba(166, 166, 166, .5), rgba(166, 166, 166, .5)), linear-gradient(135.66deg, #fff 3%, #d7d7d7 10%, #fbfbfb 16%, #ebebeb 24%, #9c9c9c 28%, #f4f4f4 36%, #bfbfbf 45%, #fff 57%, #9c9c9c 62%, #c8c8c8 66%, #fff 71%, #d0d0d0 80%, #aaa 82%, #fff 85%, #b5b5b5 97%, #acacac 100%), linear-gradient(#cdcdcd, #cdcdcd);
-      filter: drop-shadow(0 2px 2px rgba(29, 33, 54, .4));
+      filter: url(#fx-silver);   /* 안쪽 #454545 46% + 바깥 #1d2136 40% */
     }
     .money--plain { color: #0d0f14; }
 
@@ -535,17 +545,10 @@
     #event1 .chips dt { width: 84px; }
     .chips dd { font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0.0912px; color: #0d0f14; }
     .hl-brown { color: #9c6a12 !important; }
-    .prize__media { position: relative; flex: none; width: 340px; height: 300px; display: flex; align-items: center; justify-content: center; }
-    .prize__img { width: 340px; height: auto; }
-    .prize__img--wide { width: 366px; max-width: none !important; }
-    .seal {
-      position: absolute; right: 0; top: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 112px; height: 112px;
-      background: url(assets/sec/seal.webp) center / 112px 111px no-repeat; color: #fff; font-weight: 800; text-align: center; text-shadow: 0 .2px .2px rgba(255, 255, 255, .65);
-    }
-    .seal__sub { font-size: 12px; line-height: 1.05; letter-spacing: -0.5928px; margin-top: -4px; }
-    .seal__main { display: flex; flex-direction: column; font-size: 20px; line-height: 1.04; letter-spacing: -0.3492px; margin-top: 2px; }
-    .seal__main small { font-size: 15px; }
-    .seal__main--count { font-size: 28px; line-height: 1.05; letter-spacing: -0.5432px; margin: 0; }
+    .prize__media { position: relative; flex: none; width: 340px; height: 300px; }
+    .prize__media picture { display: contents; }
+    .prize__img { width: 100%; height: 100%; object-fit: contain; }   /* 에셋 시트 pc_0X (배치 포함 340×300) */
+    .badge { position: absolute; right: 0; top: 0; width: 112px; height: 112px; }   /* 에셋 시트 수량 뱃지 */
     .compare { width: 486px; max-width: 100%; overflow: hidden; border: 2px solid #fff; border-radius: 12px; background: #fff; }
     .compare__head { padding: 4px 12px; background: #9c6a12; text-align: center; font-size: 16px; font-weight: 600; line-height: 1.5; color: #fff; }
     .compare__body { display: flex; flex-direction: column; gap: 4px; padding: 4px 16px; }
@@ -598,7 +601,7 @@
     .podium__label--3 { left: 85.23%; top: 22.03%; }
     .cnt { padding: 3px 10px; border-radius: 100px; background: #f3e6c8; font-style: normal; font-size: 14px; font-weight: 600; line-height: 1.429; letter-spacing: 0.203px; color: #9c6a12; }
     .cnt--gold { background: #c8962e; color: #fff; }
-    .mvp__special { display: flex; gap: 16px; }
+    .mvp__special { position: relative; z-index: 1; display: flex; gap: 16px; }   /* 시상대 이미지(-40 겹침) 위에 노출 */
     .mvp__special li { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 24px 20px; border-radius: 16px; background: linear-gradient(90deg, rgba(200, 150, 46, .28) 0%, rgba(200, 150, 46, 0) 65%), #0d0f14; }
     .mvp__name { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 800; line-height: 1.4; letter-spacing: -0.24px; color: #fff; white-space: nowrap; }
     .mvp__amount { display: flex; align-items: baseline; gap: 8px; white-space: nowrap; }
@@ -625,7 +628,7 @@
     .notice { display: flex; flex-direction: column; gap: 20px; }
     .notice__h { padding-bottom: 8px; border-bottom: 1px solid #bebfc1; font-size: 24px; font-weight: 800; line-height: 1.45; letter-spacing: -0.552px; color: #f6f7f8; }
     .notice .notes--body { color: #f6f7f8; }
-    .toast { position: fixed !important; z-index: 300; left: 50%; bottom: 96px; width: auto !important; transform: translateX(-50%); padding: 10px 20px; border-radius: 9999px; background: rgba(13, 15, 20, .88); color: #fff; font-size: 14px; line-height: 1.429; opacity: 0; pointer-events: none; transition: opacity .2s; }
+    .toast { position: fixed !important; z-index: 300; left: 50%; bottom: 96px; width: auto !important; transform: translateX(-50%); padding: 10px 20px; border-radius: 9999px; background: #3a3a3e; box-shadow: 0 0 0 1px rgba(255, 255, 255, .16), 0 8px 24px rgba(0, 0, 0, .35); color: #fff; font-size: 14px; line-height: 1.429; opacity: 0; pointer-events: none; transition: opacity .2s; }
     .toast.is-show { opacity: 1; }
 
     /* ---------- 플로팅 이벤트 바 (스크롤 시 GNB 아래 고정 · 풀폭) ---------- */
@@ -686,14 +689,8 @@
       .chips > div { gap: 12px; }
       .chips dt, #event1 .chips dt { width: 76px; padding: 2px 8px; font-size: 14px; line-height: 1.429; }
       .chips dd { font-size: 14px; line-height: 1.429; }
-      .prize__media { width: 100%; height: 220px; }
-      .prize__img { width: auto; height: 220px; max-width: 100%; object-fit: contain; }
-      .prize__img--wide { width: auto; height: 200px; max-width: 100% !important; }
-      .seal { left: 0; right: auto; width: 88px; height: 88px; background-size: 88px 87px; }
-      .seal__sub { font-size: 9.4px; }
-      .seal__main { font-size: 16px; }
-      .seal__main small { font-size: 12px; }
-      .seal__main--count { font-size: 22px; }
+      .prize__media { width: 308px; max-width: 100%; height: auto; aspect-ratio: 308 / 220; margin: 0 auto; }   /* 에셋 시트 mobile_0X */
+      .badge { left: 0; right: auto; top: 0; width: 88px; height: 88px; }
       .compare { width: 100%; }
       .compare__body { padding: 12px 16px; gap: 8px; }
       .compare__body > div { align-items: flex-start; flex-direction: column; gap: 0; }
@@ -1074,19 +1071,25 @@
       <div class="event-card">
         <section class="kv" id="kv" aria-label="2027 명예의 전당 키비주얼">
           <div class="kv__inner">
-            <img class="kv__bg" src="assets/kv_bg.webp" width="1280" height="747"
-                 alt="2027 명예의 전당 최대 2억원 규모 장학·합격 축하금. 여러분이 잇올의 자랑입니다. 치열했던 노력의 순간들, 그 끝에서 완성 합격. 잇올은 여러분의 1년을 기억합니다.">
+            <!-- 767px 이하: 모바일 KV 전용 에셋 (Figma KV 섹션 MO 6399:1659~1671, 390×406) -->
+            <picture>
+              <source media="(max-width: 767px)" srcset="assets/mo/kv_bg_mo.webp" width="390" height="406">
+              <img class="kv__bg" src="assets/kv_bg.webp" width="1280" height="747"
+                   alt="2027 명예의 전당 최대 2억원 규모 장학·합격 축하금. 여러분이 잇올의 자랑입니다. 치열했던 노력의 순간들, 그 끝에서 완성 합격. 잇올은 여러분의 1년을 기억합니다.">
+            </picture>
 
-            <img class="fx beam beam--lt" src="assets/spotlight_LT.webp" width="455" height="458" alt="" aria-hidden="true">
-            <img class="fx beam beam--rt" src="assets/spotlight_RT.webp" width="455" height="458" alt="" aria-hidden="true">
-            <img class="fx beam beam--lb" src="assets/spotlight_LB.webp" width="374" height="232" alt="" aria-hidden="true">
-            <img class="fx beam beam--rb" src="assets/spotlight_RB.webp" width="374" height="231" alt="" aria-hidden="true">
+            <picture><source media="(max-width: 767px)" srcset="assets/mo/spotlight_LT_mo.webp"><img class="fx beam beam--lt" src="assets/spotlight_LT.webp" width="455" height="458" alt="" aria-hidden="true"></picture>
+            <picture><source media="(max-width: 767px)" srcset="assets/mo/spotlight_RT_mo.webp"><img class="fx beam beam--rt" src="assets/spotlight_RT.webp" width="455" height="458" alt="" aria-hidden="true"></picture>
+            <picture><source media="(max-width: 767px)" srcset="assets/mo/spotlight_LB_mo.webp"><img class="fx beam beam--lb" src="assets/spotlight_LB.webp" width="374" height="232" alt="" aria-hidden="true"></picture>
+            <picture><source media="(max-width: 767px)" srcset="assets/mo/spotlight_RB_mo.webp"><img class="fx beam beam--rb" src="assets/spotlight_RB.webp" width="374" height="231" alt="" aria-hidden="true"></picture>
 
-            <img class="fx sparkle sparkle--1" src="assets/light_1.webp" width="1280" height="747" alt="" aria-hidden="true">
-            <img class="fx sparkle sparkle--2" src="assets/light_2.webp" width="1280" height="747" alt="" aria-hidden="true">
+            <picture><source media="(max-width: 767px)" srcset="assets/mo/light_1_mo.webp"><img class="fx sparkle sparkle--1" src="assets/light_1.webp" width="1280" height="747" alt="" aria-hidden="true"></picture>
+            <picture><source media="(max-width: 767px)" srcset="assets/mo/light_2_mo.webp"><img class="fx sparkle sparkle--2" src="assets/light_2.webp" width="1280" height="747" alt="" aria-hidden="true"></picture>
           </div>
         </section>
 <!-- SECTIONS_HTML:START -->
+        <!-- 글자 효과 필터 — 시안 Effects 값 (안쪽 그림자 + 바깥 그림자) -->
+        <svg class="sr-only" aria-hidden="true" focusable="false" width="0" height="0"><defs><filter id="fx-gold" x="-10%" y="-20%" width="120%" height="150%" color-interpolation-filters="sRGB"><feOffset in="SourceAlpha" dx="-1" dy="-1" result="io0"/><feGaussianBlur in="io0" stdDeviation="0" result="ib0"/><feComposite in="SourceAlpha" in2="ib0" operator="out" result="ie0"/><feFlood flood-color="#400f0f" flood-opacity="0.46" result="if0"/><feComposite in="if0" in2="ie0" operator="in" result="is0"/><feGaussianBlur in="SourceAlpha" stdDeviation="1" result="db"/><feOffset in="db" dx="0" dy="2" result="do"/><feFlood flood-color="#511f20" flood-opacity="0.4" result="df"/><feComposite in="df" in2="do" operator="in" result="ds"/><feMerge><feMergeNode in="ds"/><feMergeNode in="SourceGraphic"/><feMergeNode in="is0"/></feMerge></filter><filter id="fx-silver" x="-10%" y="-20%" width="120%" height="150%" color-interpolation-filters="sRGB"><feOffset in="SourceAlpha" dx="-1" dy="-1" result="io0"/><feGaussianBlur in="io0" stdDeviation="0" result="ib0"/><feComposite in="SourceAlpha" in2="ib0" operator="out" result="ie0"/><feFlood flood-color="#454545" flood-opacity="0.46" result="if0"/><feComposite in="if0" in2="ie0" operator="in" result="is0"/><feGaussianBlur in="SourceAlpha" stdDeviation="1" result="db"/><feOffset in="db" dx="0" dy="2" result="do"/><feFlood flood-color="#1d2136" flood-opacity="0.4" result="df"/><feComposite in="df" in2="do" operator="in" result="ds"/><feMerge><feMergeNode in="ds"/><feMergeNode in="SourceGraphic"/><feMergeNode in="is0"/></feMerge></filter><filter id="fx-gold-in" x="-10%" y="-20%" width="120%" height="150%" color-interpolation-filters="sRGB"><feOffset in="SourceAlpha" dx="-1" dy="-1" result="io0"/><feGaussianBlur in="io0" stdDeviation="0" result="ib0"/><feComposite in="SourceAlpha" in2="ib0" operator="out" result="ie0"/><feFlood flood-color="#400f0f" flood-opacity="0.46" result="if0"/><feComposite in="if0" in2="ie0" operator="in" result="is0"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="is0"/></feMerge></filter></defs></svg>
         <!-- ============ 플로팅 이벤트 바 (스크롤 시 상단 고정 · 풀폭) ============ -->
         <nav class="evbar" id="evbar" aria-label="이벤트 바로가기">
           <ul class="evbar__list">
@@ -1172,8 +1175,8 @@
               </dl>
             </div>
             <div class="prize__media">
-              <img class="prize__img" src="assets/sec/prize_pass.webp" alt="합격증과 신세계 상품권" width="340" height="269" loading="lazy">
-              <p class="seal"><span class="seal__sub">합격증 제출 시</span><span class="seal__main">100%<small>지급</small></span></p>
+              <picture><source media="(max-width: 1023px)" srcset="assets/sec/prize_01_mo.webp" width="308" height="220"><img class="prize__img" src="assets/sec/prize_01.webp" alt="합격증과 신세계 상품권" width="340" height="300" loading="lazy"></picture>
+              <img class="badge" src="assets/sec/badge_100.webp" alt="합격증 제출 시 100% 지급" width="112" height="112" loading="lazy">
             </div>
           </div>
           <ul class="notes notes--center notes--grid">
@@ -1227,8 +1230,8 @@
               </div>
             </div>
             <div class="prize__media">
-              <img class="prize__img" src="assets/sec/prize_voucher.webp" alt="잇올 장학금 50만 원 바우처" width="340" height="264" loading="lazy">
-              <p class="seal"><span class="seal__main seal__main--count">5명</span></p>
+              <picture><source media="(max-width: 1023px)" srcset="assets/sec/prize_02_mo.webp" width="308" height="220"><img class="prize__img" src="assets/sec/prize_02.webp" alt="잇올 장학금 50만 원 바우처" width="340" height="300" loading="lazy"></picture>
+              <img class="badge" src="assets/sec/badge_5.webp" alt="5명" width="112" height="112" loading="lazy">
             </div>
           </div>
           <div class="detail">
@@ -1277,8 +1280,8 @@
               </dl>
             </div>
             <div class="prize__media">
-              <img class="prize__img prize__img--wide" src="assets/sec/prize_giftcard.webp" alt="신세계 상품권 5만 원권" width="366" height="257" loading="lazy">
-              <p class="seal"><span class="seal__main seal__main--count">10명</span></p>
+              <picture><source media="(max-width: 1023px)" srcset="assets/sec/prize_03_mo.webp" width="308" height="220"><img class="prize__img" src="assets/sec/prize_03.webp" alt="신세계 상품권 5만 원권" width="340" height="300" loading="lazy"></picture>
+              <img class="badge" src="assets/sec/badge_10.webp" alt="10명" width="112" height="112" loading="lazy">
             </div>
           </div>
           <div class="detail">
@@ -1393,18 +1396,20 @@
     </div>
   </main>
 
+  <!-- KV 효과 테스트 컨트롤 — 사용자 요청으로 주석 처리 (2026-10-12)
   <details class="ctrl" id="ctrl" open>
     <summary class="ctrl__title">KV 효과 테스트</summary>
     <label><input type="checkbox" id="tgBeam" aria-label="조명 빔" checked> 조명 빔</label>
     <label><input type="checkbox" id="tgSparkle" aria-label="반짝이" checked> 반짝이</label>
     <label><input type="checkbox" id="tgPause" aria-label="일시정지"> 일시정지</label>
-    <p class="ctrl__title ctrl__title--sub">투명도</p>
-    <div class="ctrl__row"><label>상단 빔 <input type="range" class="js-opacity" data-var="--beam-top-opacity" aria-label="상단 빔 투명도" min="0" max="1" step=".05" value="1"></label> <output>1</output></div>
-    <div class="ctrl__row"><label>하단 빔 <input type="range" class="js-opacity" data-var="--beam-bottom-opacity" aria-label="하단 빔 투명도" min="0" max="1" step=".05" value="1"></label> <output>1</output></div>
-    <p class="ctrl__title ctrl__title--sub">움직임 속도 (배)</p>
-    <div class="ctrl__row"><label>상단 빔 <input type="range" class="js-opacity" data-var="--beam-top-speed" aria-label="상단 빔 움직임 속도" min=".25" max="3" step=".25" value="1"></label> <output>1</output></div>
-    <div class="ctrl__row"><label>하단 빔 <input type="range" class="js-opacity" data-var="--beam-bottom-speed" aria-label="하단 빔 움직임 속도" min=".25" max="3" step=".25" value="1"></label> <output>1</output></div>
+    <p class="ctrl__title ctrl__title—sub">투명도</p>
+    <div class="ctrl__row"><label>상단 빔 <input type="range" class="js-opacity" data-var="—beam-top-opacity" aria-label="상단 빔 투명도" min="0" max="1" step=".05" value="1"></label> <output>1</output></div>
+    <div class="ctrl__row"><label>하단 빔 <input type="range" class="js-opacity" data-var="—beam-bottom-opacity" aria-label="하단 빔 투명도" min="0" max="1" step=".05" value="1"></label> <output>1</output></div>
+    <p class="ctrl__title ctrl__title—sub">움직임 속도 (배)</p>
+    <div class="ctrl__row"><label>상단 빔 <input type="range" class="js-opacity" data-var="—beam-top-speed" aria-label="상단 빔 움직임 속도" min=".25" max="3" step=".25" value="1"></label> <output>1</output></div>
+    <div class="ctrl__row"><label>하단 빔 <input type="range" class="js-opacity" data-var="—beam-bottom-speed" aria-label="하단 빔 움직임 속도" min=".25" max="3" step=".25" value="1"></label> <output>1</output></div>
   </details>
+  -->
 
   <script>
     (function () {
@@ -1413,7 +1418,9 @@
       var root = document.documentElement;
 
       // 모바일은 테스트 컨트롤 접어서 시작
-      if (window.matchMedia('(max-width: 1023px)').matches) document.getElementById('ctrl').open = false;
+      var ctrl = document.getElementById('ctrl');
+      if (!ctrl) return;   /* 테스트 컨트롤 주석 처리 상태 */
+      if (window.matchMedia('(max-width: 1023px)').matches) ctrl.open = false;
 
       function bindToggle(id, cls, invert) {
         document.getElementById(id).addEventListener('change', function (e) {
