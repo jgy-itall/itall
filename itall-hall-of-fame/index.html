@@ -482,15 +482,10 @@
     /* 금액 (금·은 그라디언트 글자) */
     .money { font-weight: 800; white-space: nowrap; }
     .money--gold, .money--silver, .money--gold-s { -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .money--gold, .money--gold-s {
-      background-image: linear-gradient(90deg, rgba(218, 158, 29, .5), rgba(218, 158, 29, .5)), linear-gradient(135.66deg, #fff5e3 3%, #e6d2ae 10%, #fff5e3 16%, #d4af6d 24%, #e6d2ae 28%, #fff5e3 36%, #d2af72 45%, #fff1de 57%, #ceab6c 62%, #e6d2ae 66%, #fff 71%, #e6d2ae 80%, #cca96b 82%, #fff4e9 85%, #ffdcb9 97%, #cfaa67 100%), linear-gradient(#9c6a12, #9c6a12);
-      filter: url(#fx-gold);   /* 안쪽 그림자 #400f0f 46% (-1,-1) + 바깥 그림자 #511f20 40% (0,2,2) */
-    }
-    .money--gold-s { background-image: linear-gradient(90deg, rgba(173, 86, 0, .5), rgba(173, 86, 0, .5)), linear-gradient(135deg, #fff5e3 3%, #e6d2ae 10%, #fff5e3 16%, #d4af6d 24%, #e6d2ae 28%, #fff5e3 36%, #d2af72 45%, #fff1de 57%, #ceab6c 62%, #e6d2ae 66%, #fff 71%, #e6d2ae 80%, #cca96b 82%, #fff4e9 85%, #ffdcb9 97%, #cfaa67 100%), linear-gradient(#0d0f14, #0d0f14); filter: url(#fx-gold-in); }
-    .money--silver {
-      background-image: linear-gradient(90deg, rgba(166, 166, 166, .5), rgba(166, 166, 166, .5)), linear-gradient(135.66deg, #fff 3%, #d7d7d7 10%, #fbfbfb 16%, #ebebeb 24%, #9c9c9c 28%, #f4f4f4 36%, #bfbfbf 45%, #fff 57%, #9c9c9c 62%, #c8c8c8 66%, #fff 71%, #d0d0d0 80%, #aaa 82%, #fff 85%, #b5b5b5 97%, #acacac 100%), linear-gradient(#cdcdcd, #cdcdcd);
-      filter: url(#fx-silver);   /* 안쪽 #454545 46% + 바깥 #1d2136 40% */
-    }
+    /* 금·은 글자 채우기 — 시안 Fill 3겹(위→아래: 50% 단색 Linear Burn / 선형 16단 / 단색). CSS엔 linear-burn이 없어 단색 번 효과를 정지점 색에서 빼서 반영 · 각도·정지점은 Figma 변환 행렬 환산값 */
+    .money--gold { background-image: linear-gradient(120.89deg, #ecc472 10.61%, #d4a23d 17.00%, #ecc472 22.50%, #c27e00 29.58%, #d4a23d 33.64%, #ecc472 40.75%, #c07e01 48.98%, #ecc06d 59.88%, #bc7a00 64.61%, #d4a23d 67.84%, #ecce8e 72.71%, #d4a23d 81.38%, #ba7800 83.08%, #ecc478 85.95%, #ecac48 96.23%, #bc7a00 99.43%), linear-gradient(#9c6a12, #9c6a12); filter: url(#fx-gold); }
+    .money--silver { background-image: linear-gradient(120.89deg, #d2d2d2 10.61%, #aaaaaa 17.00%, #cecece 22.50%, #bebebe 29.58%, #707070 33.64%, #c8c8c8 40.75%, #929292 48.98%, #d2d2d2 59.88%, #707070 64.61%, #9c9c9c 67.84%, #d2d2d2 72.71%, #a4a4a4 81.38%, #7e7e7e 83.08%, #d2d2d2 85.95%, #888888 96.23%, #808080 99.43%), linear-gradient(#cdcdcd, #cdcdcd); filter: url(#fx-silver); }
+    .money--gold-s { background-image: linear-gradient(121.37deg, #d6a064 10.17%, #bd7e2e 16.60%, #d6a064 22.12%, #ab5a00 29.24%, #bd7e2e 33.32%, #d6a064 40.47%, #a95a00 48.74%, #d69c5e 59.70%, #a55600 64.46%, #bd7e2e 67.70%, #d6aa80 72.60%, #bd7e2e 81.32%, #a35400 83.03%, #d6a06a 85.91%, #d6883a 96.24%, #a65600 99.47%), linear-gradient(#0d0f14, #0d0f14); filter: url(#fx-gold-in); }
     .money--plain { color: #0d0f14; }
 
     /* ---------- S1 · 수능 만점 장학 ---------- */
@@ -504,7 +499,7 @@
     .perfect__card { overflow: hidden; border-radius: 24px; background: #fff; }
     .perfect__head {
       position: relative; padding: 10px; text-align: center; font-size: 24px; font-weight: 800; line-height: 1.45; letter-spacing: -0.552px; color: #fff;
-      background: linear-gradient(90deg, rgba(204, 125, 0, .5), rgba(204, 125, 0, .5)), linear-gradient(129.8deg, #fff5e3 1%, #d4af6d 14%, #e6d2ae 21%, #fff5e3 34%, #d2af72 49%, #fff1de 69%, #ceab6c 77%, #e6d2ae 83%, #fff 92%, #e6d2ae 100%), #454545;
+      background: linear-gradient(129.84deg, #e6b464 -20.62%, #cc912e -9.01%, #e6b464 0.97%, #ba6e00 13.82%, #cc912e 21.18%, #e6b464 34.08%, #b86e00 49.02%, #e6b05e 68.81%, #b46a00 77.40%, #cc912e 83.25%, #e6be80 92.08%, #cc912e 107.83%, #b26800 110.91%, #e6b36a 116.12%, #e69b3a 134.77%, #b66900 140.59%), #454545;   /* 시안: #CC7D00 50% Linear Burn → 정지점에 반영 / 선형 / #454545 */
       box-shadow: inset 2px 2px 2px rgba(255, 255, 255, .31), inset -2px -2px 3px rgba(64, 15, 15, .46);
     }
     .perfect__body { display: flex; justify-content: center; gap: 16px; padding: 28px 24px 40px; color: #0d0f14; }
