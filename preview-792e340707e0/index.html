@@ -480,9 +480,20 @@
   .gnb-sheet.is-open .gnb-sheet__panel { transform: translateY(0); }
   .gnb-sheet__title { margin: 0 0 8px; color: #222; font-size: 18px; font-weight: 800; line-height: 1.4; }
 
+  /* 맨 위로 버튼 (GNB 공용) — MO 우하단 20 / 모바일 하단 바 있으면 그 위 / PC 우하단 40 */
+  .gnb-top {
+    position: fixed; z-index: 50; right: 20px; bottom: 20px; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%;
+    background: none; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .3s;
+  }
+  .gnb-top img { display: block; width: 48px; height: 48px; }
+  .gnb-top.is-show { opacity: 1; pointer-events: auto; }
+  .gnb-top:focus-visible { outline: 2px solid #3e3a39; outline-offset: 2px; }
+  body:has(.tabbar) .gnb-top { bottom: 76px; }
+  @media (min-width: 1024px) { .gnb-top, body:has(.tabbar) .gnb-top { right: 40px; bottom: 40px; } }
+
   @media (prefers-reduced-motion: reduce) {
     .gnb__shine, .gnb-m__sub { animation: none; }
-    .gnb-sheet__dim, .gnb-sheet__panel, .gnb__family-panel { transition: none; }
+    .gnb-sheet__dim, .gnb-sheet__panel, .gnb__family-panel, .gnb-top { transition: none; }
   }
   /* ============ /잇올 사이트 GNB ============ */
 
@@ -971,10 +982,6 @@
   .tabbar img { width: 24px; height: 24px; }
   @media (min-width: 1024px) { .tabbar { display: none; } }
 
-  /* ---------- 맨 위로 ---------- */
-  .to-top { position: fixed; z-index: 50; right: 20px; bottom: 76px; width: 48px; height: 48px; opacity: 0; pointer-events: none; transition: opacity .3s; }
-  .to-top.is-show { opacity: 1; pointer-events: auto; }
-  @media (min-width: 1024px) { .to-top { right: 40px; bottom: 40px; } }
 
   /* ---------- 캐러셀 · Swiper 적용 시 (개발 페이지와 동일 배치) — 네이티브 스크롤 설정 해제 ---------- */
   .rail.swiper { overflow: hidden; scroll-snap-type: none; padding: 0; scroll-padding: 0; align-self: stretch; min-width: 0; }   /* Swiper 기본 margin auto 대신 아래 여백으로 폭 고정 */
@@ -1062,7 +1069,7 @@
     .rail { scroll-behavior: auto; }
     .seg__pill, .seg--pill .seg__tab { transition: none; }
     [role="tabpanel"]:not([hidden]) { animation: none; }
-    .change, .to-top { transition: none; }
+    .change { transition: none; }
   }
 
   /* ===== 1280 미만 — KV는 모바일 시안 기준으로 비례 (개발 페이지와 동일 전환점) ===== */
@@ -1374,6 +1381,9 @@
   </div>
 </div>
 
+<!-- 맨 위로 — GNB와 함께 공용 (스크롤 300px 이후 노출) -->
+<button class="gnb-top" type="button" aria-label="맨 위로 이동"><img src="assets/gnb/ic_scroll_up.svg" width="48" height="48" alt=""></button>
+
 <script>
   /* GNB — 수능 D-day · 모바일 메뉴 · 아코디언 · 패밀리 사이트 바텀시트 */
   (function () {
@@ -1436,6 +1446,17 @@
         sub.hidden = !expand;
       });
     });
+
+    /* 맨 위로 버튼 — 스크롤 300px 이후 노출 · 클릭 시 맨 위로 */
+    var topBtn = document.querySelector('.gnb-top');
+    if (topBtn) {
+      var onTop = function () { topBtn.classList.toggle('is-show', window.scrollY > 300); };
+      window.addEventListener('scroll', onTop, { passive: true });
+      onTop();
+      topBtn.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      });
+    }
 
     /* PC로 넓어지면 모바일 레이어 정리 */
     window.matchMedia('(min-width: 1024px)').addEventListener('change', function (mq) {
@@ -2450,8 +2471,7 @@
   </ul>
 </nav>
 
-<!-- ============ 맨 위로 · 복사 안내 ============ -->
-<a class="to-top" href="#top"><img src="assets/ui/ic_scroll_up.svg" alt="맨 위로 이동" width="48" height="48"></a>
+<!-- ============ 복사 안내 (맨 위로 버튼은 GNB 공용) ============ -->
 <p class="toast" role="status" aria-live="polite"></p>
 
 <script>
@@ -2751,14 +2771,6 @@
     });
   });
 
-  /* ---------- 맨 위로: 스크롤 시 노출 ---------- */
-  var top = document.querySelector('.to-top');
-  if (top) {
-    var onScroll = function () { top.classList.toggle('is-show', window.scrollY > 300); };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    top.addEventListener('click', function (e) { e.preventDefault(); window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
-  }
 })();
 </script>
 
