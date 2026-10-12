@@ -202,7 +202,7 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
 /* 커리어 푸터 */
 .ft--career { background: var(--strong); }
 .ft--career .ft__row { max-width: 1280px; }
-.ft--career .ft__links { border-color: var(--line-strong); }
+.ft--career .ft__links { border-color: var(--normal); }
 .ft--career .ft__logo { filter: none; width: 56px; height: 28px; }
 .ft--career .ft__contact { gap: 16px; }
 .ft--career .ft__info { gap: 12px; }
