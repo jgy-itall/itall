@@ -234,10 +234,10 @@
 
   /* 맨 위로 버튼 (GNB 공용) — MO 우하단 20 / 모바일 하단 바 있으면 그 위 / PC 우하단 40 */
   .gnb-top {
-    position: fixed; z-index: 50; right: 20px; bottom: 20px; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%;
+    position: fixed; z-index: 50; right: 20px; bottom: 20px; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%;
     background: none; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .3s;
   }
-  .gnb-top img { display: block; width: 48px; height: 48px; }
+  .gnb-top img { display: block; width: 40px; height: 40px; }
   .gnb-top.is-show { opacity: 1; pointer-events: auto; }
   .gnb-top:focus-visible { outline: 2px solid #3e3a39; outline-offset: 2px; }
   body:has(.tabbar) .gnb-top { bottom: 76px; }
@@ -989,7 +989,7 @@
 </div>
 
 <!-- 맨 위로 — GNB와 함께 공용 (스크롤 300px 이후 노출) -->
-<button class="gnb-top" type="button" aria-label="맨 위로 이동"><img src="assets/gnb/ic_scroll_up.svg" width="48" height="48" alt=""></button>
+<button class="gnb-top" type="button" aria-label="맨 위로 이동"><img src="assets/gnb/ic_scroll_up.svg" width="40" height="40" alt=""></button>
 
 <script>
   /* GNB — 수능 D-day · 모바일 메뉴 · 아코디언 · 패밀리 사이트 바텀시트 */
