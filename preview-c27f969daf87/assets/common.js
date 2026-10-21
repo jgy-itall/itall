@@ -120,7 +120,7 @@ function pageHTML(slots={}){
   <div class="search-row">
     <div class="search-col">
       <div class="search-box" id="searchBox">${IC.search}<input id="q" aria-label="센터/캠프 검색" placeholder="센터/캠프를 검색해 보세요." autocomplete="off"><button type="button" class="clr" id="clr" hidden aria-label="검색어 지우기" onclick="clearSel()">${IC.x}</button><button type="button" class="loc" id="locBtn" aria-label="현재 위치로 찾기">${IC.loc}</button>${slots.inBox||''}</div>
-      ${slots.hint===false?'':`<p class="hint" id="hint">${IC.locS}위치 접근 권한을 허용해 위치에서 가장 가까운 센터/캠프를 찾아보세요.</p>`}
+      ${slots.hint===false?'':`<p class="hint" id="hint">${IC.locS}위치 접근 권한을 허용하면 사용자의 현재 위치에서 가장 가까운 센터/캠프가 자동으로 검색됩니다.</p>`}
       ${slots.afterHint||''}
     </div>
     <button type="button" class="btn-req">직영 센터/캠프 개설 요청</button>
