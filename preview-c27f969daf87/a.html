@@ -78,7 +78,7 @@ document.addEventListener('kwselect',e=>window._aSel&&window._aSel(e.detail));
 document.addEventListener('kwclear',()=>window._aClr&&window._aClr());
 initReview({
   id:'a',title:'A안 · 롤링 추천 검색어',
-  slots:{hint:false,afterHint:`<div class="hint-row" id="hintRow"><p class="hint">${IC.locS}위치 접근 권한을 허용하면 사용자의 현재 위치에서 가장 가까운 센터/캠프가 자동으로 검색됩니다.</p></div>`},
+  slots:{hint:false,afterHint:`<div class="hint-row" id="hintRow"><p class="hint">${IC.locS}위치 접근을 허용하면 현재 위치에서 가장 가까운 센터/캠프가 자동으로 검색됩니다.</p></div>`},
   points:[
     '<b>롤링</b>: PC는 위치 안내 문구와 같은 줄 오른쪽 · 3초마다 1개씩 전환, 마우스 오버/포커스 시 정지',
     '<b>펼침 목록</b>: ▾ 클릭 → 최대 높이 350px, 넘치면 내부 스크롤 · 닫기 = ▴ 재클릭 · 바깥 클릭 · Esc · 항목 선택',
