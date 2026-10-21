@@ -22,7 +22,7 @@ const BASE = [
 const MORE = [
   {t:'대구',type:'kw',to:'대구'},{t:'기숙학원 여주캠프',type:'kw',to:'여주캠프'},{t:'기숙학원 입학 설명회 예약',type:'link'},
   {t:'광주',type:'kw',to:'광주'},{t:'동탄',type:'kw',to:'동탄'},{t:'김포',type:'kw',to:'김포'},{t:'구리',type:'kw',to:'구리'},
-  {t:'노원 중계센터',type:'kw',to:'노원'},{t:'다산캠프 10월 22일 입학 설명회',type:'link'}
+  {t:'노원 중계센터',type:'kw',to:'노원'},{t:'부산 동래사직캠프',type:'kw',to:'동래사직'}
 ];
 const DATASETS = {
   base:{label:'기본 6개',list:BASE},

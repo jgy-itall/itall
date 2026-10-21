@@ -56,7 +56,7 @@ body.mo .dd{left:0;right:0;width:auto!important;top:48px}
 /* MO: 개설 요청 버튼 너비 100% + 찾기/걸러보기 사이 8px 회색 바 */
 body.mo .btn-req{width:100%;height:48px}
 body.mo .search-row:has(.kw-t){gap:24px} /* 추천 검색어 ↔ 개설 요청 버튼 */
-body.mo .search-row ~ .filters{margin-top:40px} /* 0개여도 회색 바 유지 */
+body.mo .search-row ~ .filters,body.mo .search-row:has(.kw-t) ~ .filters{margin-top:40px} /* 0개여도 회색 바 유지 */
 body.mo .search-row ~ .filters::before{content:"";display:block;height:8px;margin:0 -20px 32px;background:#F1F2F4}
 
 /* TAB: 검색창 + 개설 요청 버튼은 한 줄, 추천 검색어 바는 아래 줄 100% */
