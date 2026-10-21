@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>C안 · 추천 검색어 칩</title>
+<link rel="stylesheet" href="assets/common.css">
+<style>
+.kw-a{display:flex;align-items:flex-start;gap:12px}
+.kw-a .lb{flex:none;line-height:34px;font-size:14px;font-weight:600;color:#7A7A7C}
+.kw-a .list{display:flex;flex-wrap:wrap;gap:8px;min-width:0}
+.kw-more{display:inline-flex;align-items:center;justify-content:center;height:34px;min-width:71px;padding:0 8px;border-radius:8px;background:#E6E8EA;font-size:13px;font-weight:600;color:#7A7A7C} /* fill/strong 배경 · 더보기/접기 같은 너비 · 가운데 정렬 */
+.kw-more:hover{background:#DBDEE1}
+body.mo .kw-a{flex-direction:column;gap:10px}
+body.mo .kw-a .lb{line-height:20px}
+
+/* MO: 개설 요청 버튼 너비 100% · 추천 검색어 아래, 회색 바 위 */
+body.mo .btn-req{width:100%;height:48px}
+body.mo .search-row{gap:24px} /* 추천 검색어 ↔ 개설 요청 버튼 */
+/* 찾기(검색·추천) ↔ 걸러보기(탭·목록) 사이 화면 끝까지 닿는 8px 회색 바 — 0개여도 유지 */
+body.mo .search-row ~ .filters,body.mo .search-row:has(.kw-a) ~ .filters{margin-top:40px}
+body.mo .search-row ~ .filters::before{content:"";display:block;height:8px;margin:0 -20px 32px;background:#F1F2F4}
+
+body.mo.tab .kw-a--full{margin-top:12px} /* Tablet 전용: 검색 행 아래 전체 너비 */
+</style>
+</head>
+<body>
+<script src="assets/common.js"></script>
+<script>
+let expanded=false;
+initReview({
+  id:'c',title:'C안 · 추천 검색어 칩',
+  slots:{afterHint:'<div class="kw-a" id="kwA" role="group" aria-label="추천 검색어"><span class="lb">추천 검색어</span><div class="list-wrap"><div class="list" id="kwList"></div></div></div>'},
+  points:[
+    '<b>위치</b>: 검색창 → 위치 안내 문구 → 추천 검색어 칩 · 최대 2줄, 넘치면 마지막 자리 「+N 더보기」(펼침 시 「접기」)',
+    '<b>키워드 칩</b>: 활성화 유지 · 검색창에 검색어 노출(넘치면 말줄임) · 연결 센터/캠프만 노출',
+    '<b>해제</b>: 다른 칩 클릭 or 검색창 ×',
+    '<b>묶음</b>: 같은 곳에 연결된 칩은 하나만 눌러도 모두 활성화(예: #강남센터 확장 오픈 · #강남센터), 검색창엔 누른 칩 문구만',
+    '<b>링크 칩(새 창)</b>: 최대 3개, 항상 맨 뒤 · 클릭 시 묶음 칩 순간 활성화 → 새 창(활성 고정·검색창 입력 없음) · 선택된 키워드 칩은 해제',
+    '<b>0개</b> 미노출 · <b>MO</b> 칩 최대 220px 말줄임 / 칩 → 24px → 개설 요청 버튼(100%) → 8px 회색 바(0개여도 유지)'
+  ],
+  mount(list){
+    /* ⊕ 버튼: 툴팁 없이 바로 위치 권한 요청 */
+    const lb=document.getElementById('locBtn');
+    lb.setAttribute('aria-label','현재 위치로 가까운 센터/캠프 찾기');
+    lb.onclick=()=>toast('⊕ 위치 권한 요청 → 허용 시 가까운 순으로 정렬');
+
+    const wrap=document.getElementById('kwA'),el=document.getElementById('kwList');
+    if(!list.length){wrap.remove()}
+    else{
+      /* Tablet: 추천 검색어를 검색창 열 밖으로 빼서 개설 요청 버튼 아래까지 100% 사용 (최대 2줄 유지) */
+      if(document.body.classList.contains('tab')){const row=document.querySelector('#vp .search-row');row.insertAdjacentElement('afterend',wrap);wrap.classList.add('kw-a--full')}
+      el.innerHTML=linksLast(list).map(k=>chipHTML(k)).join('');
+      if(expanded){el.insertAdjacentHTML('beforeend','<button type="button" class="kw-more" id="kwMore">접기</button>')}
+      else{
+        const chips=[...el.children],rows=[...new Set(chips.map(c=>c.offsetTop))];
+        if(rows.length>2){
+          const limit=rows[1];chips.filter(c=>c.offsetTop>limit).forEach(c=>c.hidden=true);
+          const more=document.createElement('button');more.type='button';more.className='kw-more';more.id='kwMore';el.appendChild(more);
+          const vis=chips.filter(c=>!c.hidden);
+          while(true){more.textContent='+'+(chips.length-vis.length)+' 더보기';if(more.offsetTop<=limit||!vis.length)break;vis.pop().hidden=true}
+        }
+      }
+      const m=document.getElementById('kwMore');if(m)m.onclick=()=>{expanded=!expanded;window._render()};
+    }
+  }
+});
+</script>
+</body>
+</html>
