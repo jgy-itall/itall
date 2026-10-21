@@ -4,125 +4,66 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>A안 · 롤링 추천 검색어</title>
+<title>A안 · 추천 검색어 칩</title>
 <link rel="stylesheet" href="assets/common.css">
 <style>
-/* 안내 문구와 같은 줄(PC) — 레이아웃 높이 변화 0 */
-.hint-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;min-height:24px}
-.hint-row .hint{flex:0 1 auto;white-space:nowrap}
-.kw-t{position:relative;margin-left:auto;flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;height:24px;width:360px} /* PC 영역 너비 360px 고정 */
-.kw-t .lb{font-size:13px;font-weight:600;color:var(--gray5);white-space:nowrap}
-.kw-t .win{position:relative;height:24px;width:220px;overflow:hidden}
-.kw-t .track{transition:transform .45s cubic-bezier(.3,.7,.2,1)}
-.kw-t .item{height:24px;width:100%;max-width:220px;display:flex;align-items:center;gap:4px;font-size:14px;font-weight:600;color:var(--ink2);text-align:left}
-.kw-t .item .h{color:var(--red)}
-.kw-t .item .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.kw-t .item:hover .t{color:var(--red);text-decoration:underline;text-underline-offset:4px}
-.kw-t .item:active{opacity:.7}
-.kw-t .item.is-sel .t{color:var(--red);text-decoration:underline;text-underline-offset:4px}
-.kw-t.has-sel .cnt{visibility:hidden}
-.kw-t .item .ext{color:var(--gray5)}
-.kw-t .cnt{font-size:12px;font-weight:600;color:var(--gray4);font-variant-numeric:tabular-nums;white-space:nowrap}
-.kw-t .tg{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gray5);border:1px solid var(--line);background:#fff}
-.kw-t .tg:hover{color:var(--ink2);border-color:var(--ink2)}
-.kw-t .tg svg{transition:transform .2s}
-.kw-t.open .tg svg{transform:rotate(180deg)}
-.kw-t .tg:focus-visible,.kw-t .item:focus-visible,.dd button:focus-visible{outline:2px solid var(--ink2);outline-offset:2px}
+.kw-a{display:flex;align-items:flex-start;gap:12px}
+.kw-a .lb{flex:none;line-height:34px;font-size:14px;font-weight:600;color:#7A7A7C}
+.kw-a .list{display:flex;flex-wrap:wrap;gap:8px;min-width:0}
+.kw-more{display:inline-flex;align-items:center;justify-content:center;height:34px;min-width:71px;padding:0 8px;border-radius:8px;background:#E6E8EA;font-size:13px;font-weight:600;color:#7A7A7C} /* fill/strong 배경 · 더보기/접기 같은 너비 · 가운데 정렬 */
+.kw-more:hover{background:#DBDEE1}
+body.mo .kw-a{flex-direction:column;gap:10px}
+body.mo .kw-a .lb{line-height:20px}
 
-/* 펼침 목록 */
-.dd{position:absolute;right:0;top:36px;z-index:25;width:280px;background:#fff;border-radius:16px;box-shadow:inset 0 0 0 1px var(--line),0 12px 32px rgba(13,15,20,.12);padding:20px;visibility:hidden;opacity:0;transform:translateY(-6px);transition:opacity .18s,transform .18s,visibility 0s .18s}
-.kw-t.open .dd{visibility:visible;opacity:1;transform:none;transition:opacity .18s,transform .18s}
-.dd .lb2{padding:0 0 10px;font-size:13px;line-height:20px;font-weight:600;color:var(--gray5)}
-.dd ol{list-style:none;max-height:280px;overflow-y:auto;overscroll-behavior:contain} /* 전체 최대 350px = 패딩 20 + 라벨 20 + 10 + 목록 280 + 패딩 20 */
-.dd button{width:100%;height:40px;display:flex;align-items:center;gap:10px;padding:0;font-size:14px;font-weight:500;color:var(--ink2);text-align:left}
-.dd button:hover{background:var(--fill)}
-.dd button:active{background:#E9EAEC}
-.dd button.is-sel{background:#FFF1F1;color:var(--red);font-weight:600}
-.dd button.is-sel::after{content:"";width:14px;height:8px;margin-right:2px;border:solid var(--red);border-width:0 0 2.4px 2.4px;transform:rotate(-45deg) translateY(-2px);flex:none}
-.dd .no{width:18px;font-size:13px;font-weight:700;color:var(--red);text-align:center;flex:none}
-.dd .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dd .tag{font-size:12px;font-weight:600;color:var(--gray5);display:flex;align-items:center;gap:2px;flex:none}
-.dd .sep{position:relative;height:0} /* 높이를 차지하지 않는 구분선 */
-.dd .sep::after{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--fill)}
-
-/* MO: 안내 문구 아래 한 줄 */
-body.mo .hint-row{flex-direction:column;align-items:stretch;gap:12px}
-body.mo .hint-row .hint{white-space:normal}
-body.mo .kw-t{margin-left:0;width:100%;height:40px;padding:0 6px 0 14px;border-radius:12px;background:var(--fill2)}
-body.mo .kw-t .win{flex:1;width:auto!important}
-body.mo .kw-t .item{max-width:100%}
-body.mo .dd{left:0;right:0;width:auto!important;top:48px}
-
-/* MO: 개설 요청 버튼 너비 100% + 찾기/걸러보기 사이 8px 회색 바 */
+/* MO: 개설 요청 버튼 너비 100% · 추천 검색어 아래, 회색 바 위 */
 body.mo .btn-req{width:100%;height:48px}
-body.mo .search-row:has(.kw-t){gap:24px} /* 추천 검색어 ↔ 개설 요청 버튼 */
-body.mo .search-row ~ .filters,body.mo .search-row:has(.kw-t) ~ .filters{margin-top:40px} /* 0개여도 회색 바 유지 */
+body.mo .search-row{gap:24px} /* 추천 검색어 ↔ 개설 요청 버튼 */
+/* 찾기(검색·추천) ↔ 걸러보기(탭·목록) 사이 화면 끝까지 닿는 8px 회색 바 — 0개여도 유지 */
+body.mo .search-row ~ .filters,body.mo .search-row:has(.kw-a) ~ .filters{margin-top:40px}
 body.mo .search-row ~ .filters::before{content:"";display:block;height:8px;margin:0 -20px 32px;background:#F1F2F4}
 
-/* TAB: 검색창 + 개설 요청 버튼은 한 줄, 추천 검색어 바는 아래 줄 100% */
-html body.mo.tab .search-row:has(.kw-t){flex-wrap:wrap;column-gap:20px;row-gap:12px}
-html body.mo.tab .search-row:has(.kw-t) .search-col{display:contents}
-html body.mo.tab .search-row:has(.kw-t) .search-box{order:1;flex:1 1 0;min-width:0}
-html body.mo.tab .search-row:has(.kw-t) .btn-req{order:2}
-html body.mo.tab .search-row:has(.kw-t) .hint-row{order:3;flex:0 0 100%}
-
-@media (prefers-reduced-motion:reduce){.kw-t .track{transition:none}}
+body.mo.tab .kw-a--full{margin-top:12px} /* Tablet 전용: 검색 행 아래 전체 너비 */
 </style>
 </head>
 <body>
 <script src="assets/common.js"></script>
 <script>
-const CHEV='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16.4932 9.44727C16.7985 9.16753 17.2729 9.18798 17.5527 9.49316C17.8325 9.7985 17.812 10.2729 17.5068 10.5527L12.5078 15.1328C12.2212 15.3954 11.7808 15.3954 11.4941 15.1328L6.49316 10.5527C6.18802 10.2729 6.16761 9.79852 6.44727 9.49316C6.72706 9.18802 7.20148 9.16761 7.50684 9.44727L12 13.5625L16.4932 9.44727Z" fill="currentColor"/></svg>';
-let timer;
-document.addEventListener('kwselect',e=>window._aSel&&window._aSel(e.detail));
-document.addEventListener('kwclear',()=>window._aClr&&window._aClr());
+let expanded=false;
 initReview({
-  id:'a',title:'A안 · 롤링 추천 검색어',
-  slots:{hint:false,afterHint:`<div class="hint-row" id="hintRow"><p class="hint">${IC.locS}위치 접근을 허용하면 현재 위치에서 가장 가까운 센터/캠프가 자동으로 검색됩니다.</p></div>`},
+  id:'a',title:'A안 · 추천 검색어 칩',
+  slots:{afterHint:'<div class="kw-a" id="kwA" role="group" aria-label="추천 검색어"><span class="lb">추천 검색어</span><div class="list-wrap"><div class="list" id="kwList"></div></div></div>'},
   points:[
-    '<b>롤링</b>: PC는 위치 안내 문구와 같은 줄 오른쪽 · 3초마다 1개씩 전환, 마우스 오버/포커스 시 정지',
-    '<b>펼침 목록</b>: ▾ 클릭 → 최대 높이 350px, 넘치면 내부 스크롤 · 닫기 = ▴ 재클릭 · 바깥 클릭 · Esc · 항목 선택',
-    '<b>키워드 클릭</b>: 검색창에 입력 → 연결 센터/캠프만 노출, 롤링 정지 · 해제 = 검색창 ×',
-    '<b>링크 클릭</b>: 새 창 · 최대 3개, 항상 맨 뒤',
-    '<b>0개</b> 미노출 · <b>1개</b> 롤링 없이 고정',
-    '<b>MO</b>: 추천 검색어 바(100%) → 24px → 개설 요청 버튼(100%) → 8px 회색 바(위아래 40px)'
+    '<b>위치</b>: 검색창 → 위치 안내 문구 → 추천 검색어 칩 · 최대 2줄, 넘치면 마지막 자리 「+N 더보기」(펼침 시 「접기」)',
+    '<b>키워드 칩</b>: 활성화 유지 · 검색창에 검색어 노출(넘치면 말줄임) · 연결 센터/캠프만 노출',
+    '<b>해제</b>: 다른 칩 클릭 or 검색창 ×',
+    '<b>묶음</b>: 같은 곳에 연결된 칩은 하나만 눌러도 모두 활성화(예: #강남센터 확장 오픈 · #강남센터), 검색창엔 누른 칩 문구만',
+    '<b>링크 칩(새 창)</b>: 최대 3개, 항상 맨 뒤 · 클릭 시 묶음 칩 순간 활성화 → 새 창(활성 고정·검색창 입력 없음) · 선택된 키워드 칩은 해제',
+    '<b>0개</b> 미노출 · <b>MO</b> 칩 최대 220px 말줄임 / 칩 → 24px → 개설 요청 버튼(100%) → 8px 회색 바(0개여도 유지)'
   ],
   mount(list){
-    clearInterval(timer);
-    if(!list.length)return;
-    const L=linksLast(list);
-    const row=document.getElementById('hintRow');
-    const itemHTML=(k,i)=>`<button type="button" class="item" data-type="${k.type}" data-t="${k.t}" tabindex="${i===0?0:-1}"><span class="h">#</span><span class="t">${k.t}</span>${k.type==='link'?IC.ext+'<span class="sr">(새 창 열림)</span>':''}</button>`;
-    const kwN=L.filter(k=>k.type!=='link').length;
-    row.insertAdjacentHTML('beforeend',`
-      <div class="kw-t" id="kwT" role="region" aria-label="추천 검색어">
-        <span class="lb">추천 검색어</span>
-        <div class="win"><div class="track" id="track">${L.map(itemHTML).join('')}${L.length>1?itemHTML(L[0],1):''}</div></div>
-        ${L.length>1?`<span class="cnt" id="cnt">1/${L.length}</span>`:''}
-        <button type="button" class="tg" id="tg" aria-expanded="false" aria-controls="dd" aria-label="추천 검색어 전체 보기">${CHEV}</button>
-        <div class="dd" id="dd"><p class="lb2">추천 검색어</p><ol>${L.map((k,i)=>(i===kwN&&kwN>0&&kwN<L.length?'<li class="sep" aria-hidden="true"></li>':'')+`<li><button type="button" data-type="${k.type}" data-t="${k.t}"><span class="no">${i+1}</span><span class="t">${k.t}</span>${k.type==='link'?'<span class="tag">'+IC.ext+'</span><span class="sr">(새 창 열림)</span>':''}</button></li>`).join('')}</ol></div>
-      </div>`);
-    const box=document.getElementById('kwT'),track=document.getElementById('track'),cnt=document.getElementById('cnt'),tg=document.getElementById('tg');
-    const win=box.querySelector('.win');
-    let idx=0,paused=false;
-    const items=[...track.children];
-    const step=()=>{
-      if(paused||box.classList.contains('open'))return;
-      idx++;track.style.transform=`translateY(${-24*idx}px)`;
-      if(cnt)cnt.textContent=((idx%L.length)+1)+'/'+L.length;
-      if(idx===L.length){setTimeout(()=>{track.style.transition='none';idx=0;track.style.transform='translateY(0)';track.offsetHeight;track.style.transition=''},460)}
-    };
-    if(L.length>1)timer=setInterval(step,3000);
-    ['mouseenter','focusin'].forEach(ev=>win.addEventListener(ev,()=>paused=true));
-    ['mouseleave','focusout'].forEach(ev=>win.addEventListener(ev,()=>paused=box.classList.contains('has-sel'))); /* 선택 중이면 정지 유지 */
-    /* 펼침 목록 너비 = 추천 검색어 영역 너비 */
-    const setOpen=v=>{if(v&&!document.body.classList.contains('mo'))document.getElementById('dd').style.width=box.offsetWidth+'px';box.classList.toggle('open',v);tg.setAttribute('aria-expanded',v)};
-    tg.onclick=()=>setOpen(!box.classList.contains('open'));
-    document.addEventListener('mousedown',e=>{if(!box.contains(e.target))setOpen(false)});
-    box.addEventListener('keydown',e=>{if(e.key==='Escape'){setOpen(false);tg.focus()}});
-    /* 선택 시: 롤링 멈추고 선택 항목 고정, 해제 시 재개 */
-    window._aSel=t=>{setOpen(false);box.classList.add('has-sel');paused=true;const i=L.findIndex(k=>k.t===t);if(i>-1){idx=i;track.style.transform=`translateY(${-24*i}px)`}};
-    window._aClr=()=>{box.classList.remove('has-sel');paused=false};
+    /* ⊕ 버튼: 툴팁 없이 바로 위치 권한 요청 */
+    const lb=document.getElementById('locBtn');
+    lb.setAttribute('aria-label','현재 위치로 가까운 센터/캠프 찾기');
+    lb.onclick=()=>toast('⊕ 위치 권한 요청 → 허용 시 가까운 순으로 정렬');
+
+    const wrap=document.getElementById('kwA'),el=document.getElementById('kwList');
+    if(!list.length){wrap.remove()}
+    else{
+      /* Tablet: 추천 검색어를 검색창 열 밖으로 빼서 개설 요청 버튼 아래까지 100% 사용 (최대 2줄 유지) */
+      if(document.body.classList.contains('tab')){const row=document.querySelector('#vp .search-row');row.insertAdjacentElement('afterend',wrap);wrap.classList.add('kw-a--full')}
+      el.innerHTML=linksLast(list).map(k=>chipHTML(k)).join('');
+      if(expanded){el.insertAdjacentHTML('beforeend','<button type="button" class="kw-more" id="kwMore">접기</button>')}
+      else{
+        const chips=[...el.children],rows=[...new Set(chips.map(c=>c.offsetTop))];
+        if(rows.length>2){
+          const limit=rows[1];chips.filter(c=>c.offsetTop>limit).forEach(c=>c.hidden=true);
+          const more=document.createElement('button');more.type='button';more.className='kw-more';more.id='kwMore';el.appendChild(more);
+          const vis=chips.filter(c=>!c.hidden);
+          while(true){more.textContent='+'+(chips.length-vis.length)+' 더보기';if(more.offsetTop<=limit||!vis.length)break;vis.pop().hidden=true}
+        }
+      }
+      const m=document.getElementById('kwMore');if(m)m.onclick=()=>{expanded=!expanded;window._render()};
+    }
   }
 });
 </script>

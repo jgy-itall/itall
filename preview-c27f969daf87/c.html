@@ -4,66 +4,111 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>C안 · 추천 검색어 칩</title>
+<title>C안 · 검색창 포커스 패널</title>
 <link rel="stylesheet" href="assets/common.css">
 <style>
-.kw-a{display:flex;align-items:flex-start;gap:12px}
-.kw-a .lb{flex:none;line-height:34px;font-size:14px;font-weight:600;color:#7A7A7C}
-.kw-a .list{display:flex;flex-wrap:wrap;gap:8px;min-width:0}
-.kw-more{display:inline-flex;align-items:center;justify-content:center;height:34px;min-width:71px;padding:0 8px;border-radius:8px;background:#E6E8EA;font-size:13px;font-weight:600;color:#7A7A7C} /* fill/strong 배경 · 더보기/접기 같은 너비 · 가운데 정렬 */
-.kw-more:hover{background:#DBDEE1}
-body.mo .kw-a{flex-direction:column;gap:10px}
-body.mo .kw-a .lb{line-height:20px}
-
-/* MO: 개설 요청 버튼 너비 100% · 추천 검색어 아래, 회색 바 위 */
+.search-box.open{border-color:var(--ink2);background:#fff}
+.kw-panel{position:absolute;left:0;right:0;top:58px;z-index:25;max-height:420px;background:#fff;border-radius:20px;box-shadow:inset 0 0 0 1px var(--line),0 12px 32px rgba(13,15,20,.12);padding:20px;visibility:hidden;opacity:0;transform:translateY(-6px);transition:opacity .18s,transform .18s,visibility 0s .18s}
+.kw-panel.open{visibility:visible;opacity:1;transform:none;transition:opacity .18s,transform .18s}
+.kw-panel .lb{padding:0 0 10px;line-height:20px;font-size:13px;font-weight:600;color:var(--gray5)}
+.kw-panel ul{list-style:none}
+.kw-row{width:100%;display:flex;align-items:center;gap:12px;height:44px;padding:0;font-size:15px;font-weight:500;color:var(--ink2);text-align:left}
+.kw-row .ic{width:28px;height:28px;border-radius:50%;background:var(--fill);display:flex;align-items:center;justify-content:center;color:var(--gray5);flex:none}
+.kw-row .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kw-row:hover{background:var(--fill)}
+.kw-row:hover .ic{background:#fff;color:var(--ink2)}
+.kw-row:active{background:#E9EAEC}
+.kw-row.act{background:#FFF1F1;color:var(--red)}
+.kw-row.act .ic{background:#fff;color:var(--red)}
+.kw-row.is-sel{color:var(--red);font-weight:600}
+.kw-row.is-sel::after{content:"";width:14px;height:8px;margin-right:4px;border:solid var(--red);border-width:0 0 2.4px 2.4px;transform:rotate(-45deg) translateY(-2px);flex:none}
+body.mo .kw-panel{top:56px;border-radius:16px}
+body.mo .kw-row{height:44px;font-size:14px}
+.kw-panel .sec+.sec{margin-top:8px;padding-top:12px;border-top:1px solid var(--fill)}
+.kw-panel .sub{height:1px;background:var(--fill);margin:4px 0}
+.kw-row mark{background:none;color:var(--red);font-weight:700}
+.kw-row .br{flex:none;font-size:12px;font-weight:600;color:var(--gray5);padding:2px 8px;border-radius:6px;background:var(--fill)}
+.kw-row.rel .ic{background:#FDECEC;color:var(--red)}
+.empty{padding:6px 0 10px;font-size:14px;color:var(--gray5)}
+.kw-panel .scroll{max-height:380px;overflow-y:auto;overscroll-behavior:contain} /* 패널 전체 최대 420px = 패딩 20 + 380 + 패딩 20 */
+/* MO: 개설 요청 버튼 100% · 검색 영역 ↔ 탭 사이 8px 회색 바(위아래 40px) — A·B안과 동일 */
 body.mo .btn-req{width:100%;height:48px}
-body.mo .search-row{gap:24px} /* 추천 검색어 ↔ 개설 요청 버튼 */
-/* 찾기(검색·추천) ↔ 걸러보기(탭·목록) 사이 화면 끝까지 닿는 8px 회색 바 — 0개여도 유지 */
-body.mo .search-row ~ .filters,body.mo .search-row:has(.kw-a) ~ .filters{margin-top:40px}
+body.mo .search-row{gap:24px}
+body.mo .search-row ~ .filters{margin-top:40px}
 body.mo .search-row ~ .filters::before{content:"";display:block;height:8px;margin:0 -20px 32px;background:#F1F2F4}
-
-body.mo.tab .kw-a--full{margin-top:12px} /* Tablet 전용: 검색 행 아래 전체 너비 */
 </style>
 </head>
 <body>
 <script src="assets/common.js"></script>
 <script>
-let expanded=false;
+const SRCH='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.5297 11.4398C18.5296 7.52422 15.3555 4.35 11.4398 4.35C7.52427 4.35008 4.35008 7.52427 4.35 11.4398C4.35 15.3555 7.52422 18.5296 11.4398 18.5297C15.3555 18.5297 18.5297 15.3555 18.5297 11.4398ZM20.0297 11.4398C20.0297 13.5662 19.2548 15.5101 17.975 17.0102L20.9213 19.8607C21.219 20.1487 21.2269 20.6236 20.9389 20.9213C20.6509 21.219 20.176 21.2269 19.8783 20.9389L16.9076 18.0648C15.4222 19.2922 13.5172 20.0297 11.4398 20.0297C6.69579 20.0296 2.85 16.1839 2.85 11.4398C2.85008 6.69584 6.69584 2.85008 11.4398 2.85C16.1839 2.85 20.0296 6.69579 20.0297 11.4398Z" fill="currentColor"/></svg>';
+const PIN='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.8701 21L17.4351 15.4351C20.5085 12.3616 20.5085 7.37854 17.4351 4.30509C14.3615 1.23163 9.37853 1.23163 6.30508 4.30509C3.23163 7.37854 3.23163 12.3616 6.30508 15.4351L11.8701 21ZM14.4934 9.87006C14.4934 11.3189 13.3189 12.4934 11.8701 12.4934C10.4212 12.4934 9.2467 11.3189 9.2467 9.87006C9.2467 8.42122 10.4212 7.24671 11.8701 7.24671C13.3189 7.24671 14.4934 8.42122 14.4934 9.87006Z" fill="currentColor"/></svg>';
+let pinned=false,preset='';
+document.addEventListener('kwselect',()=>window._bClose&&window._bClose());
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 initReview({
-  id:'c',title:'C안 · 추천 검색어 칩',
-  slots:{afterHint:'<div class="kw-a" id="kwA" role="group" aria-label="추천 검색어"><span class="lb">추천 검색어</span><div class="list-wrap"><div class="list" id="kwList"></div></div></div>'},
+  id:'c',title:'C안 · 검색창 포커스 패널',
+  slots:{inBox:'<div class="kw-panel" id="kwPanel" role="listbox" aria-label="검색 제안"><div class="scroll" id="kwBody"></div></div>'},
+  extraControls:'<div class="rv-g"><p>패널</p><div class="seg" id="segPin"><button type="button" data-v="0" class="on">실제 동작(클릭 시)</button><button type="button" data-v="1">열어두기(검수용)</button></div></div>'+
+    '<div class="rv-g"><p>입력 예시 (열어두기와 함께)</p><div class="seg" id="segQ"><button type="button" data-v="" class="on">빈 칸</button><button type="button" data-v="강남">강남</button><button type="button" data-v="동탄">동탄</button><button type="button" data-v="가">가(입력 중)</button><button type="button" data-v="ㄱㄴ">ㄱㄴ(초성)</button><button type="button" data-v="제주">결과 없음</button></div></div>',
   points:[
-    '<b>위치</b>: 검색창 → 위치 안내 문구 → 추천 검색어 칩 · 최대 2줄, 넘치면 마지막 자리 「+N 더보기」(펼침 시 「접기」)',
-    '<b>키워드 칩</b>: 활성화 유지 · 검색창에 검색어 노출(넘치면 말줄임) · 연결 센터/캠프만 노출',
-    '<b>해제</b>: 다른 칩 클릭 or 검색창 ×',
-    '<b>묶음</b>: 같은 곳에 연결된 칩은 하나만 눌러도 모두 활성화(예: #강남센터 확장 오픈 · #강남센터), 검색창엔 누른 칩 문구만',
-    '<b>링크 칩(새 창)</b>: 최대 3개, 항상 맨 뒤 · 클릭 시 묶음 칩 순간 활성화 → 새 창(활성 고정·검색창 입력 없음) · 선택된 키워드 칩은 해제',
-    '<b>0개</b> 미노출 · <b>MO</b> 칩 최대 220px 말줄임 / 칩 → 24px → 개설 요청 버튼(100%) → 8px 회색 바(0개여도 유지)'
+    '<b>트리거</b>: 검색창 클릭(포커스) → 패널 · 최대 높이 420px, 넘치면 내부 스크롤',
+    '<b>빈 칸</b>: 추천 검색어 전체 · 링크(새 창)는 최대 3개, 맨 뒤',
+    '<b>입력 중</b>: 맞는 연관 센터/캠프(최대 6개) + 맞는 추천 검색어만, 맞는 부분 하이라이트',
+    '<b>매칭</b>: 완성형(강남) · 입력 중 글자(가 → 강) · 초성(ㄱㄴ → 강남) · 공백 무시 / 없으면 「‘입력어’와 일치하는 결과가 없어요」',
+    '<b>항목 선택</b>: 패널 닫힘 → 연결 센터/캠프만 노출 · 링크는 새 창 · 해제 = 검색창 ×',
+    '<b>키보드</b>: ↑↓ 이동 · Enter 선택 · Esc 닫기',
+    '<b>MO</b>: 패널 너비 100% · 개설 요청 버튼(100%) → 8px 회색 바(위아래 40px)'
   ],
   mount(list){
-    /* ⊕ 버튼: 툴팁 없이 바로 위치 권한 요청 */
-    const lb=document.getElementById('locBtn');
-    lb.setAttribute('aria-label','현재 위치로 가까운 센터/캠프 찾기');
-    lb.onclick=()=>toast('⊕ 위치 권한 요청 → 허용 시 가까운 순으로 정렬');
-
-    const wrap=document.getElementById('kwA'),el=document.getElementById('kwList');
-    if(!list.length){wrap.remove()}
-    else{
-      /* Tablet: 추천 검색어를 검색창 열 밖으로 빼서 개설 요청 버튼 아래까지 100% 사용 (최대 2줄 유지) */
-      if(document.body.classList.contains('tab')){const row=document.querySelector('#vp .search-row');row.insertAdjacentElement('afterend',wrap);wrap.classList.add('kw-a--full')}
-      el.innerHTML=linksLast(list).map(k=>chipHTML(k)).join('');
-      if(expanded){el.insertAdjacentHTML('beforeend','<button type="button" class="kw-more" id="kwMore">접기</button>')}
-      else{
-        const chips=[...el.children],rows=[...new Set(chips.map(c=>c.offsetTop))];
-        if(rows.length>2){
-          const limit=rows[1];chips.filter(c=>c.offsetTop>limit).forEach(c=>c.hidden=true);
-          const more=document.createElement('button');more.type='button';more.className='kw-more';more.id='kwMore';el.appendChild(more);
-          const vis=chips.filter(c=>!c.hidden);
-          while(true){more.textContent='+'+(chips.length-vis.length)+' 더보기';if(more.offsetTop<=limit||!vis.length)break;vis.pop().hidden=true}
-        }
+    const box=document.getElementById('searchBox'),p=document.getElementById('kwPanel'),body=document.getElementById('kwBody'),q=document.getElementById('q');
+    q.setAttribute('role','combobox');q.setAttribute('aria-controls','kwPanel');q.setAttribute('aria-autocomplete','list');q.setAttribute('aria-expanded','false');
+    const L=linksLast(list);
+    const kwRow=(k,r)=>`<li><button type="button" class="kw-row" role="option" data-type="${k.type}" data-t="${esc(k.t)}"><span class="ic">${k.type==='link'?IC.ext:SRCH}</span><span class="t">${hMark(k.t,r,esc)}</span>${k.type==='link'?'<span class="sr">(새 창 열림)</span>':''}</button></li>`;
+    const draw=()=>{
+      const v=q.value.trim();
+      let h='';
+      if(v){
+        /* 입력 중: 입력어와 맞는 항목만 · 맞는 부분 하이라이트(완성형 · 자모 · 초성) */
+        const rel=CENTERS.map(c=>({c,r:hMatch(c.name,v)})).filter(x=>x.r).slice(0,6);
+        const rec=L.map(k=>({k,r:hMatch(k.t,v)})).filter(x=>x.r);
+        if(rel.length)h+=`<div class="sec"><p class="lb">연관 센터/캠프</p><ul>${rel.map(({c,r})=>`<li><button type="button" class="kw-row rel" role="option" data-type="kw" data-t="${esc(c.name)}"><span class="ic">${PIN}</span><span class="t">${hMark(c.name,r,esc)}</span><span class="br">${c.brand}</span></button></li>`).join('')}</ul></div>`;
+        if(rec.length){const kw=rec.filter(x=>x.k.type!=='link'),ln=rec.filter(x=>x.k.type==='link');
+          h+=`<div class="sec"><p class="lb">추천 검색어</p><ul>${kw.map(x=>kwRow(x.k,x.r)).join('')}${kw.length&&ln.length?'<li class="sub" aria-hidden="true"></li>':''}${ln.map(x=>kwRow(x.k,x.r)).join('')}</ul></div>`;}
+        if(!rel.length&&!rec.length)h=`<p class="empty">「${esc(v)}」와 일치하는 결과가 없어요.</p>`;
+      }else if(L.length){
+        const kw=L.filter(k=>k.type!=='link'),ln=L.filter(k=>k.type==='link');
+        h+=`<div class="sec"><p class="lb">추천 검색어</p><ul>${kw.map(k=>kwRow(k)).join('')}${kw.length&&ln.length?'<li class="sub" aria-hidden="true"></li>':''}${ln.map(k=>kwRow(k)).join('')}</ul></div>`;
       }
-      const m=document.getElementById('kwMore');if(m)m.onclick=()=>{expanded=!expanded;window._render()};
-    }
+      body.innerHTML=h;act=-1;
+      if(SEL)body.querySelectorAll('[data-t]').forEach(el=>el.classList.toggle('is-sel',el.dataset.t===SEL));
+      return !!h;
+    };
+    let act=-1;
+    const open=v=>{v=v&&draw();p.classList.toggle('open',v);box.classList.toggle('open',v);q.setAttribute('aria-expanded',v)};
+    /* 선택하면 패널은 항상 닫힘(열어두기 상태여도) — 결과를 가리지 않게 */
+    window._bClose=()=>{pinned=false;document.querySelectorAll('#segPin button').forEach(x=>x.classList.toggle('on',x.dataset.v==='0'));open(false);q.blur()};
+    q.value=pinned?preset:'';
+    open(pinned);
+    q.addEventListener('focus',()=>open(true));
+    q.addEventListener('click',()=>open(true));
+    q.addEventListener('input',()=>{if(SEL){SEL=null;document.getElementById('clr').hidden=!q.value;document.getElementById('searchBox').classList.remove('has-sel')}open(true)});
+    q.addEventListener('keydown',e=>{
+      if(e.key==='Escape'){open(false);return}
+      if(!p.classList.contains('open'))return;
+      const rows=[...body.querySelectorAll('.kw-row')];
+      if((e.key==='ArrowDown'||e.key==='ArrowUp')&&rows.length){e.preventDefault();act=(act+(e.key==='ArrowDown'?1:-1)+rows.length)%rows.length;rows.forEach((r,i)=>r.classList.toggle('act',i===act));rows[act].scrollIntoView({block:'nearest'})}
+      if(e.key==='Enter'){act>-1?rows[act].click():toast('검색 실행 — 「'+q.value+'」')}
+    });
+    document.addEventListener('mousedown',e=>{if(!pinned&&!box.contains(e.target))open(false)});
+  },
+  onInit(render){
+    const seg=(id,fn)=>document.getElementById(id).addEventListener('click',e=>{
+      const b=e.target.closest('button');if(!b)return;fn(b.dataset.v);
+      [...b.parentElement.children].forEach(x=>x.classList.toggle('on',x===b));render();
+    });
+    seg('segPin',v=>pinned=v==='1');
+    seg('segQ',v=>{preset=v;if(v!==''){pinned=true;document.querySelectorAll('#segPin button').forEach(x=>x.classList.toggle('on',x.dataset.v==='1'))}});
   }
 });
 </script>

@@ -141,7 +141,7 @@ body.mo .card-bd .acts{display:grid;grid-template-columns:1fr;gap:12px}
 .clr{width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex:none;color:var(--gray4)}
 .clr:hover{color:var(--ink2)}
 
-/* ---------- keyword chip (C안) — 각진 흰 칩 · 기본 #·검색어·아이콘 모두 text/neutral ---------- */
+/* ---------- keyword chip (A안) — 각진 흰 칩 · 기본 #·검색어·아이콘 모두 text/neutral ---------- */
 .kw-chip{display:inline-flex;align-items:center;gap:4px;height:34px;padding:0 12px;border:1px solid #E1E3E5;border-radius:8px;background:#fff;font-size:14px;font-weight:600;color:#7A7A7C;white-space:nowrap;transition:border-color .15s,color .15s,background .15s,transform .1s}
 .kw-chip .h{color:#7A7A7C;font-weight:700}
 .kw-chip .ext{color:#7A7A7C}
