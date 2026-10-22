@@ -236,7 +236,8 @@ document.addEventListener('click',e=>{
   const chip=c.classList.contains('kw-chip');
   if(chip&&SEL===c.dataset.t){clearSel();return} /* 같은 칩 재클릭 = 해제 */
   if(c.dataset.type==='link'){
-    if(chip){if(SEL)clearSel();pressLink(c)} /* 선택된 칩이 있으면 해제 후 새 창 */
+    if(SEL)clearSel(); /* 새 창 링크 = 선택 해제 후 새 창 (A·B·C안 공통) */
+    if(chip)pressLink(c);
     toast(`↗ 새 창에서 열림 — 「${c.dataset.t}」 (현재 화면 유지)`);return;
   }
   selectKeyword(c.dataset.t);
