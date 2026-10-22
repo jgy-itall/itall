@@ -80,9 +80,9 @@ initReview({
   id:'b',title:'B안 · 롤링 추천 검색어',
   slots:{hint:false,afterHint:`<div class="hint-row" id="hintRow"><p class="hint">${IC.locS}위치 접근을 허용하면 현재 위치에서 가장 가까운 센터/캠프가 자동으로 검색됩니다.</p></div>`},
   points:[
-    '<b>롤링</b>: PC는 위치 안내 문구와 같은 줄 오른쪽 · 3초마다 1개씩 전환, 마우스 오버/포커스 시 정지',
+    '<b>롤링</b>: PC는 위치 안내 문구와 같은 줄 오른쪽 · 3초마다 1개씩 전환, 마우스 오버/포커스 시 정지 · 동작 줄이기 설정 시 롤링 없음',
     '<b>펼침 목록</b>: ▾ 클릭 → 최대 높이 350px, 넘치면 내부 스크롤 · 닫기 = ▴ 재클릭 · 바깥 클릭 · Esc · 항목 선택',
-    '<b>키워드 클릭</b>: 검색창에 입력 → 연결 센터/캠프만 노출, 롤링 정지 · 해제 = 검색창 ×',
+    '<b>키워드 클릭</b>: 검색창에 입력 → 연결 센터/캠프만 노출(첫 카드 펼침, 탭 「전체」로 초기화), 롤링 정지 · 해제 = 검색창 직접 입력 or 검색창 ×',
     '<b>링크 클릭</b>: 새 창 · 최대 3개, 항상 맨 뒤',
     '<b>0개</b> 미노출 · <b>1개</b> 롤링 없이 고정',
     '<b>MO</b>: 추천 검색어 바(100%) → 24px → 개설 요청 버튼(100%) → 8px 회색 바(위아래 40px)'
@@ -112,7 +112,7 @@ initReview({
       if(cnt)cnt.textContent=((idx%L.length)+1)+'/'+L.length;
       if(idx===L.length){setTimeout(()=>{track.style.transition='none';idx=0;track.style.transform='translateY(0)';track.offsetHeight;track.style.transition=''},460)}
     };
-    if(L.length>1)timer=setInterval(step,3000);
+    if(L.length>1&&!matchMedia('(prefers-reduced-motion: reduce)').matches)timer=setInterval(step,3000); /* 동작 줄이기 설정 시 자동 롤링 없음 */
     ['mouseenter','focusin'].forEach(ev=>win.addEventListener(ev,()=>paused=true));
     ['mouseleave','focusout'].forEach(ev=>win.addEventListener(ev,()=>paused=box.classList.contains('has-sel'))); /* 선택 중이면 정지 유지 */
     /* 펼침 목록 너비 = 추천 검색어 영역 너비 */

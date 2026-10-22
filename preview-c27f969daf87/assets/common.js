@@ -234,13 +234,24 @@ document.addEventListener('click',e=>{
   const c=e.target.closest('#vp [data-type]');
   if(!c)return;
   const chip=c.classList.contains('kw-chip');
-  if(chip&&c.classList.contains('is-sel')&&SEL===c.dataset.t)return; /* 선택 유지 — 해제는 다른 칩 선택 또는 검색창 × */
+  if(chip&&SEL===c.dataset.t){clearSel();return} /* 같은 칩 재클릭 = 해제 */
   if(c.dataset.type==='link'){
     if(chip){if(SEL)clearSel();pressLink(c)} /* 선택된 칩이 있으면 해제 후 새 창 */
     toast(`↗ 새 창에서 열림 — 「${c.dataset.t}」 (현재 화면 유지)`);return;
   }
   selectKeyword(c.dataset.t);
 });
+
+/* 검색창 직접 입력 = 선택 해제(입력한 글자는 유지) */
+document.addEventListener('input',e=>{
+  if(e.target.id!=='q'||!SEL)return;
+  SEL=null;
+  document.getElementById('searchBox').classList.remove('has-sel');
+  document.getElementById('clr').hidden=!e.target.value;
+  document.querySelectorAll('#vp .is-sel').forEach(el=>{el.classList.remove('is-sel');el.setAttribute('aria-pressed',false)});
+  applyFilter();
+  document.dispatchEvent(new CustomEvent('kwclear'));
+},true);
 
 /* 링크 칩: 선택 상태 고정 없음 — 누르는 순간 같은 곳으로 가는 칩 묶음만 함께 활성화 후 새 창 */
 function pressLink(c){
