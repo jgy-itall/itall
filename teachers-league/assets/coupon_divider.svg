@@ -1,0 +1,21 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="481" height="24" viewBox="0 0 481 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 1000008583">
+<g id="Line" filter="url(#filter0_i_0_5)">
+<path d="M31 13L31.5036 13M450 13L449.496 13M43.5901 13L44.5974 13M56.6839 13L57.6911 13M69.7776 13L70.7849 13M82.8714 13L83.8786 13M95.9651 13L96.9724 13M109.059 13L110.066 13M122.153 13L123.16 13M135.246 13L136.254 13M148.34 13L149.347 13M161.434 13L162.441 13M174.528 13L175.535 13M187.621 13L188.629 13M200.715 13L201.722 13M213.809 13L214.816 13M226.903 13L227.91 13M239.996 13L241.004 13M253.09 13L254.097 13M266.184 13L267.191 13M279.278 13L280.285 13M292.371 13L293.379 13M305.465 13L306.472 13M318.559 13L319.566 13M331.653 13L332.66 13M344.746 13L345.754 13M357.84 13L358.847 13M370.934 13L371.941 13M384.028 13L385.035 13M397.121 13L398.129 13M410.215 13L411.222 13M423.309 13L424.316 13M436.403 13L437.41 13" stroke-width="6" stroke-linecap="round" stroke="#E5F3FF"/>
+</g>
+<circle id="notch" cx="12" cy="12" r="12" fill="#E5F3FF"/>
+<circle id="notch_2" cx="469" cy="12" r="12" fill="#E5F3FF"/>
+</g>
+<defs>
+<filter id="filter0_i_0_5" x="28" y="10" width="425" height="7.00004" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="1"/>
+<feGaussianBlur stdDeviation="1"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_0_5"/>
+</filter>
+</defs>
+</svg>

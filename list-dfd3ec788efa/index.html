@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>itall</title>
+<script>try { var t = localStorage.getItem('itall-list-theme'); if (t) document.documentElement.setAttribute('data-theme', t); var v = localStorage.getItem('itall-list-view'); if (v) document.documentElement.setAttribute('data-view', v); } catch (e) {}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  /* 레퍼런스: Vercel Templates (vercel.com/templates) — 직각(2px) 카드 · 1px 선 그리드 · 드롭다운 필터 · Geist
+     테마: 라이트 / 블랙. 저장값이 없으면 OS 설정을 따름 */
+  :root {
+    --bg: #ffffff;
+    --card: #ffffff;
+    --card-hover: #fafafa;
+    --ink: #0a0a0a;
+    --sub: #666666;
+    --faint: #8f8f8f;
+    --line: #eaeaea;
+    --line-strong: #d4d4d4;
+    --field: #ffffff;
+    --shadow: rgba(0, 0, 0, .08);
+    --icon-on: #0a0a0a;   /* 활성 아이콘 — 라이트 검정 / 블랙 흰색 */
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #000000; --card: #0a0a0a; --card-hover: #111111;
+      --ink: #ededed; --sub: #a1a1a1; --faint: #707070;
+      --line: #1f1f1f; --line-strong: #2e2e2e; --field: #0a0a0a; --shadow: rgba(0, 0, 0, .6); --icon-on: #ffffff;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #000000; --card: #0a0a0a; --card-hover: #111111;
+    --ink: #ededed; --sub: #a1a1a1; --faint: #707070;
+    --line: #1f1f1f; --line-strong: #2e2e2e; --field: #0a0a0a; --shadow: rgba(0, 0, 0, .6); --icon-on: #ffffff;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Geist, Pretendard, -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg); color: var(--ink);
+    -webkit-font-smoothing: antialiased; word-break: keep-all;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; }
+  .mono { font-family: "Geist Mono", ui-monospace, monospace; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 64px 32px 96px; }
+
+  /* 헤더 */
+  .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 32px; }
+  .head__title { line-height: 0; }
+  .head__title .logo { display: block; width: 56px; height: 28px; color: var(--ink); }   /* [공통]토큰 Design System · itall 로고(비율 2:1) 높이 28 — 테마 색을 따름 */
+  .head__desc { margin-top: 20px; font-size: 15px; color: var(--sub); }
+  .tools, .tools__acts { display: flex; align-items: center; gap: 8px; }
+
+  /* 드롭다운 — 직접 그린 메뉴 (높이 36, 직각) : [라벨 선택값 ⌄] → 아래로 펼쳐지는 목록 */
+  .dd { position: relative; width: var(--dd-w, auto); }   /* --dd-w: 두 드롭다운 중 가장 긴 선택값에 맞춘 공통 너비 (JS 측정) */
+  .dd__btn {
+    display: flex; align-items: center; gap: 8px; width: 100%; height: 36px; padding: 0 10px 0 12px;
+    border: 1px solid var(--line-strong); border-radius: 2px; background: var(--field);
+    font-size: 14px; cursor: pointer; white-space: nowrap; transition: border-color .15s ease;
+  }
+  .dd__btn:hover { border-color: var(--sub); }
+  .dd__btn[aria-expanded="true"] { border-color: var(--ink); }
+  .dd__label { color: var(--faint); font-size: 13px; }
+  .dd__label { flex: none; }
+  .dd__value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; text-align: left; font-weight: 500; }
+  .dd__chev { flex: none; width: 16px; height: 16px; color: var(--sub); transition: transform .15s ease; }
+  .dd__btn[aria-expanded="true"] .dd__chev { transform: rotate(180deg); color: var(--icon-on); }
+  .dd__menu {
+    position: absolute; top: calc(100% + 6px); left: 0; z-index: 10; min-width: 100%; width: max-content;
+    padding: 4px; list-style: none;
+    border: 1px solid var(--line-strong); border-radius: 2px; background: var(--field);
+    box-shadow: 0 12px 32px var(--shadow);
+  }
+  .dd__menu[hidden] { display: none; }
+  .dd__opt {
+    display: flex; align-items: center; gap: 12px; height: 36px; padding: 0 10px; min-width: 200px;
+    font-size: 14px; color: var(--sub); cursor: pointer; outline: none;
+  }
+  .dd__opt:hover, .dd__opt:focus { background: var(--card-hover); color: var(--ink); }
+  .dd__opt[aria-selected="true"] { color: var(--ink); font-weight: 500; }
+  .dd__check { width: 16px; height: 16px; flex: none; visibility: hidden; }
+  .dd__opt[aria-selected="true"] .dd__check { visibility: visible; color: var(--icon-on); }
+  .dd__name { flex: 1; }
+  .dd__n { color: var(--faint); font-size: 12px; }
+  .theme {
+    display: grid; place-items: center; width: 36px; height: 36px; flex: none;
+    border: 1px solid var(--line-strong); border-radius: 2px; background: var(--field); cursor: pointer;
+  }
+  .theme:hover { border-color: var(--sub); }
+  .theme svg { width: 16px; height: 16px; color: var(--icon-on); }
+  .theme .i-sun { display: none; }
+  :root[data-theme="dark"] .theme .i-sun { display: block; }
+  :root[data-theme="dark"] .theme .i-moon { display: none; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .theme .i-sun { display: block; }
+    :root:not([data-theme="light"]) .theme .i-moon { display: none; }
+  }
+
+  /* 아이콘 — [공통]토큰 Design System: Layout/layout-grid-01 · General/menu-01 · Weather/moon-01 · Weather/sun-03 · Arrows/chevron-down·left·right · General/check-01 */
+  /* 보기 토글 — 박스형 / 리스트형 (세그먼트, 높이 36) */
+  .view { display: inline-flex; flex: none; height: 36px; border: 1px solid var(--line-strong); border-radius: 2px; background: var(--field); }
+  .view__btn {
+    display: grid; place-items: center; width: 34px; height: 34px; border: 0; background: none;
+    color: var(--faint); cursor: pointer; transition: color .15s ease, background-color .15s ease;
+  }
+  .view__btn + .view__btn { border-left: 1px solid var(--line-strong); }
+  .view__btn:hover { color: var(--icon-on); }
+  .view__btn[aria-pressed="true"] { background: var(--card-hover); color: var(--icon-on); }
+  .view__btn svg { width: 16px; height: 16px; }
+
+  /* 결과 줄 */
+  .bar { display: flex; justify-content: space-between; align-items: center; padding: 0 0 12px; font-size: 13px; color: var(--sub); }
+  .bar__reset { border: 0; background: none; color: var(--sub); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .bar__reset[hidden] { display: none; }
+
+  /* 그리드 — 1px 선 바둑판. 위·왼쪽 선은 그리드, 오른쪽·아래 선은 카드가 그려서 마지막 줄 빈칸은 비어 보임 */
+  .grid {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--line); border-left: 1px solid var(--line);
+  }
+  .grid[hidden] { display: none; }
+  .card {
+    display: flex; flex-direction: column; min-height: 280px; background: var(--card);
+    border-right: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    transition: background-color .15s ease;
+  }
+  .card:hover { background: var(--card-hover); }
+  .card[hidden] { display: none; }
+  .card:focus-visible { outline-offset: -2px; }
+
+  .card__top { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px 0; font-size: 12px; color: var(--faint); }
+  .card__body { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 28px 24px; }
+  .card__name { font-size: 24px; font-weight: 600; line-height: 1.3; letter-spacing: -0.03em; }   /* 텍스트 단계: 제목 24 · 설명 14 · 메타 13 · 번호 12 */
+  .card__name > span { display: block; }
+  .card__desc { margin-top: 8px; font-size: 14px; line-height: 1.5; color: var(--sub); }
+  .card__foot {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    padding: 14px 24px; border-top: 1px solid var(--line); font-size: 13px;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 8px; min-width: 0; font-weight: 500; }
+  .brand__dot { flex: none; width: 8px; height: 8px; background: var(--brand); }
+  .brand__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .brand__short { display: none; }   /* 모바일 리스트형에서만 — 제목과 겹치는 라벨 대신 브랜드명만 */
+  .status { flex: none; display: inline-flex; align-items: center; gap: 6px; color: var(--sub); }
+  .status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #0070f3; }
+  .status--review::before { background: #f5a623; }
+  .status--done::before { background: var(--faint); }
+  .card.is-done .card__name { color: var(--sub); }
+
+  /* 리스트형 — 번호 | 제목·설명 | 브랜드 | 유형 | 상태·날짜 */
+  :root[data-view="list"] .grid { grid-template-columns: minmax(0, 1fr); border-left: 0; }   /* 좌우 외곽선 없이 위·아래 선만 */
+  :root[data-view="list"] .card {
+    border-right: 0;
+    display: grid; align-items: center; column-gap: 24px; min-height: 0; padding: 20px 24px;
+    grid-template-columns: 32px minmax(0, 1.5fr) minmax(0, 1fr) 80px 136px;
+    grid-template-areas: "num body brand type status";
+  }
+  :root[data-view="list"] .card[hidden] { display: none; }
+  :root[data-view="list"] .card__top,
+  :root[data-view="list"] .card__foot { display: contents; }
+  :root[data-view="list"] .card__top > span:first-child { grid-area: num; font-size: 12px; color: var(--faint); }
+  :root[data-view="list"] .card__top > span:last-child { grid-area: type; font-size: 12px; color: var(--faint); }
+  :root[data-view="list"] .card__body { grid-area: body; padding: 0; }
+  :root[data-view="list"] .card__name { font-size: 16px; line-height: 1.4; letter-spacing: -0.02em; }   /* 리스트: 제목 16 · 설명 13 · 메타 13 */
+  :root[data-view="list"] .card__name > span { display: inline; }
+  :root[data-view="list"] .card__desc { margin-top: 4px; font-size: 13px; }
+  :root[data-view="list"] .brand { grid-area: brand; font-size: 13px; }
+  :root[data-view="list"] .status { grid-area: status; justify-self: end; font-size: 13px; }
+
+  /* 페이지네이션 — 12개 초과 시에만 노출 */
+  .pager { display: flex; justify-content: center; align-items: center; gap: 4px; margin-top: 32px; }
+  .pager[hidden] { display: none; }
+  .pager__btn {
+    display: grid; place-items: center; min-width: 36px; height: 36px; padding: 0 8px;
+    border: 1px solid transparent; border-radius: 2px; background: none;
+    font-size: 14px; color: var(--sub); cursor: pointer; transition: color .15s ease, border-color .15s ease;
+  }
+  .pager__btn:hover:not(:disabled) { color: var(--icon-on); border-color: var(--line-strong); }
+  .pager__btn[aria-current="page"] { color: var(--ink); font-weight: 600; border-color: var(--ink); }
+  .pager__btn:disabled { color: var(--line-strong); cursor: default; }
+  .pager__btn svg { width: 16px; height: 16px; }
+  .pager__gap { min-width: 24px; text-align: center; color: var(--faint); font-size: 14px; }
+
+  .empty { padding: 96px 0; text-align: center; color: var(--sub); font-size: 15px; border: 1px solid var(--line); border-radius: 2px; }
+  .empty[hidden] { display: none; }
+
+  @media (max-width: 1024px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) {
+    .wrap { padding: 40px 16px 64px; }
+    /* 모바일 상단 — 1줄: 로고 | 보기·테마 토글 / 2줄: 설명 / 3줄: 유형·브랜드 드롭다운 반반 */
+    .head { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 8px; }
+    .head > div:first-child, .tools { display: contents; }
+    .head__title { grid-area: 1 / 1; align-self: end; }
+    .head__title .logo { width: 48px; height: 24px; }   /* 모바일 로고 높이 24 (비율 2:1) */
+    .tools__acts { grid-area: 1 / 2; justify-self: end; }
+    .head__desc { grid-column: 1 / -1; margin-top: 16px; }
+    .tools .dd { grid-row: 3; width: auto; min-width: 0; margin-top: 24px; }
+    .dd__btn { padding: 0 8px 0 10px; }
+    .dd__menu { width: 100%; }
+    .dd__opt { min-width: 0; }
+    .grid { grid-template-columns: minmax(0, 1fr); }
+    .card { min-height: 240px; }
+    .card__name { font-size: 20px; }
+    /* 모바일 리스트형 — 제목(말줄임) / 설명 / 브랜드 · 유형 ……… 상태·날짜, 오른쪽 가운데 이동 화살표 */
+    :root[data-view="list"] .card {
+      position: relative; column-gap: 8px; row-gap: 12px; padding: 16px 28px 16px 0;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-areas: "body body body" "brand type status";
+    }
+    :root[data-view="list"] .card::after {   /* [공통]토큰 Arrows/chevron-right */
+      content: ""; position: absolute; right: 0; top: 50%; width: 16px; height: 16px; margin-top: -8px; background: var(--faint);
+      -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 7L15 12L10 17'/%3E%3C/svg%3E") center / contain no-repeat;
+              mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 7L15 12L10 17'/%3E%3C/svg%3E") center / contain no-repeat;
+    }
+    :root[data-view="list"] .card__top > span:first-child { display: none; }
+    :root[data-view="list"] .card__top > span:last-child { font-size: 13px; }
+    :root[data-view="list"] .card__name { font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    :root[data-view="list"] .card__desc { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    :root[data-view="list"] .brand__name { display: none; }
+    :root[data-view="list"] .brand__short { display: inline; }
+    :root[data-view="list"] .brand { font-size: 13px; }
+    :root[data-view="list"] .status { font-size: 13px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="head">
+    <div>
+      <h1 class="head__title"><svg class="logo" width="48" height="24" viewBox="0 0 48 24" role="img" aria-label="itall" xmlns="http://www.w3.org/2000/svg"><g fill="currentColor"><path d="M0 3.44933V0.0219353H3.26874V3.44659H0V3.44933ZM0 24V6.87399H3.26874V24H0Z"/><path d="M8.21765 6.87399V0.0219353H11.4864V6.87124H16.3908V10.2959H11.4864V15.4343C11.4864 16.8491 11.9653 18.061 12.9258 19.0645C13.8836 20.0681 15.0404 20.5726 16.3908 20.5726V23.9973C14.1349 23.9973 12.2087 23.161 10.6123 21.4884C9.01587 19.8158 8.21765 17.7978 8.21765 15.4343V10.2959H6.58197V6.87124H8.21765V6.87399Z"/><path d="M31.5542 22.3028C30.1488 23.4324 28.5132 23.9973 26.6498 23.9973C24.3939 23.9973 22.4677 23.161 20.8713 21.4884C19.2748 19.8158 18.4766 17.7978 18.4766 15.4343C18.4766 13.0707 19.2748 11.0527 20.8713 9.3801C22.4677 7.70753 24.3939 6.87124 26.6498 6.87124C28.5132 6.87124 30.1488 7.43608 31.5542 8.56575L31.5778 8.59591L34.8465 6.8356L34.823 23.9945H31.5542V22.3V22.3028ZM26.6498 10.2986C25.2994 10.2986 24.1426 10.8004 23.1848 11.8067C22.2269 12.8102 21.7454 14.0222 21.7454 15.437C21.7454 16.8518 22.2243 18.0637 23.1848 19.0673C24.1426 20.0708 25.2994 20.5753 26.6498 20.5753C28.0002 20.5753 29.157 20.0736 30.1148 19.0673C31.0727 18.0637 31.5542 16.8518 31.5542 15.437C31.5542 14.0222 31.0753 12.8102 30.1148 11.8067C29.157 10.8032 28.0002 10.2986 26.6498 10.2986Z"/><path d="M41.4076 3.43288V24H38.1388V5.13561L41.4076 3.43288Z"/><path d="M48 0V24H44.7313V1.68354L48 0Z"/></g></svg></h1>
+      <p class="head__desc">잇올 UX/UI팀 시안 공유 · 내부용 · 검색 비노출</p>
+    </div>
+    <div class="tools">
+      <div class="dd" id="f-cat"><button class="dd__btn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="f-cat-menu"><span class="dd__label">유형</span><span class="dd__value">전체</span><svg class="dd__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10L12.0008 14.58L17 10"/></svg></button><ul class="dd__menu" id="f-cat-menu" role="listbox" aria-label="유형 필터" tabindex="-1" hidden></ul></div>
+      <div class="dd" id="f-brand"><button class="dd__btn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="f-brand-menu"><span class="dd__label">브랜드</span><span class="dd__value">전체</span><svg class="dd__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10L12.0008 14.58L17 10"/></svg></button><ul class="dd__menu" id="f-brand-menu" role="listbox" aria-label="브랜드 필터" tabindex="-1" hidden></ul></div>
+      <div class="tools__acts">
+      <div class="view" role="group" aria-label="보기 방식">
+        <button class="view__btn" type="button" data-view="grid" aria-pressed="true" aria-label="박스형으로 보기" title="박스형">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3L12 21M2.4 12H21M2.4 6L2.4 18C2.4 19.9882 4.01177 21.6 6 21.6H18C19.9882 21.6 21.6 19.9882 21.6 18V6C21.6 4.01178 19.9882 2.4 18 2.4L6 2.4C4.01178 2.4 2.4 4.01177 2.4 6Z"/></svg>
+        </button>
+        <button class="view__btn" type="button" data-view="list" aria-pressed="false" aria-label="리스트형으로 보기" title="리스트형">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 18H4M20 12H4M20 6H4"/></svg>
+        </button>
+      </div>
+      <button class="theme" type="button" id="theme" aria-label="블랙 모드로 전환">
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M21.6 14.6396C20.6977 14.9133 19.7404 15.0604 18.7487 15.0604C13.3307 15.0604 8.93858 10.6683 8.93858 5.25025C8.93858 4.25904 9.08559 3.30216 9.35899 2.40022C5.33155 3.62161 2.40005 7.36327 2.40005 11.7896C2.40005 17.2076 6.7922 21.5998 12.2102 21.5998C16.637 21.5998 20.3789 18.6677 21.6 14.6396Z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5.51351V2.4M12 21.6V18.4865M18.4865 12H21.6M2.4 12H5.51351M16.5869 7.41358L18.7885 5.21199M5.21125 18.7882L7.41284 16.5867M16.5869 16.5864L18.7885 18.788M5.21125 5.21176L7.41284 7.41334M15.5688 11.8734C15.5688 13.8617 13.957 15.4734 11.9688 15.4734C9.98053 15.4734 8.36875 13.8617 8.36875 11.8734C8.36875 9.88521 9.98053 8.27344 11.9688 8.27344C13.957 8.27344 15.5688 9.88521 15.5688 11.8734Z"/></svg>
+      </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="bar"><span><span class="mono" id="count">0</span>개 시안</span><button class="bar__reset" type="button" id="reset" hidden>필터 초기화</button></div>
+  <div class="grid" id="grid"></div>
+  <nav class="pager" id="pager" aria-label="페이지" hidden></nav>
+  <p class="empty" id="empty" hidden>조건에 맞는 시안이 없습니다.</p>
+  <noscript><p class="empty">JavaScript를 켜야 목록이 보입니다.</p></noscript>
+</main>
+<!-- ================================================================
+     시안 목록 데이터 — 새 시안은 projects 배열에 한 덩어리만 추가
+     · path    : 저장소 안 폴더명 (끝에 / 포함) — 목록이 하위 폴더에 있어 링크는 ../ 붙여 생성
+     · category: "landing" 랜딩 | "homepage" 홈페이지(리뉴얼) | "uiux" UIUX 개선 — 유형 필터 기준
+                 폴더는 나누지 않음(주소가 바뀌지 않게). 분류는 여기서만 관리
+     · brand   : brands 키 (새 브랜드면 brands에도 추가 — 이름·컬러)
+                 브랜드 필터는 sparta → 스파르타, dorm → 기숙, 그 외 모든 브랜드 → 기타
+     · status  : "진행 중" | "검수" | "준비 중" | "완료"  (완료 = 제목 흐리게)
+     · title   : 카드 큰 제목 — 줄 단위 배열 ["첫 줄", "둘째 줄"]
+     · type    : 카드 오른쪽 위 작은 글자 (Landing · Website · Prototype 등)
+     · updated : 마지막 갱신일 YYYY-MM-DD (최신순 정렬 기준)
+     ================================================================ -->
+<script type="application/json" id="data">
+{
+  "brands": {
+    "sparta": { "name": "스파르타", "color": "#d0121b" },
+    "dorm":   { "name": "기숙",     "color": "#009d78" },
+    "encom":  { "name": "엔컴",     "color": "#2f5bea" },
+    "itall":  { "name": "ITALL",    "color": "#e60f19" }
+  },
+  "projects": [
+    {
+      "path": "community-review/", "category": "landing", "brand": "sparta", "status": "진행 중",
+      "title": ["커뮤니티", "후기 이벤트"], "type": "Landing", "desc": "퍼블리싱 · 인터랙션 · 반응형 · 등록 모달",
+      "label": "스파르타 · 커뮤니티 후기 이벤트", "updated": "2026-10-29"
+    },
+    {
+      "path": "teachers-league/", "category": "landing", "brand": "sparta", "status": "완료",
+      "title": ["티처스리그", "재원생 프로그램"], "type": "Landing", "desc": "퍼블리싱 · 인터랙션 · 반응형",
+      "label": "스파르타 · 티처스리그 재원생 프로그램", "updated": "2026-10-27"
+    },
+    {
+      "path": "direct-center-keyword/a.html", "category": "uiux", "brand": "sparta", "status": "완료",
+      "title": ["직영 센터/캠프", "추천 검색어 UX 개선"], "type": "Prototype", "desc": "추천 검색어 영역 3안 비교 · 반응형 HTML",
+      "label": "스파르타 · 직영 센터/캠프 추천 검색어 UX 개선", "updated": "2026-10-21"
+    },
+    {
+      "path": "corp-website/corp/", "category": "homepage", "brand": "itall", "status": "완료",
+      "title": ["리뉴얼", "기업 홈페이지"], "type": "Website", "desc": "퍼블리싱 · 반응형",
+      "label": "ITALL · 리뉴얼 기업 홈페이지", "updated": "2026-10-12"
+    },
+    {
+      "path": "hall-of-fame-2027/", "category": "landing", "brand": "sparta", "status": "완료",
+      "title": ["2027 잇올", "명예의 전당"], "type": "Landing", "desc": "퍼블리싱 · 반응형",
+      "label": "스파르타 · 2027 잇올 명예의 전당", "updated": "2026-10-12"
+    },
+    {
+      "path": "jaesu-priority-2028/", "category": "landing", "brand": "sparta", "status": "완료",
+      "title": ["2028 통학", "재수우선선발반"], "type": "Landing", "desc": "AI 영상 제작 · 퍼블리싱 · 반응형",
+      "label": "스파르타 · 통학 재수우선선발반", "updated": "2026-10-08"
+    },
+    {
+      "path": "jaesu-priority-2028-dorm/", "category": "landing", "brand": "dorm", "status": "완료",
+      "title": ["2028 기숙", "재수우선선발반"], "type": "Landing", "desc": "AI 영상 제작 · 퍼블리싱 · 반응형",
+      "label": "스파르타 · 기숙 재수우선선발반", "updated": "2026-10-08"
+    },
+    {
+      "path": "encom-school-project-24/", "category": "landing", "brand": "encom", "status": "완료",
+      "title": ["제24회", "학교프로젝트"], "type": "Landing", "desc": "퍼블리싱 · 반응형",
+      "label": "엔컴 · 10월 학교프로젝트", "updated": "2026-08-26"
+    }
+  ]
+}
+</script>
+<script>
+(function () {
+  'use strict';
+  var data = JSON.parse(document.getElementById('data').textContent);
+  var brands = data.brands;
+  var list = data.projects.slice().sort(function (a, b) { return b.updated.localeCompare(a.updated); });
+  var grid = document.getElementById('grid');
+  var STATUS = { '진행 중': '', '검수': ' status--review', '준비 중': ' status--review', '완료': ' status--done' };
+  var CATS = [{ key: 'landing', name: '랜딩' }, { key: 'homepage', name: '홈페이지' }, { key: 'uiux', name: 'UIUX 개선' }];
+  var GROUPS = [{ key: 'sparta', name: '스파르타' }, { key: 'dorm', name: '기숙' }, { key: 'etc', name: '기타' }];
+  function group(p) { return p.brand === 'sparta' || p.brand === 'dorm' ? p.brand : 'etc'; }
+  function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  /* 카드 — 번호는 오래된 순 01부터 */
+  grid.innerHTML = list.map(function (p, i) {
+    var b = brands[p.brand] || { name: p.brand, color: '#888888' };
+    return '<a class="card' + (p.status === '완료' ? ' is-done' : '') + '" href="' + esc('../' + p.path) + '" data-group="' + group(p) + '" data-cat="' + esc(p.category || '') + '" style="--brand:' + esc(b.color) + '">' +
+      '<div class="card__top mono"><span>' + String(list.length - i).padStart(2, '0') + '</span><span>' + esc(p.type) + '</span></div>' +
+      '<div class="card__body"><p class="card__name">' + [].concat(p.title).map(function (t) { return '<span>' + esc(t) + '</span>'; }).join(' ') + '</p><p class="card__desc">' + esc(p.desc) + '</p></div>' +
+      '<div class="card__foot"><span class="brand"><span class="brand__dot" aria-hidden="true"></span><span class="brand__name">' + esc(p.label) + '</span><span class="brand__short">' + esc(b.name) + '</span></span>' +
+      '<span class="status' + (STATUS[p.status] || '') + '">' + esc(p.status) + ' · <span class="mono">' + p.updated.slice(2).replace(/-/g, '.') + '</span></span></div></a>';
+  }).join('');
+
+  /* 드롭다운 — 항목별 개수, 해당 시안이 있는 항목만. 키보드: ↑↓ 이동 · Enter/Space 선택 · Esc 닫기 */
+  var CHECK = '<svg class="dd__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16.8 8.4L9.64048 15.6L7.2 13.1457"/></svg>';
+  function count(fn) { return list.filter(fn).length; }
+  var openDd = null;
+  function Dropdown(id, items, fn, onChange) {
+    var root = document.getElementById(id), btn = root.querySelector('.dd__btn'), menu = root.querySelector('.dd__menu'), valueEl = root.querySelector('.dd__value');
+    var all = [{ key: 'all', name: '전체', n: list.length }].concat(items.map(function (it) {
+      return { key: it.key, name: it.name, n: count(function (p) { return fn(p) === it.key; }) };
+    }).filter(function (it) { return it.n > 0; }));
+    var value = 'all';
+    menu.innerHTML = all.map(function (it) {
+      return '<li class="dd__opt" role="option" tabindex="-1" data-value="' + it.key + '" aria-selected="false">' + CHECK +
+        '<span class="dd__name">' + esc(it.name) + '</span><span class="dd__n mono">' + it.n + '</span></li>';
+    }).join('');
+    var opts = [].slice.call(menu.querySelectorAll('.dd__opt'));
+    function render() {
+      opts.forEach(function (o) { o.setAttribute('aria-selected', String(o.dataset.value === value)); });
+      valueEl.textContent = all.filter(function (it) { return it.key === value; })[0].name;
+    }
+    function open() {
+      if (openDd && openDd !== api) openDd.close();
+      menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); openDd = api;
+      (menu.querySelector('[aria-selected="true"]') || opts[0]).focus();
+    }
+    function close(focusBtn) {
+      if (menu.hidden) return;
+      menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); if (openDd === api) openDd = null;
+      if (focusBtn) btn.focus();
+    }
+    function pick(v) { value = v; render(); close(true); onChange(); }
+    btn.addEventListener('click', function () { if (menu.hidden) open(); else close(); });
+    btn.addEventListener('keydown', function (e) { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); open(); } });
+    menu.addEventListener('click', function (e) { var o = e.target.closest('.dd__opt'); if (o) pick(o.dataset.value); });
+    menu.addEventListener('keydown', function (e) {
+      var i = opts.indexOf(document.activeElement);
+      if (e.key === 'ArrowDown') { e.preventDefault(); opts[Math.min(i + 1, opts.length - 1)].focus(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); opts[Math.max(i - 1, 0)].focus(); }
+      else if (e.key === 'Home') { e.preventDefault(); opts[0].focus(); }
+      else if (e.key === 'End') { e.preventDefault(); opts[opts.length - 1].focus(); }
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (i > -1) pick(opts[i].dataset.value); }
+      else if (e.key === 'Escape') { e.preventDefault(); close(true); }
+      else if (e.key === 'Tab') { close(); }
+    });
+    var api = {
+      close: close,
+      get: function () { return value; },
+      set: function (v) { if (all.some(function (it) { return it.key === v; })) { value = v; render(); } }
+    };
+    render();
+    return api;
+  }
+  document.addEventListener('click', function (e) { if (openDd && !e.target.closest('.dd')) openDd.close(); });
+
+  var fCat = Dropdown('f-cat', CATS, function (p) { return p.category; }, function () { page = 1; apply(); });   /* 필터 바꾸면 1페이지로 */
+  var fBrand = Dropdown('f-brand', GROUPS, group, function () { page = 1; apply(); });
+
+  /* 두 드롭다운 버튼 너비 통일 — 각 선택값을 넣어 본 버튼 너비 중 가장 큰 값 */
+  function fitDropdowns() {
+    var tools = document.querySelector('.tools'), max = 0;
+    tools.style.removeProperty('--dd-w');
+    [].forEach.call(document.querySelectorAll('.dd'), function (dd) {
+      var btn = dd.querySelector('.dd__btn'), valueEl = dd.querySelector('.dd__value'), keep = valueEl.textContent;
+      btn.style.width = 'max-content';
+      valueEl.style.flex = 'none';   /* flex-basis 0이면 글자 폭이 측정에서 빠짐 */
+      [].forEach.call(dd.querySelectorAll('.dd__name'), function (n) {
+        valueEl.textContent = n.textContent;
+        max = Math.max(max, btn.getBoundingClientRect().width);
+      });
+      valueEl.textContent = keep;
+      valueEl.style.flex = '';
+      btn.style.width = '';
+    });
+    tools.style.setProperty('--dd-w', Math.ceil(max) + 'px');
+  }
+  fitDropdowns();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitDropdowns);   /* 웹폰트 로드 후 다시 측정 */
+
+  /* 필터·페이지 — 주소(?type=&brand=&page=)에 남겨 새로고침·공유해도 유지 */
+  var PER = 12;   /* 한 페이지 12개 = 3열×4 · 2열×6 · 1열×12 */
+  var LEFT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 17L10 12L15 7"/></svg>', RIGHT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 7L15 12L10 17"/></svg>';
+  var pager = document.getElementById('pager');
+  var q = new URLSearchParams(location.search);
+  fCat.set(q.get('type'));
+  fBrand.set(q.get('brand'));
+  var page = Math.max(1, parseInt(q.get('page'), 10) || 1);
+  function renderPager(pages) {
+    pager.hidden = pages < 2;
+    if (pages < 2) { pager.innerHTML = ''; return; }
+    /* 번호 — 처음·끝·현재 앞뒤 1개, 사이는 … */
+    var nums = [];
+    for (var n = 1; n <= pages; n++) if (n === 1 || n === pages || Math.abs(n - page) <= 1) nums.push(n);
+    var html = '<button class="pager__btn" type="button" data-page="' + (page - 1) + '" aria-label="이전 페이지"' + (page === 1 ? ' disabled' : '') + '>' + LEFT + '</button>';
+    nums.forEach(function (n, i) {
+      if (i && n - nums[i - 1] > 1) html += '<span class="pager__gap" aria-hidden="true">…</span>';
+      html += '<button class="pager__btn mono" type="button" data-page="' + n + '"' + (n === page ? ' aria-current="page"' : '') + ' aria-label="' + n + '페이지">' + n + '</button>';
+    });
+    html += '<button class="pager__btn" type="button" data-page="' + (page + 1) + '" aria-label="다음 페이지"' + (page === pages ? ' disabled' : '') + '>' + RIGHT + '</button>';
+    pager.innerHTML = html;
+  }
+  pager.addEventListener('click', function (e) {
+    var b = e.target.closest('.pager__btn');
+    if (!b || b.disabled) return;
+    page = +b.dataset.page; apply();
+    document.querySelector('.bar').scrollIntoView({ block: 'start' });
+  });
+  function apply() {
+    var c = fCat.get(), g = fBrand.get();
+    var cards = [].filter.call(grid.querySelectorAll('.card'), function (el) {
+      el.hidden = true;
+      return (c === 'all' || el.dataset.cat === c) && (g === 'all' || el.dataset.group === g);
+    });
+    var shown = cards.length, pages = Math.max(1, Math.ceil(shown / PER));
+    page = Math.min(page, pages);
+    cards.slice((page - 1) * PER, page * PER).forEach(function (el) { el.hidden = false; });
+    renderPager(pages);
+    document.getElementById('count').textContent = shown;
+    document.getElementById('empty').hidden = shown > 0;
+    grid.hidden = shown === 0;
+    document.getElementById('reset').hidden = c === 'all' && g === 'all';
+    var u = new URLSearchParams();
+    if (c !== 'all') u.set('type', c);
+    if (g !== 'all') u.set('brand', g);
+    if (page > 1) u.set('page', page);
+    history.replaceState(null, '', location.pathname + (u.toString() ? '?' + u : ''));
+  }
+  document.getElementById('reset').addEventListener('click', function () { fCat.set('all'); fBrand.set('all'); page = 1; apply(); });
+  apply();
+
+  /* 보기 토글 — 박스형 / 리스트형, 선택은 브라우저에 기억 */
+  var viewBtns = [].slice.call(document.querySelectorAll('.view__btn'));
+  function setView(v) {
+    if (v === 'list') document.documentElement.setAttribute('data-view', 'list');
+    else document.documentElement.removeAttribute('data-view');
+    viewBtns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.view === (v === 'list' ? 'list' : 'grid'))); });
+  }
+  viewBtns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      setView(b.dataset.view);
+      try { localStorage.setItem('itall-list-view', b.dataset.view); } catch (e) {}
+    });
+  });
+  setView(document.documentElement.getAttribute('data-view'));
+
+  /* 테마 토글 — 라이트 / 블랙 */
+  var root = document.documentElement, btn = document.getElementById('theme');
+  function isDark() { var t = root.getAttribute('data-theme'); return t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches; }
+  function sync() { btn.setAttribute('aria-label', isDark() ? '라이트 모드로 전환' : '블랙 모드로 전환'); }
+  btn.addEventListener('click', function () {
+    var next = isDark() ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('itall-list-theme', next); } catch (e) {}
+    sync();
+  });
+  sync();
+})();
+</script>
+</body>
+</html>

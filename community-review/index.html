@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="data:,">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>커뮤니티 후기 이벤트</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <style>
+    /* 사이트 틀 — 2027 명예의 전당 페이지(13.Itall_pages/hall-of-fame-2027)와 동일 */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; }
+    :root {
+      --u: calc(min(100vw - 64px, 1280px) / 1280);   /* 카드 = 콘텐츠 영역(좌우 32), 최대 1280 */
+      --text: #3e3a39;
+      --text-sub: #97989a;
+      --page-bg: #f1f2f4;
+    }
+    body { background: #fff; color: var(--text); font-family: nanumSquareNeo, Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; word-break: keep-all; }
+    a { color: inherit; text-decoration: none; }
+
+  /* ============ 잇올 사이트 GNB (gen_gnb.py 생성 · 실측 www/dormitory.itall.com) ============ */
+  @font-face { font-family: "nanumSquareNeo"; font-weight: 400; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-bRg.woff") format("woff"); }
+  @font-face { font-family: "nanumSquareNeo"; font-weight: 700; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-cBd.woff") format("woff"); }
+  @font-face { font-family: "nanumSquareNeo"; font-weight: 800; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-dEb.woff") format("woff"); }
+
+  .site-head, .gnb-m, .gnb-sheet { color: #3e3a39; font-family: nanumSquareNeo, Pretendard, sans-serif; word-break: keep-all; }
+  .site-head a, .gnb-m a, .gnb-sheet a { color: inherit; text-decoration: none; }
+  .site-head ul, .gnb-m ul, .gnb-sheet ul { margin: 0; padding: 0; list-style: none; }
+  .site-head img, .gnb-m img, .gnb-sheet img { display: block; max-width: none; }
+  .site-head button, .gnb-m button { padding: 0; border: 0; background: none; cursor: pointer; }
+  .site-head { position: sticky; top: 0; z-index: 100; background: #fff; }
+  .gnb-lock, .gnb-lock body { overflow: hidden; }
+
+  /* 상단 띠배너 — PC 54 / MO 60 */
+  .site-banner { background: #0f0f14; }
+  .site-banner__inner { display: grid; grid-template-columns: repeat(3, 1fr); height: 60px; }
+  .site-banner__item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; padding-top: 2px; }
+  .site-banner__item img { width: auto; height: 15px; }
+  .site-banner__item span { font-size: 14px; font-weight: 800; line-height: 1.5; }
+  .site-banner__red { color: #f93026; }
+  .site-banner__yellow { color: #fcc800; }
+  .site-banner__green { color: #00b450; }
+  @media (min-width: 660px) {
+    .site-banner__item { flex-direction: row; gap: 8px; }
+  }
+  @media (min-width: 1024px) {
+    .site-banner__inner { max-width: 1100px; height: 54px; margin: 0 auto; padding: 0 32px; }
+    .site-banner__item { padding-top: 0; }
+    .site-banner__item:first-child { justify-content: flex-start; }
+    .site-banner__item:last-child { justify-content: flex-end; }
+    .site-banner__item img { height: 18px; }
+    .site-banner__item span { font-size: 16px; }
+  }
+
+  /* 공용 — 수능 D-day · 패밀리 사이트 목록 */
+  .gnb__dday { padding: 4px 12px; border-radius: 8px; background: #0d0f14; color: #fff; font-family: Pretendard, sans-serif; font-size: 13px; line-height: 1.5; white-space: nowrap; }
+  .gnb-family__link { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid #e6e6e6; }
+  .gnb-family__list li:last-child .gnb-family__link { border-bottom: 0; }
+  .gnb-family__brand { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .gnb-family__brand img { width: auto; height: 16px; }
+  .gnb-family__brand span { color: #7f7f7f; font-size: 13px; line-height: 1.5; }
+  .gnb-family__promo { display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: 16px; background: #f8f8f8; font-size: 13px; line-height: 1.4; }
+  .gnb-family__promo span { color: #4d4847; }
+  .gnb-family__promo b { color: #7f7f7f; font-weight: 800; }
+
+  /* ── PC (1024~) ── */
+  .gnb { display: none; }
+
+  @media (min-width: 1024px) {
+    .gnb { display: flex; align-items: center; justify-content: space-between; height: 76px; padding: 16px 60px; }
+    .gnb__brand { display: flex; flex-shrink: 0; align-items: center; }
+    .gnb__family { position: relative; }
+    .gnb__family-btn { display: grid; place-items: center; width: 44px; height: 44px; }
+
+    /* 1차 메뉴 — 1024~1279: 14px·간격 12 / 1280~: 16px·30 / 1536~: 48 */
+    .gnb__menu { display: flex; gap: 12px; white-space: nowrap; }
+    .gnb__menu > li { position: relative; }
+    .gnb__link { display: block; font-size: 14px; font-weight: 700; line-height: 1.5; }
+
+    .gnb__shine {
+      background: linear-gradient(90deg, #e6433b, #ff6b63, #fca5a5, #e6433b) 0 center / 200% 100%;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: gnb-shine 2s linear infinite;
+    }
+
+    /* 2차 메뉴 (1차 메뉴 가운데 정렬, GNB 행 기준 top 39) */
+    .gnb__sub { position: absolute; top: 13px; left: 50%; display: none; padding-top: 16px; transform: translateX(-50%); }
+    .gnb__menu > li:hover .gnb__sub,
+    .gnb__menu > li:focus-within .gnb__sub { display: block; }
+    .gnb__sub ul {
+      display: flex; flex-direction: column; min-width: 224px; padding: 16px 0;
+      border-radius: 24px; background: #fff; filter: drop-shadow(0 8px 12px rgba(148, 148, 165, .36));
+    }
+    .gnb__sub a {
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      padding: 6px 32px; color: #4d4847; font-size: 16px; font-weight: 700; line-height: 1.5; white-space: nowrap;
+    }
+    .gnb__sub a:hover, .gnb__sub a:focus-visible { background: #f3f3f3; }
+    .gnb__badge {
+      display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center;
+      width: 50px; padding: 2px 6px; border-radius: 999px; background: #c40f06;
+      color: #fff; font-size: 10px; font-weight: 700; line-height: 1.4;
+    }
+    .gnb__badge--dorm { background: #00b450; }
+
+    /* 패밀리 사이트 (⊙ 버튼 호버) */
+    .gnb__family-panel {
+      position: absolute; top: 37px; right: -60px; z-index: 10; padding-top: 10px;
+      opacity: 0; visibility: hidden; transform: translateY(-8px);
+      transition: opacity .3s cubic-bezier(.4, 0, .2, 1), transform .3s cubic-bezier(.4, 0, .2, 1), visibility .3s;
+    }
+    .gnb__family:hover .gnb__family-panel,
+    .gnb__family:focus-within .gnb__family-panel { opacity: 1; visibility: visible; transform: translateY(0); }
+    .gnb__family-panel .gnb-family { width: 250px; padding: 12px 16px 41px; border-radius: 16px; background: #fff; box-shadow: 0 0 12px rgba(9, 13, 18, .16); }
+
+    .gnb__util { display: flex; flex-shrink: 0; align-items: center; gap: 8px; }
+    .gnb__util .gnb__dday { padding: 4px 16px; }
+    .gnb__util-box {
+      display: flex; align-items: center; justify-content: center; min-width: 118px; height: 28px; padding: 4px 18px;
+      border: 1px solid #e6e6e6; border-radius: 6px; background: #fff; font-size: 13px; font-weight: 800; line-height: 1.5;
+    }
+
+    .gnb-bar, .gnb-m, .gnb-sheet { display: none !important; }
+  }
+  @media (min-width: 1280px) {
+    .gnb__menu { gap: 30px; }
+    .gnb__link { font-size: 16px; }
+    .gnb__util { gap: 16px; }
+  }
+  @media (min-width: 1536px) {
+    .gnb__menu { gap: 48px; }
+  }
+  @keyframes gnb-shine { to { background-position: 200% center; } }
+
+  /* ── MO (~1023) — 헤더 행 69 ── */
+  .gnb-bar { display: flex; align-items: center; justify-content: space-between; height: 69px; padding: 0 20px; background: #fff; }
+  .gnb-bar__brand { display: flex; align-items: center; gap: 4px; }
+  .gnb-bar__family { padding: 4px !important; }
+  .gnb-bar__util { display: flex; align-items: center; }
+  .gnb-bar__box {
+    display: flex; align-items: center; justify-content: center; min-width: 100px; height: 29px; padding: 4px 12px;
+    border: 1px solid #e6e6e6; border-radius: 6px; background: #fff; font-size: 12px; font-weight: 800; line-height: 1.5; white-space: nowrap;
+  }
+  .gnb-bar__menu { margin-left: 16px; }
+
+  /* 전체 메뉴 */
+  .gnb-m { position: fixed; inset: 0; z-index: 1001; overflow-y: auto; overscroll-behavior: contain; padding-bottom: 20px; background: #fff; transform: translateZ(0); }
+  .gnb-m__top { display: flex; align-items: center; justify-content: space-between; height: 68px; padding: 0 20px; }
+  .gnb-m__util { display: flex; align-items: center; gap: 12px; }
+  .gnb-m__close { margin-left: 4px; }
+  .gnb-m__body { padding: 0 20px; }
+  .gnb-m__title { margin: 0; color: #000; font-size: 24px; font-weight: 700; line-height: 1.4; }
+  .gnb-m__title span { display: block; color: #c40f06; }
+  .gnb-m__pair { display: flex; gap: 8px; }
+  .gnb-m__stack { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+  .gnb-m--sparta .gnb-m__pair { margin-top: 24px; }
+  .gnb-m__btn {
+    display: flex; flex: 1; align-items: center; justify-content: center; min-height: 38px; padding: 8px 18px;
+    border-radius: 6px; font-size: 13px; font-weight: 800; line-height: 1.5; text-align: center;
+  }
+  .gnb-m__btn--dark { border: 1px solid #3e3a39; background: #000; color: #fff !important; }
+  .gnb-m__btn--line { border: 1px solid #e6e6e6; background: #fff; color: #000 !important; }
+  .gnb-m__btn--line em { margin: 0 .25em; color: #c40f06; font-style: normal; }
+  .gnb-m__btn--green { min-height: 36px; background: #00b450; color: #fff !important; }
+  .gnb-m__list { margin-top: 32px !important; }
+  .gnb-m__row { display: flex; align-items: center; justify-content: space-between; height: 60px; border-bottom: 1px solid #e6e6e6; }
+  .gnb-m__label { flex: 1; color: #000 !important; font-size: 16px; font-weight: 800; line-height: 1.8; }
+  .gnb-m__toggle { display: flex; align-items: center; height: 100%; padding-left: 32px !important; }
+  .gnb-m__toggle img { transition: transform .2s cubic-bezier(.4, 0, .2, 1); }
+  .gnb-m__toggle[aria-expanded="true"] img { transform: rotate(180deg); }
+  .gnb-m__sub { display: flex; flex-direction: column; gap: 20px; padding: 20px 0 !important; animation: gnb-unfold .3s cubic-bezier(.34, 1.4, .64, 1); transform-origin: top; }
+  .gnb-m__sub[hidden] { display: none; }
+  .gnb-m__sub a { display: flex; align-items: center; justify-content: space-between; color: #000 !important; font-size: 14px; line-height: 1.5; white-space: nowrap; }
+  .gnb-m__badge {
+    display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; width: 50px; height: 18px;
+    border-radius: 20px; background: #c40f06; color: #fff; font-size: 10px; font-weight: 700; line-height: 1;
+  }
+  .gnb-m__badge--dorm { background: #00b450; }
+  @keyframes gnb-unfold { from { opacity: 0; transform: scaleY(.6); } to { opacity: 1; transform: scaleY(1); } }
+
+  /* 기숙 메뉴 — 로고 + 테두리 #CCC 버튼 + 녹색 버튼, 행 높이 60·구분선 #CCC */
+  .gnb-m--dorm .gnb-m__top { height: 65px; }
+  .gnb-m--dorm .gnb-m__body { display: flex; flex-direction: column; gap: 20px; padding-top: 20px; }
+  .gnb-m--dorm .gnb-m__stack { margin-top: 0; gap: 8px; }
+  .gnb-m--dorm .gnb-m__btn--line { border-color: #ccc; color: #3e3a39 !important; }
+  .gnb-m--dorm .gnb-m__list { margin-top: 0 !important; }
+  .gnb-m--dorm .gnb-m__row { border-color: #ccc; }
+  .gnb-m--dorm .gnb-m__label { color: #3e3a39 !important; }
+
+  /* 패밀리 사이트 바텀시트 */
+  .gnb-sheet { position: fixed; inset: 0; z-index: 1002; display: flex; align-items: flex-end; }
+  .gnb-sheet[hidden] { display: none; }
+  .gnb-sheet__dim { position: absolute; inset: 0; background: rgba(0, 0, 0, .5); opacity: 0; transition: opacity .3s ease; }
+  .gnb-sheet__panel {
+    position: relative; width: 100%; max-height: 90dvh; overflow-y: auto; padding: 40px 20px 60px;
+    border-radius: 8px 8px 0 0; background: #fff; transform: translateY(100%); transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+  }
+  .gnb-sheet.is-open .gnb-sheet__dim { opacity: 1; }
+  .gnb-sheet.is-open .gnb-sheet__panel { transform: translateY(0); }
+  .gnb-sheet__title { margin: 0 0 8px; color: #222; font-size: 18px; font-weight: 800; line-height: 1.4; }
+
+  /* 맨 위로 버튼 (GNB 공용) — MO 우하단 20 / 모바일 하단 바 있으면 그 위 / PC 우하단 40 */
+  .gnb-top {
+    position: fixed; z-index: 50; right: 20px; bottom: 20px; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%;
+    background: none; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .3s;
+  }
+  .gnb-top img { display: block; width: 40px; height: 40px; }
+  .gnb-top.is-show { opacity: 1; pointer-events: auto; }
+  .gnb-top:focus-visible { outline: 2px solid #3e3a39; outline-offset: 2px; }
+  body:has(.tabbar) .gnb-top { bottom: 76px; }
+  @media (min-width: 1024px) { .gnb-top, body:has(.tabbar) .gnb-top { right: 40px; bottom: 40px; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gnb__shine, .gnb-m__sub { animation: none; }
+    .gnb-sheet__dim, .gnb-sheet__panel, .gnb__family-panel, .gnb-top { transition: none; }
+  }
+  /* ============ /잇올 사이트 GNB ============ */
+
+    /* ── 페이지 타이틀 + 브레드크럼 ── */
+    .page { background: var(--page-bg); }
+
+    .page__inner {
+      max-width: calc(1280px + 64px);
+      margin: 0 auto;
+      padding: 40px 32px 80px;
+    }
+
+    .page__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 50px;
+      margin-bottom: 40px;
+    }
+
+    .page__title { margin: 0; font-size: 36px; font-weight: 800; line-height: 1.4; }
+
+    .breadcrumb ol { display: flex; align-items: center; margin: 0; padding: 0; list-style: none; }
+    .breadcrumb li { display: flex; align-items: center; font-size: 14px; font-weight: 700; line-height: 20px; }
+
+    .breadcrumb li + li::before {
+      content: "";
+      width: 24px;
+      height: 24px;
+      margin: 0 4px;
+      background: url("assets/gnb/ico_breadcrumbs_arrow.svg") center / contain no-repeat;
+    }
+
+    .breadcrumb__home img { display: block; margin-right: 4px; }
+    .breadcrumb li:nth-child(2) a { color: var(--text-sub); }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .event-card { border-radius: 24px; overflow: hidden; }
+
+    .page__back { display: none; }
+
+    @media (max-width: 1023px) {
+      :root { --u: calc(min(100vw, 1280px) / 1280); }
+      .page__inner { padding: 0 0 40px; }
+      .page__head { min-height: 0; margin: 0; padding: 28px 20px; }
+      .page__title { display: flex; align-items: flex-start; gap: 4px; font-size: 22px; }
+      .page__back { display: block; flex-shrink: 0; margin-top: 5px; }
+      .page__back img { display: block; }
+      .breadcrumb { display: none; }
+      .event-card { border-radius: 0; }
+    }
+
+    /* ===================================================================
+       커뮤니티 후기 이벤트 v1.0 (최종) — Figma mkm66Oh1hnyAE0QNYZoKkB · 섹션 6301:12098
+       PC 랜딩 6301:13131 (1280, 콘텐츠 960 · 좌우 160) · 시안 1px = var(--u) = 카드 폭 / 1280
+       MO 랜딩 6301:13628 (390) · 767px 이하 · 시안 1px = var(--u) = 카드 폭 / 390
+       모달 PC 900 / MO 350(좌우 20) — 고정 px
+       =================================================================== */
+    @font-face { font-family: "GmarketSans"; font-weight: 500; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff") format("woff"); }
+    @font-face { font-family: "GmarketSans"; font-weight: 700; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff") format("woff"); }
+
+    :root {
+      --c-strong: #0d0f14;        /* semantic/text/strong · common/black */
+      --c-normal: #262628;        /* semantic/text/normal */
+      --c-neutral: #7a7a7c;       /* semantic/text/neutral */
+      --c-alt: #97989a;           /* semantic/text/alternative */
+      --c-disable: #d7d8da;       /* semantic/text/disable */
+      --c-white-text: #f6f7f8;    /* semantic/text/white · fill/alternative */
+      --c-fill: #f1f2f4;          /* semantic/fill/normal */
+      --c-line-strong: #bebfc1;   /* semantic/line/strong */
+      --c-negative: #ff323c;      /* semantic/status/negative */
+      --c-primary: #ca0b14;       /* semantic/primary/strong */
+      --c-radio: #e60f19;         /* semantic/primary/normal */
+      --c-dorm: #269336;          /* semantic/dormitory/strong */
+      --c-red95: #fff1f2;         /* atomic/red/95 */
+      --c-green95: #f1fcf3;       /* atomic/green/95 */
+      --c-yellow: #ffdc6d;        /* atomic/orange/80 */
+      --c-brown: #3d2a1e;         /* event/text/brown */
+      --c-brown-sub: #6b5244;     /* event/text/brown-sub */
+      --c-peach: #fff0e5;         /* event/fill/peach */
+      --c-peach-line: #e6c1a7;    /* event/line/peach */
+      --c-point: #ff4405;         /* event/point/orange */
+      --c-fill-orange: #ff6e37;   /* event/fill/orange */
+      --c-kicker: #f27242;        /* event/point/kicker */
+      --c-line-orange: #ff9672;   /* event/line/orange */
+      --c-peach-light: #ffe3d6;   /* event/text/peach-light */
+      --c-kv-chip: #f0622d;       /* event/kv/chip */
+    }
+
+    /* 비율 기준 = 카드 실제 너비 */
+    .event-card { overflow: clip; container-type: inline-size; --u: calc(100cqw / 1280); outline: 1px solid #e1e3e6; outline-offset: -1px; }
+    .sec { position: relative; font-family: Pretendard, -apple-system, BlinkMacSystemFont, sans-serif; color: var(--c-strong); word-break: keep-all; overflow-wrap: break-word; }
+    .sec *, .modal * { box-sizing: border-box; }
+    :where(.sec, .modal) :where(h2, h3, p, ul, ol, dl, dd, table, fieldset, legend) { margin: 0; padding: 0; }
+    :where(.sec, .modal) :where(ul, ol) { list-style: none; }
+    :where(.sec, .modal) img { display: block; max-width: none; }
+    .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .mo-only { display: none; }
+
+    /* ---------- 수량 배지 (선착순 100건 / 추첨 2명) — 그래픽은 SVG, 글자는 실제 텍스트 ---------- */
+    /* --s = 배지 한 변 (PC 카드 120 · MO 카드 90 · PC 모달 80 · MO 모달 56) */
+    .seal { position: absolute; width: var(--s); height: var(--s); }
+    .seal > img { width: 100%; height: auto; }
+    .seal__text {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      display: flex; flex-direction: column; align-items: center; white-space: nowrap; color: #fff;
+      filter: drop-shadow(0 calc(var(--s) * .00807) calc(var(--s) * .00807) rgba(0, 0, 0, .35));
+    }
+    .seal__text small { font-size: calc(var(--s) * .11818); font-weight: 600; line-height: 1.385; letter-spacing: 0.0194em; color: rgba(255, 255, 255, .85); }
+    .seal__text strong { font-size: calc(var(--s) * .2); font-weight: 800; line-height: 1.45; letter-spacing: -0.0194em; }
+    .seal--card { --s: calc(120 * var(--u)); right: calc(20 * var(--u)); top: calc(8 * var(--u)); }
+    .seal--modal { --s: 80px; left: 0; top: 0; }
+
+    /* ============ KV ============ */
+    .kv { height: calc(660 * var(--u)); overflow: hidden; background: #fff; }
+    .kv__bg { position: absolute; }
+    .kv__bg--pc { left: calc(-349 * var(--u)); top: calc(-368 * var(--u)); width: calc(1801 * var(--u)); height: calc(1490 * var(--u)); }
+    .kv__bg--mo, .kv__fade--mo { display: none; }
+    .kv__head {
+      position: absolute; left: 50%; top: calc(69 * var(--u)); transform: translateX(-50%); z-index: 1;
+      display: flex; flex-direction: column; align-items: center; gap: calc(28 * var(--u));
+    }
+    .kv__chip {
+      padding: calc(6 * var(--u)) calc(24 * var(--u)); border-radius: 9999px; background: rgba(240, 98, 45, .9);
+      color: #fff; font-size: calc(24 * var(--u)); font-weight: 600; line-height: 1.45; letter-spacing: -0.023em; white-space: nowrap;
+    }
+    .kv__text { display: flex; flex-direction: column; align-items: center; gap: calc(20 * var(--u)); text-align: center; }
+    .kv__title {
+      font-family: GmarketSans, Pretendard, sans-serif; font-size: calc(80 * var(--u)); font-weight: 500; line-height: 1.1;
+      letter-spacing: -0.08em; color: var(--c-brown); white-space: nowrap;
+    }
+    .kv__title em { font-style: normal; font-weight: 700; color: var(--c-kv-chip); }
+    .kv__desc { font-size: calc(24 * var(--u)); line-height: 1.45; letter-spacing: -0.023em; color: var(--c-brown-sub); white-space: nowrap; }
+    .kv__desc strong { display: block; font-weight: 600; color: var(--c-brown); }
+    .kv__phone { position: absolute; left: 50%; top: calc(361 * var(--u)); width: calc(384 * var(--u)); height: calc(680 * var(--u)); transform: translateX(-50%); overflow: hidden; }
+    .kv__phone img { width: 100%; height: 106.38%; margin-top: -3.19%; object-fit: cover; }
+    .kv__fade { position: absolute; left: 0; bottom: 0; width: 100%; height: calc(140 * var(--u)); object-fit: cover; z-index: 1; pointer-events: none; }
+
+    /* 후기 말풍선 */
+    .kv__bubbles { position: absolute; inset: 0; z-index: 2; }
+    .bubble {
+      position: absolute; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: calc(8 * var(--u));
+      padding: calc(12 * var(--u)) calc(20 * var(--u)); border: 1px solid #fff; border-radius: calc(16 * var(--u)); background: #fff;
+    }
+    .bubble--3, .bubble--4 { box-shadow: calc(6 * var(--u)) calc(5 * var(--u)) calc(11 * var(--u)) rgba(153, 153, 153, .3); }
+    .bubble--1, .bubble--2 { filter: drop-shadow(calc(6 * var(--u)) calc(5 * var(--u)) calc(5.5 * var(--u)) rgba(153, 153, 153, .3)); }
+    .bubble--3 { left: calc(255 * var(--u)); top: calc(538 * var(--u)); width: calc(320 * var(--u)); height: calc(84 * var(--u)); opacity: .9; }
+    .bubble--4 { left: calc(1049 * var(--u)); top: calc(330 * var(--u)); width: calc(257 * var(--u)); }
+    .bubble--1 { left: calc(712 * var(--u)); top: calc(475 * var(--u)); width: calc(320 * var(--u)); opacity: .9; }
+    .bubble--2 { left: calc(-4 * var(--u)); top: calc(412 * var(--u)); width: calc(320 * var(--u)); height: calc(84 * var(--u)); }
+    .bubble__stars { display: block; width: calc(88 * var(--u)); height: calc(16 * var(--u)); background: url("assets/kv/stars5.svg") left center / contain no-repeat; }
+    .bubble__stars--4 { width: calc(70 * var(--u)); background-image: url("assets/kv/stars4.svg"); }
+    .bubble__text { font-size: calc(16 * var(--u)); font-weight: 600; line-height: 1.5; letter-spacing: 0.0057em; color: var(--c-brown); white-space: nowrap; }
+    .bubble__emoji { position: absolute; }
+    .bubble__emoji--party { left: calc(234 * var(--u)); top: calc(15 * var(--u)); width: calc(70 * var(--u)); height: calc(64 * var(--u)); transform: scaleX(-1); }
+    .bubble__emoji--thumb { left: calc(231 * var(--u)); top: calc(-18 * var(--u)); width: calc(70 * var(--u)); height: calc(70 * var(--u)); }
+
+    /* 등장 인터랙션 — JS 있을 때만 숨김 */
+    .js .kv__bubbles > .bubble { translate: 0 24px; opacity: 0; transition: translate .6s cubic-bezier(.2, .7, .2, 1), opacity .6s ease; }
+    .js .kv__bubbles > .bubble.is-in { translate: 0 0; opacity: 1; }
+    .js .kv__bubbles > .bubble--1.is-in, .js .kv__bubbles > .bubble--3.is-in { opacity: .9; }
+    .js .reveal { translate: 0 32px; opacity: 0; transition: translate .7s cubic-bezier(.2, .7, .2, 1), opacity .7s ease; }
+    .js .reveal.is-in { translate: 0 0; opacity: 1; }
+
+    /* ============ S3 · 혜택 · 참여 안내 ============ */
+    .s3 { display: flex; flex-direction: column; align-items: center; gap: calc(48 * var(--u)); padding: calc(100 * var(--u)) calc(160 * var(--u)); background: #fff; }
+    .s3 > * { width: 100%; }
+    .s3-head { display: flex; flex-direction: column; align-items: center; gap: calc(12 * var(--u)); }
+    .s3-head__kicker {
+      display: flex; align-items: center; gap: calc(12 * var(--u)); color: var(--c-kicker);
+      font-size: calc(16 * var(--u)); font-weight: 600; line-height: 1.5; letter-spacing: 0.0057em;
+    }
+    .s3-head__kicker::before, .s3-head__kicker::after { content: ""; width: calc(40 * var(--u)); height: 1px; background: var(--c-kicker); }
+    .s3-head__title { font-size: calc(48 * var(--u)); font-weight: 800; line-height: 1.16; letter-spacing: -0.0282em; color: var(--c-strong); text-align: center; }
+
+    /* 경품 카드 */
+    .prize { display: flex; gap: calc(24 * var(--u)); }
+    .prize__card {
+      position: relative; flex: 1 0 0; display: flex; flex-direction: column; align-items: center; gap: calc(16 * var(--u));
+      padding: calc(28 * var(--u)) calc(40 * var(--u)); border-radius: calc(28 * var(--u)); background: var(--c-peach); overflow: hidden;
+    }
+    .prize__visual { position: relative; width: calc(400 * var(--u)); height: calc(200 * var(--u)); }
+    .prize__visual::before { content: ""; position: absolute; left: 50%; top: 50%; width: calc(200 * var(--u)); height: calc(200 * var(--u)); border-radius: 50%; background: #fff; transform: translate(-50%, -50%); }
+    .prize__img { position: absolute; left: calc(51 * var(--u)); top: calc(10 * var(--u)); width: calc(298 * var(--u)); height: calc(180 * var(--u)); object-fit: cover; }
+    .prize__info { display: flex; flex-direction: column; align-items: center; gap: calc(4 * var(--u)); white-space: nowrap; }
+    .prize__title { display: flex; align-items: center; gap: calc(12 * var(--u)); font-size: 0; }
+    .prize__label { font-size: calc(16 * var(--u)); font-weight: 600; line-height: 1.5; letter-spacing: 0.0057em; color: var(--c-normal); }
+    .prize__label--accent { color: var(--c-point); }
+    .prize__name { font-size: calc(28 * var(--u)); font-weight: 800; line-height: 1.358; letter-spacing: -0.0236em; color: var(--c-strong); }
+    .prize__note { font-size: calc(14 * var(--u)); line-height: 1.429; letter-spacing: 0.0145em; color: var(--c-neutral); }
+
+    /* 참여 기간·대상·혜택 / 참여 방법 라벨 */
+    .info { display: flex; flex-direction: column; gap: calc(20 * var(--u)); }
+    .info__row { display: flex; align-items: center; gap: calc(20 * var(--u)); }
+    .info__row--top { align-items: flex-start; }
+    .pill {
+      flex-shrink: 0; width: calc(112 * var(--u)); padding: calc(4 * var(--u)) 0; border-radius: 9999px; background: var(--c-fill); text-align: center;
+      font-size: calc(18 * var(--u)); font-weight: 600; line-height: 1.445; letter-spacing: -0.0002em; color: var(--c-strong); white-space: nowrap;
+    }
+    .info__value { flex: 1 0 0; min-width: 0; font-size: calc(18 * var(--u)); font-weight: 500; line-height: 1.445; letter-spacing: -0.0002em; color: var(--c-normal); }
+    .info__value b { font-weight: 600; color: var(--c-point); }
+    .checks { display: flex; flex-direction: column; gap: calc(4 * var(--u)); }
+    .checks li { display: flex; align-items: center; gap: calc(4 * var(--u)); }
+    .checks li::before { content: ""; flex-shrink: 0; width: calc(20 * var(--u)); height: calc(20 * var(--u)); background: url("assets/sec/ic_check_broken.svg") center / contain no-repeat; }
+
+    /* 참여 방법 표 */
+    .method { display: flex; flex-direction: column; gap: calc(20 * var(--u)); }
+    .method__body { padding-left: calc(132 * var(--u)); }
+    .mtable { width: 100%; border: 1px solid var(--c-line-strong); border-radius: calc(16 * var(--u)); border-spacing: 0; border-collapse: separate; overflow: hidden; }
+    .mtable th, .mtable td { padding: calc(20 * var(--u)) calc(28 * var(--u)); text-align: left; vertical-align: middle; font-size: calc(16 * var(--u)); font-weight: 600; line-height: 1.5; letter-spacing: 0.0057em; }
+    .mtable tr:not(:last-child) > * { border-bottom: 1px solid var(--c-line-strong); }
+    .mtable th { width: calc(180 * var(--u)); background: var(--c-fill); color: var(--c-strong); white-space: nowrap; }
+    .mtable th small { font-size: calc(14 * var(--u)); font-weight: 400; line-height: 1.429; letter-spacing: 0.0145em; color: var(--c-neutral); }
+    .mtable td { background: #fff; color: var(--c-normal); }
+    .mtable__kw > * + * { margin-top: calc(20 * var(--u)); }
+    .kw { display: flex; align-items: center; gap: calc(12 * var(--u)); }
+    .kw__group { flex-shrink: 0; width: calc(104 * var(--u)); color: var(--c-primary); white-space: nowrap; }
+    .kw--dorm .kw__group { color: var(--c-dorm); }
+    .kw__chips { display: flex; gap: calc(8 * var(--u)); }
+    .kw__chips li {
+      padding: calc(4 * var(--u)) calc(12 * var(--u)); border-radius: calc(6 * var(--u)); background: var(--c-red95);
+      font-size: calc(14 * var(--u)); font-weight: 600; line-height: 1.429; letter-spacing: 0.0145em; color: var(--c-normal); white-space: nowrap;
+    }
+    .kw--dorm .kw__chips li { background: var(--c-green95); }
+    .kw__line { height: 1px; margin-inline: 0; margin-bottom: 0; border: 0;   /* 위·아래 간격은 .mtable__kw의 20(MO 16) */ background: repeating-linear-gradient(90deg, var(--c-line-strong) 0 4px, transparent 4px 8px); }
+    .mtable__photo > * + * { margin-top: calc(2 * var(--u)); }
+    .mtable__accent { color: var(--c-point); }
+    .mtable__sub { font-size: calc(14 * var(--u)); font-weight: 400; line-height: 1.429; letter-spacing: 0.0145em; color: var(--c-neutral); }
+
+    /* 참여하기 (STEP 1 · 2) */
+    .join { display: flex; gap: calc(16 * var(--u)); }
+    .join__step { display: flex; flex-direction: column; border-radius: calc(16 * var(--u)); }
+    .join__step--1 { flex: 1 0 0; min-width: 0; gap: calc(16 * var(--u)); padding: calc(24 * var(--u)) calc(28 * var(--u)); border: 1px solid var(--c-line-orange); background: var(--c-peach); }
+    .join__step--2 {
+      flex-shrink: 0; width: calc(300 * var(--u)); justify-content: space-between; padding: calc(25 * var(--u)) calc(28 * var(--u));
+      background: var(--c-point); box-shadow: 0 calc(8 * var(--u)) calc(20 * var(--u)) rgba(255, 69, 5, .28);
+    }
+    .join__head { display: flex; align-items: center; gap: calc(8 * var(--u)); font-size: calc(18 * var(--u)); font-weight: 600; line-height: 1.445; letter-spacing: -0.0002em; color: var(--c-brown); white-space: nowrap; }
+    .join__step--2 .join__head { color: var(--c-peach-light); }
+    .join__badge {
+      padding: calc(2 * var(--u)) calc(10 * var(--u)); border-radius: 999px; background: var(--c-fill-orange); color: #fff;
+      font-size: calc(13 * var(--u)); font-weight: 600; line-height: 1.385; letter-spacing: 0.0194em;
+    }
+    .join__step--2 .join__badge { background: #fff; color: var(--c-point); }
+    .join__links { display: flex; gap: calc(8 * var(--u)); }
+    .join__links > li { flex: 1 0 0; min-width: 0; }
+    .join__btn {
+      display: flex; align-items: center; justify-content: center; gap: calc(8 * var(--u)); width: 100%;
+      padding: calc(12 * var(--u)) calc(16 * var(--u)); border: 1px solid var(--c-peach-line); border-radius: calc(8 * var(--u)); background: #fff;
+      font: inherit; font-size: calc(18 * var(--u)); font-weight: 600; line-height: 1.445; letter-spacing: -0.0002em; color: var(--c-normal); white-space: nowrap;
+      cursor: pointer; transition: background-color .2s ease, border-color .2s ease;
+    }
+    .join__btn img { width: calc(24 * var(--u)); height: calc(24 * var(--u)); }
+    @media (hover: hover) {
+      .join__btn:hover { background: #fff7f1; border-color: var(--c-line-orange); }
+      .join__btn--register:hover { background: #fff1ea; }
+    }
+    .join__btn:focus-visible, .modal :focus-visible { outline: 2px solid var(--c-strong); outline-offset: 2px; }
+
+    /* 포만한 제외 버전 (Figma 6301:14126 / 6301:14252) — ?ver=no-pomanhan */
+    .ver-no-pm .join__item--pm { display: none; }
+
+    /* ============ S6 · 이벤트 유의사항 ============ */
+    .notice { display: flex; flex-direction: column; gap: calc(8 * var(--u)); padding: calc(80 * var(--u)) calc(160 * var(--u)); background: var(--c-normal); color: var(--c-white-text); }
+    .notice__title { font-size: calc(20 * var(--u)); font-weight: 600; line-height: 1.4; letter-spacing: -0.012em; color: #fff; }
+    .notice__sub { margin-top: calc(12 * var(--u)) !important; font-size: calc(16 * var(--u)); font-weight: 600; line-height: 1.5; letter-spacing: 0.0057em; color: #fff; }
+    .notice__list { display: flex; flex-direction: column; gap: calc(8 * var(--u)); }
+    .notice__list > li, .notice__dates li { font-size: calc(16 * var(--u)); line-height: 1.5; letter-spacing: 0.0057em; }
+    .notice__list > li { position: relative; padding-left: calc(14 * var(--u)); }
+    .notice__list > li::before { content: "※"; position: absolute; left: 0; top: 0; width: calc(10 * var(--u)); }
+    .notice__list > li.is-yellow, .notice__list > li.is-yellow-mark::before, .is-yellow-text, .notice__dates li { color: var(--c-yellow); }
+    .notice__dates { display: flex; flex-direction: column; gap: calc(4 * var(--u)); margin: calc(4 * var(--u)) 0 0 calc(-14 * var(--u)) !important; padding-left: calc(8 * var(--u)) !important; }
+    .notice__dates li { display: flex; align-items: center; gap: calc(4 * var(--u)); }
+    .notice__dates li::before { content: ""; flex-shrink: 0; align-self: flex-start; width: calc(16 * var(--u)); height: calc(24 * var(--u)); background: url("assets/sec/ic_check_broken_notice.svg") center / calc(16 * var(--u)) no-repeat; }
+
+    /* ============ 모달 · 커뮤니티 후기 등록 ============ */
+    .modal {
+      width: 900px; max-width: calc(100vw - 40px); max-height: min(600px, calc(100dvh - 40px)); margin: auto; padding: 0;
+      border: 0; border-radius: 24px; background: #fff; color: var(--c-strong); overflow: hidden;
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, sans-serif; word-break: keep-all; overflow-wrap: break-word;
+    }
+    .modal[open] { display: flex; flex-direction: column; }
+    .modal::backdrop { background: rgba(0, 0, 0, .6); }
+    .is-modal-open, .is-modal-open body { overflow: hidden; }
+    .modal__header { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 40px 40px 0; }
+    .modal__title { font-size: 24px; font-weight: 600; line-height: 1.45; letter-spacing: -0.023em; }
+    .modal__close { display: flex; padding: 0; border: 0; background: none; cursor: pointer; }
+    .modal__body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 32px; margin-top: 32px; padding: 0 40px 40px; overflow-y: auto; overscroll-behavior: contain; }
+
+    .benefit { flex-shrink: 0; border: 1px solid var(--c-primary); border-radius: 12px; overflow: hidden; }
+    .benefit__band { padding: 16px; background: var(--c-primary); color: #fff; text-align: center; font-size: 20px; font-weight: 600; line-height: 1.4; letter-spacing: -0.012em; }
+    .benefit__band em { font-style: normal; color: var(--c-yellow); }
+    .benefit__items { display: flex; justify-content: center; align-items: center; gap: 48px; padding: 24px; }
+    .benefit__item { display: flex; align-items: center; gap: 16px; }
+    .benefit__image { position: relative; flex-shrink: 0; width: 200px; height: 121px; }
+    .benefit__image > img { width: 100%; height: 100%; object-fit: cover; }
+    .benefit__info { display: flex; flex-direction: column; white-space: nowrap; }
+    .benefit__info span { font-size: 14px; line-height: 1.429; letter-spacing: 0.0145em; color: var(--c-neutral); }
+    .benefit__info strong { font-size: 18px; font-weight: 600; line-height: 1.445; letter-spacing: -0.0002em; }
+
+    .form { display: flex; flex-direction: column; gap: 24px; }
+    .field { display: flex; flex-direction: column; gap: 8px; min-width: 0; margin: 0; padding: 0; border: 0; }
+    .field__label { padding: 0; font-size: 15px; font-weight: 500; line-height: 1.625; letter-spacing: 0.0096em; color: var(--c-strong); }
+    .req { font-size: 13px; line-height: 1.385; color: var(--c-negative); }
+    .field__note { font-size: 13px; line-height: 1.385; letter-spacing: 0.0194em; color: var(--c-negative); }
+
+    .radios { display: flex; gap: 24px; }
+    .radio { position: relative; display: flex; align-items: center; gap: 8px; font-size: 15px; line-height: 1.625; letter-spacing: 0.0096em; cursor: pointer; }
+    .radio input, .check { position: absolute; width: 1px; height: 1px; opacity: 0; }
+    .radio__mark { position: relative; width: 20px; height: 20px; border: 1px solid var(--c-line-strong); border-radius: 50%; background: #fff; }
+    .radio input:checked + .radio__mark { border: 1.4px solid var(--c-radio); }
+    .radio input:checked + .radio__mark::after { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; border-radius: 50%; background: var(--c-radio); transform: translate(-50%, -50%); }
+    .radio input:focus-visible + .radio__mark, .check:focus-visible + .check__mark { outline: 2px solid var(--c-strong); outline-offset: 2px; }
+
+    .input {
+      width: 100%; height: 48px; padding: 0 16px; border: 1px solid var(--c-line-strong); border-radius: 6px; background: #fff;
+      font: inherit; font-size: 15px; line-height: 1.625; letter-spacing: 0.0096em; color: var(--c-strong);
+    }
+    .input::placeholder { color: var(--c-alt); opacity: 1; }
+    .input:focus { border-color: var(--c-strong); outline: none; }
+    .input[aria-invalid="true"] { border-color: var(--c-negative); }
+    .select { position: relative; }
+    .select .input { padding-right: 44px; appearance: none; cursor: pointer; text-overflow: ellipsis; }
+    .select .input:invalid { color: var(--c-alt); }
+    .select::after { content: ""; position: absolute; right: 16px; top: 14px; width: 20px; height: 20px; background: url("assets/modal/ic_chevron_down_20.svg") center / contain no-repeat; pointer-events: none; }
+
+    .urls { display: flex; flex-direction: column; gap: 8px; }
+    .urls__row { display: flex; align-items: center; gap: 8px; }
+    .urls__row .input { flex: 1 0 0; min-width: 0; }
+    .urls__del {
+      flex-shrink: 0; width: 46px; height: 46px; padding: 0; border: 1px solid var(--c-strong); border-radius: 8px;
+      background: #fff url("assets/modal/ic_x_20.svg") center / 20px no-repeat; cursor: pointer;
+    }
+    .urls__del:disabled { border-color: var(--c-line-strong); background-image: url("assets/modal/ic_x_20_disabled.svg"); cursor: default; }
+
+    .btn-dark {
+      width: 100%; padding: 12px 16px; border: 0; border-radius: 8px; background: var(--c-strong); color: var(--c-white-text);
+      font: inherit; font-size: 16px; font-weight: 500; line-height: 1.5; letter-spacing: 0.0057em; cursor: pointer;
+    }
+    .btn-dark:disabled { background: var(--c-disable); cursor: default; }
+    @media (hover: hover) { .btn-dark:not(:disabled):hover { background: #2a2c31; } }
+
+    .agree { display: flex; flex-direction: column; gap: 12px; }
+    .agree__all, .agree__label { position: relative; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .agree__all { padding: 12px; border: 1px solid var(--c-line-strong); border-radius: 8px; background: var(--c-fill); font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0.0057em; }
+    .agree__item { display: flex; align-items: center; gap: 8px; padding-left: 4px; }
+    .agree__label { flex: 1 0 0; min-width: 0; font-size: 14px; line-height: 1.429; letter-spacing: 0.0145em; color: var(--c-normal); }
+    .check__mark { flex-shrink: 0; width: 20px; height: 20px; border-radius: 10px; background: var(--c-disable) url("assets/modal/ic_check_16.svg") center / 16px no-repeat; transition: background-color .2s ease; }
+    .check:checked + .check__mark { background-color: var(--c-strong); }
+    .agree__toggle {
+      flex-shrink: 0; width: 24px; height: 24px; padding: 0; border: 0; cursor: pointer;
+      background: url("assets/modal/ic_chevron_down_24.svg") center / contain no-repeat; transition: rotate .25s ease;
+    }
+    .agree__toggle[aria-expanded="true"] { rotate: 180deg; }
+    /* 약관 상세 — 기본 접힘, 화살표로 펼침 (높이 전환) */
+    .agree__detail { display: grid; grid-template-rows: 0fr; margin-top: -12px; transition: grid-template-rows .3s ease, margin-top .3s ease; }
+    .agree__detail.is-open { grid-template-rows: 1fr; margin-top: 0; }
+    .agree__clip { min-height: 0; overflow: hidden; }
+    .agree__box {
+      display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: 8px; background: var(--c-white-text);
+      font-size: 13px; line-height: 1.385; letter-spacing: 0.0194em; color: var(--c-neutral);
+    }
+    .agree__rows { display: flex; flex-direction: column; gap: 2px; }
+    .agree__rows > div { display: flex; gap: 4px; }
+    .agree__rows dt { flex-shrink: 0; }
+    .agree__notes { display: flex; flex-direction: column; gap: 2px; }
+    .agree__notes li { display: flex; gap: 4px; }
+    .agree__notes li::before { content: "※"; flex-shrink: 0; }
+
+    /* ============ MO (767px 이하) — Figma MO 390 기준 ============ */
+    @media (max-width: 767px) {
+      .event-card { --u: calc(100cqw / 390); outline: 0; }
+      .mo-only { display: inline; }
+
+      /* KV */
+      .kv { height: calc(603 * var(--u)); }
+      .kv__bg--pc, .kv__fade--pc { display: none; }
+      .kv__bg--mo { display: block; left: calc(-365 * var(--u)); top: calc(-197 * var(--u)); width: calc(1011 * var(--u)); height: calc(1005 * var(--u)); }
+      .kv__fade--mo { display: block; height: calc(71 * var(--u)); }
+      .kv__head { top: calc(48 * var(--u)); gap: calc(16 * var(--u)); }
+      .kv__chip { padding: calc(4 * var(--u)) calc(16 * var(--u)); background: var(--c-kv-chip); font-size: calc(15 * var(--u)); line-height: 1.625; letter-spacing: 0.0096em; }
+      .kv__text { gap: calc(12 * var(--u)); }
+      .kv__title { font-size: calc(40 * var(--u)); line-height: 1.15; letter-spacing: -0.04em; }
+      .kv__desc { font-size: calc(16 * var(--u)); line-height: 1.5; letter-spacing: 0.0057em; }
+      .kv__phone { top: calc(289 * var(--u)); width: calc(230 * var(--u)); height: calc(407 * var(--u)); }
+      .bubble { gap: calc(6 * var(--u)); padding: calc(8 * var(--u)) calc(12 * var(--u)); border-radius: calc(12 * var(--u)); }
+      .bubble--1, .bubble--3, .js .kv__bubbles > .bubble--1.is-in, .js .kv__bubbles > .bubble--3.is-in { opacity: 1; }
+      .bubble--3 { left: calc(24 * var(--u)); top: calc(526 * var(--u)); width: auto; height: auto; }
+      .bubble--4 { left: calc(218.5 * var(--u)); top: calc(284.82 * var(--u)); width: calc(180 * var(--u)); }
+      .bubble--1 { left: calc(132 * var(--u)); top: calc(437 * var(--u)); width: calc(228 * var(--u)); }
+      .bubble--2 { left: calc(10 * var(--u)); top: calc(370 * var(--u)); width: calc(184 * var(--u)); height: auto; }
+      .bubble__stars { width: calc(64 * var(--u)); height: calc(12 * var(--u)); background-image: url("assets/kv/stars5_mo.svg"); }
+      .bubble__stars--4 { width: calc(51 * var(--u)); background-image: url("assets/kv/stars4_mo.svg"); }
+      .bubble__text { font-size: calc(12 * var(--u)); line-height: 1.334; letter-spacing: 0.0252em; }
+      .bubble__emoji--party { left: calc(174 * var(--u)); top: calc(13.7 * var(--u)); width: calc(40 * var(--u)); height: calc(36.57 * var(--u)); }
+      .bubble__emoji--thumb { left: calc(135 * var(--u)); top: calc(-19 * var(--u)); width: calc(40 * var(--u)); height: calc(40 * var(--u)); }
+
+      /* S3 */
+      .s3 { gap: calc(40 * var(--u)); padding: calc(64 * var(--u)) calc(20 * var(--u)); }
+      .s3-head__kicker { font-size: calc(14 * var(--u)); line-height: 1.429; letter-spacing: 0.0145em; }
+      .s3-head__title { font-size: calc(28 * var(--u)); line-height: 1.358; letter-spacing: -0.0236em; }
+      .prize { flex-direction: column; gap: calc(16 * var(--u)); }
+      .prize__card { flex: none; padding: calc(24 * var(--u)) calc(20 * var(--u)); border-radius: calc(24 * var(--u)); }
+      .prize__visual { width: calc(300 * var(--u)); height: calc(160 * var(--u)); }
+      .prize__card + .prize__card .prize__visual { height: calc(162 * var(--u)); }
+      .prize__visual::before { width: calc(160 * var(--u)); height: calc(160 * var(--u)); }
+      .prize__img { left: calc(30 * var(--u)); top: 50%; width: calc(240 * var(--u)); height: calc(144 * var(--u)); transform: translateY(-50%); }
+      .prize__title { gap: calc(8 * var(--u)); }
+      .prize__name { font-size: calc(22 * var(--u)); line-height: 1.45; letter-spacing: -0.0194em; }
+      .prize__note { font-size: calc(13 * var(--u)); line-height: 1.385; letter-spacing: 0.0194em; }
+      .seal--card { --s: calc(90 * var(--u)); }
+
+      .info__row, .info__row--top { flex-direction: column; align-items: flex-start; gap: calc(8 * var(--u)); }
+      .pill { font-size: calc(16 * var(--u)); line-height: 1.5; letter-spacing: 0.0057em; }
+      .info__value { flex: none; width: 100%; font-size: calc(16 * var(--u)); line-height: 1.5; letter-spacing: 0.0057em; }
+      .method__body { padding-left: 0; }
+      .mtable th, .mtable td { padding: calc(16 * var(--u)); font-size: calc(15 * var(--u)); line-height: 1.625; letter-spacing: 0.0096em; }
+      .mtable th { width: calc(120 * var(--u)); padding: calc(16 * var(--u)) calc(12 * var(--u)); white-space: normal; }
+      .mtable th small, .mtable__sub { font-size: calc(13 * var(--u)); line-height: 1.385; letter-spacing: 0.0194em; }
+      .mtable__kw > * + * { margin-top: calc(16 * var(--u)); }
+      .kw { flex-direction: column; align-items: flex-start; gap: calc(8 * var(--u)); }
+      .kw__group { width: auto; font-size: calc(14 * var(--u)); line-height: 1.429; letter-spacing: 0.0145em; }
+      .kw__chips { flex-wrap: wrap; }
+      .kw__chips li { padding: calc(4 * var(--u)) calc(8 * var(--u)); font-size: calc(13 * var(--u)); line-height: 1.385; letter-spacing: 0.0194em; }
+      .kw__line { width: 100%; }
+
+      .join { flex-direction: column; gap: calc(12 * var(--u)); }
+      .join__step--1 { flex: none; padding: calc(20 * var(--u)); border: 0; }
+      .join__step--2 { width: 100%; gap: calc(12 * var(--u)); padding: calc(20 * var(--u)); }
+      .join__head { font-size: calc(16 * var(--u)); line-height: 1.5; letter-spacing: 0.0057em; }
+      .join__links { display: grid; grid-template-columns: 1fr 1fr; }
+      .join__btn { padding: calc(12 * var(--u)) calc(16 * var(--u)); font-size: calc(16 * var(--u)); line-height: 1.5; letter-spacing: 0.0057em; }
+      .join__btn--register { height: calc(48 * var(--u)); }
+      /* 포만한 제외 MO: STEP 1 테두리 + 버튼 세로 1열 (6301:14362) */
+      .ver-no-pm .join__step--1 { border: 1px solid var(--c-line-orange); }
+      .ver-no-pm .join__links { grid-template-columns: 1fr; }
+
+      /* S6 */
+      .notice { padding: calc(64 * var(--u)) calc(20 * var(--u)); }
+      .notice__title { font-size: calc(18 * var(--u)); line-height: 1.445; letter-spacing: -0.0002em; }
+      .notice__sub { font-size: calc(15 * var(--u)); line-height: 1.625; letter-spacing: 0.0096em; }
+      .notice__list > li, .notice__dates li { font-size: calc(14 * var(--u)); line-height: 1.429; letter-spacing: 0.0145em; }
+      .notice__dates li::before { height: calc(20 * var(--u)); }
+
+      /* 모달 MO */
+      .modal { width: 350px; max-width: calc(100vw - 40px); max-height: min(560px, calc(100dvh - 40px)); border-radius: 20px; }
+      .modal__header { padding: 32px 20px 0; }
+      .modal__title { font-size: 22px; line-height: 1.45; letter-spacing: -0.0194em; }
+      .modal__body { gap: 24px; margin-top: 24px; padding: 0 20px 32px; }
+      .benefit__band { padding: 8px 16px; font-size: 15px; line-height: 1.625; letter-spacing: 0.0096em; }
+      .benefit__items { gap: 12px; padding: 20px 12px; }
+      .benefit__item { flex: 1 0 0; flex-direction: column; gap: 6px; }
+      .benefit__image { width: 132px; height: 80px; }
+      .seal--modal { --s: 56px; }
+      .benefit__info span { font-size: 13px; line-height: 1.385; letter-spacing: 0.0194em; }
+      .benefit__info strong { font-size: 15px; line-height: 1.625; letter-spacing: 0.0096em; }
+      .form { gap: 20px; }
+      .agree__rows { gap: 6px; }
+      .agree__rows > div { flex-direction: column; gap: 2px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .js .kv__bubbles > .bubble, .js .reveal, .agree__detail, .agree__toggle, .check__mark { transition: none; }
+    }
+  </style>
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<!-- ============ 잇올 사이트 GNB (gen_gnb.py 생성 · PC 1024~ / MO ~1023) ============ -->
+<div class="site-head">
+  <div class="site-banner">
+    <div class="site-banner__inner">
+      <a class="site-banner__item" href="https://www.itall.com/recruit/2027_Bansu" target="_blank" rel="noopener"><img src="assets/gnb/new-sparta-white.svg" width="101" height="18" alt="잇올 스파르타"><img src="assets/gnb/new-study-cafe-white.svg" width="84" height="18" alt="잇올 몰입관"><span class="site-banner__red">반수반</span></a>
+      <a class="site-banner__item" href="https://www.itall.com/recruit/2027_winter" target="_blank" rel="noopener"><img src="assets/gnb/new-sparta-white.svg" width="101" height="18" alt="잇올 스파르타"><img src="assets/gnb/new-study-cafe-white.svg" width="84" height="18" alt="잇올 몰입관"><span class="site-banner__yellow">윈터스쿨</span></a>
+      <a class="site-banner__item" href="https://dormitory.itall.com/recruit/2027_winter" target="_blank" rel="noopener"><img src="assets/gnb/new-dormitory-white.svg" width="98" height="18" alt="잇올 기숙학원"><span class="site-banner__green">윈터스쿨</span></a>
+    </div>
+  </div>
+  <header class="gnb" aria-label="사이트 메뉴">
+    <div class="gnb__brand">
+      <a href="https://www.itall.com/" target="_blank" rel="noopener"><img src="assets/gnb/itall_logo.svg" width="134" height="24" alt="잇올 스파르타"></a>
+      <div class="gnb__family">
+        <button class="gnb__family-btn" type="button" aria-label="패밀리 사이트" aria-haspopup="true"><img src="assets/gnb/ico_dropdown.svg" width="20" height="20" alt=""></button>
+        <div class="gnb__family-panel">
+          <div class="gnb-family">
+          <ul class="gnb-family__list">
+            <li><a class="gnb-family__link" href="https://www.itall.com/" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-sparta.svg" width="89" height="16" alt="잇올 스파르타"><span>몰입의 기준을 세우다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+            <li><a class="gnb-family__link" href="https://www.itall.com/immersion-camp" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-study-cafe.svg" width="75" height="16" alt="잇올 몰입관"><span>몰입의 경험을 최적화하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+            <li><a class="gnb-family__link" href="https://dormitory.itall.com" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-dormitory.svg" width="87" height="16" alt="잇올 기숙학원"><span>몰입의 일상을 완성하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+          </ul>
+          <a class="gnb-family__promo" href="https://www.itall.com/contents/mentorings" target="_blank" rel="noopener">
+            <span>명문대 타이틀을 수익과 커리어로 전환하는 선택</span>
+            <b>명문대 멘토(CA) 모집중</b>
+          </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <nav aria-label="주 메뉴">
+      <ul class="gnb__menu">
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/immersion/system" target="_blank" rel="noopener">몰입공부 시스템</a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/immersion/system" target="_blank" rel="noopener">몰입공부 시스템</a></li>
+            <li><a href="https://www.itall.com/immersion/space" target="_blank" rel="noopener">공간/생활</a></li>
+            <li><a href="https://www.itall.com/immersion/study" target="_blank" rel="noopener">학습/입시/콘텐츠</a></li>
+            <li><a href="https://www.itall.com/immersion/billboard" target="_blank" rel="noopener">빌보드/부트캠프</a></li>
+            <li><a href="https://www.itall.com/immersion/ai" target="_blank" rel="noopener">티처스/잇생부</a></li>
+            <li><a href="https://www.itall.com/immersion/admission-2028" target="_blank" rel="noopener">2028 입시정보</a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/direct-center" target="_blank" rel="noopener"><span class="gnb__shine">직영 센터/캠프</span></a>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/recruit" target="_blank" rel="noopener">모집안내</a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/recruit/2027_winter" target="_blank" rel="noopener">스파르타/몰입관 윈터스쿨<span class="gnb__badge">모집중</span></a></li>
+            <li><a href="https://www.itall.com/recruit/2027_Bansu" target="_blank" rel="noopener">스파르타/몰입관 반수반<span class="gnb__badge">마감임박</span></a></li>
+            <li><a href="https://www.itall.com/recruit/highschool-final-exam-pass" target="_blank" rel="noopener">스파르타/몰입관 고등 기말고사패스<span class="gnb__badge">모집중</span></a></li>
+            <li><a href="https://www.itall.com/recruit/high_immersion" target="_blank" rel="noopener">스파르타/몰입관 고등 몰입 관리반<span class="gnb__badge">상시모집</span></a></li>
+            <li><a href="https://dormitory.itall.com/recruit/2027_winter" target="_blank" rel="noopener">기숙 윈터스쿨<span class="gnb__badge gnb__badge--dorm">모집중</span></a></li>
+            <li><a href="https://dormitory.itall.com/recruit/2027-jaesu" target="_blank" rel="noopener">기숙 재수정규반<span class="gnb__badge gnb__badge--dorm">대기접수</span></a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/glory_honor" target="_blank" rel="noopener">입시 결과</a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/glory_honor" target="_blank" rel="noopener">입시 결과</a></li>
+            <li><a href="https://www.itall.com/glory_honor/perfect-story" target="_blank" rel="noopener">수능 만점자 스토리</a></li>
+            <li><a href="https://www.itall.com/glory_honor/passing-story" target="_blank" rel="noopener">합격 수기</a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/scholarship" target="_blank" rel="noopener">장학</a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/scholarship?tab=allkey" target="_blank" rel="noopener">올키 장학</a></li>
+            <li><a href="https://www.itall.com/scholarship?tab=foundation" target="_blank" rel="noopener">백태규백다애 장학회</a></li>
+            <li><a href="https://www.itall.com/scholarship?tab=principal-recommendation" target="_blank" rel="noopener">원장추천 특별장학</a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/customer-service" target="_blank" rel="noopener">고객센터</a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/customer-service?tab=faq" target="_blank" rel="noopener">자주 하는 질문</a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=online-consultant" target="_blank" rel="noopener">온라인 상담</a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=story" target="_blank" rel="noopener">잇올 스토리</a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=bamboo" target="_blank" rel="noopener">잇올 대나무숲</a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=notice" target="_blank" rel="noopener">공지사항</a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/contents" target="_blank" rel="noopener">콘텐츠</a>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/events" target="_blank" rel="noopener">이벤트</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="gnb__util">
+      <span class="gnb__dday">수능 <span class="js-dday">D-43</span></span>
+      <span class="gnb__util-box">의장 직통메일</span>
+    </div>
+  </header>
+
+  <div class="gnb-bar">
+    <div class="gnb-bar__brand">
+      <a href="https://www.itall.com/" target="_blank" rel="noopener"><img src="assets/gnb/itall_logo.svg" width="100" height="18" alt="잇올 스파르타"></a>
+      <button class="gnb-bar__family js-sheet-open" type="button" aria-label="패밀리 사이트" aria-haspopup="dialog" aria-controls="gnb-sheet"><img src="assets/gnb/ico_dropdown.svg" width="16" height="16" alt=""></button>
+    </div>
+    <div class="gnb-bar__util">
+      <span class="gnb-bar__box">의장 직통메일</span>
+      <button class="gnb-bar__menu js-menu-open" type="button" aria-label="전체 메뉴 열기" aria-expanded="false" aria-controls="gnb-m"><img src="assets/gnb/ico_menu.svg" width="24" height="24" alt=""></button>
+    </div>
+  </div>
+</div>
+
+<div class="gnb-m gnb-m--sparta" id="gnb-m" role="dialog" aria-modal="true" aria-label="전체 메뉴" hidden>
+  <div class="gnb-m__top">
+    <a class="gnb-m__home" href="https://www.itall.com/" target="_blank" rel="noopener"><img src="assets/gnb/ico_home.svg" width="28" height="28" alt="홈"></a>
+    <div class="gnb-m__util">
+      <span class="gnb__dday">수능 <span class="js-dday">D-43</span></span>
+      <span class="gnb-bar__box">의장 직통메일</span>
+      <button class="gnb-m__close js-menu-close" type="button" aria-label="전체 메뉴 닫기"><img src="assets/gnb/ico_close_new.svg" width="24" height="24" alt=""></button>
+    </div>
+  </div>
+  <div class="gnb-m__body">
+      <p class="gnb-m__title">꿈이 모두 이루어지는 공간<span>잇올 스파르타</span></p>
+      <div class="gnb-m__pair">
+        <a class="gnb-m__btn gnb-m__btn--dark" href="https://www.itall.com/contents" target="_blank" rel="noopener">콘텐츠</a>
+        <a class="gnb-m__btn gnb-m__btn--dark" href="https://www.itall.com/events" target="_blank" rel="noopener">이벤트/혜택</a>
+      </div>
+      <div class="gnb-m__stack">
+        <a class="gnb-m__btn gnb-m__btn--line" href="https://onlinebooks.co.kr/books/itall_sparta/#p=1" target="_blank" rel="noopener">잇올 한눈에 보기 <em>잇올 매뉴얼 e-Book</em></a>
+        <a class="gnb-m__btn gnb-m__btn--line" href="https://onlinebooks.co.kr/books/csjg/#p=1" target="_blank" rel="noopener">잇올 <em>합격수기 공모전 당선작</em> 확인하기</a>
+      </div>
+    <ul class="gnb-m__list">
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/immersion/system" target="_blank" rel="noopener">몰입공부 시스템</a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-0" aria-label="몰입공부 시스템 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-0" hidden>
+            <li><a href="https://www.itall.com/immersion/system" target="_blank" rel="noopener"><span>몰입공부 시스템</span></a></li>
+            <li><a href="https://www.itall.com/immersion/space" target="_blank" rel="noopener"><span>공간/생활</span></a></li>
+            <li><a href="https://www.itall.com/immersion/study" target="_blank" rel="noopener"><span>학습/입시/콘텐츠</span></a></li>
+            <li><a href="https://www.itall.com/immersion/billboard" target="_blank" rel="noopener"><span>빌보드/부트캠프</span></a></li>
+            <li><a href="https://www.itall.com/immersion/ai" target="_blank" rel="noopener"><span>티처스/잇생부</span></a></li>
+            <li><a href="https://www.itall.com/immersion/admission-2028" target="_blank" rel="noopener"><span>2028 입시정보</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row"><a class="gnb-m__label" href="https://www.itall.com/direct-center" target="_blank" rel="noopener">직영 센터/캠프</a></div>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/recruit" target="_blank" rel="noopener">모집안내</a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-2" aria-label="모집안내 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-2" hidden>
+            <li><a href="https://www.itall.com/recruit/2027_winter" target="_blank" rel="noopener"><span>스파르타/몰입관 윈터스쿨</span><span class="gnb-m__badge">모집중</span></a></li>
+            <li><a href="https://www.itall.com/recruit/2027_Bansu" target="_blank" rel="noopener"><span>스파르타/몰입관 반수반</span><span class="gnb-m__badge">마감임박</span></a></li>
+            <li><a href="https://www.itall.com/recruit/highschool-final-exam-pass" target="_blank" rel="noopener"><span>스파르타/몰입관 고등 기말고사패스</span><span class="gnb-m__badge">모집중</span></a></li>
+            <li><a href="https://www.itall.com/recruit/high_immersion" target="_blank" rel="noopener"><span>스파르타/몰입관 고등 몰입 관리반</span><span class="gnb-m__badge">상시모집</span></a></li>
+            <li><a href="https://dormitory.itall.com/recruit/2027_winter" target="_blank" rel="noopener"><span>기숙 윈터스쿨</span><span class="gnb-m__badge gnb-m__badge--dorm">모집중</span></a></li>
+            <li><a href="https://dormitory.itall.com/recruit/2027-jaesu" target="_blank" rel="noopener"><span>기숙 재수정규반</span><span class="gnb-m__badge gnb-m__badge--dorm">대기접수</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/glory_honor" target="_blank" rel="noopener">입시 결과</a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-3" aria-label="입시 결과 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-3" hidden>
+            <li><a href="https://www.itall.com/glory_honor" target="_blank" rel="noopener"><span>입시 결과</span></a></li>
+            <li><a href="https://www.itall.com/glory_honor/perfect-story" target="_blank" rel="noopener"><span>수능 만점자 스토리</span></a></li>
+            <li><a href="https://www.itall.com/glory_honor/passing-story" target="_blank" rel="noopener"><span>합격 수기</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/scholarship" target="_blank" rel="noopener">장학</a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-4" aria-label="장학 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-4" hidden>
+            <li><a href="https://www.itall.com/scholarship?tab=allkey" target="_blank" rel="noopener"><span>올키 장학</span></a></li>
+            <li><a href="https://www.itall.com/scholarship?tab=foundation" target="_blank" rel="noopener"><span>백태규백다애 장학회</span></a></li>
+            <li><a href="https://www.itall.com/scholarship?tab=principal-recommendation" target="_blank" rel="noopener"><span>원장추천 특별장학</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/customer-service" target="_blank" rel="noopener">고객센터</a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-5" aria-label="고객센터 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-5" hidden>
+            <li><a href="https://www.itall.com/customer-service?tab=faq" target="_blank" rel="noopener"><span>자주 하는 질문</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=online-consultant" target="_blank" rel="noopener"><span>온라인 상담</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=story" target="_blank" rel="noopener"><span>잇올 스토리</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=bamboo" target="_blank" rel="noopener"><span>잇올 대나무숲</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=notice" target="_blank" rel="noopener"><span>공지사항</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row"><a class="gnb-m__label" href="https://www.itall.com/contents" target="_blank" rel="noopener">콘텐츠</a></div>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row"><a class="gnb-m__label" href="https://www.itall.com/events" target="_blank" rel="noopener">이벤트</a></div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="gnb-sheet" id="gnb-sheet" role="dialog" aria-modal="true" aria-labelledby="gnb-sheet-title" hidden>
+  <div class="gnb-sheet__dim js-sheet-close"></div>
+  <div class="gnb-sheet__panel">
+    <p class="gnb-sheet__title" id="gnb-sheet-title">어떤 사이트로 이동할까요?</p>
+    <div class="gnb-family gnb-family--sheet">
+          <ul class="gnb-family__list">
+            <li><a class="gnb-family__link" href="https://www.itall.com/" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-sparta.svg" width="89" height="16" alt="잇올 스파르타"><span>몰입의 기준을 세우다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+            <li><a class="gnb-family__link" href="https://www.itall.com/immersion-camp" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-study-cafe.svg" width="75" height="16" alt="잇올 몰입관"><span>몰입의 경험을 최적화하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+            <li><a class="gnb-family__link" href="https://dormitory.itall.com" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-dormitory.svg" width="87" height="16" alt="잇올 기숙학원"><span>몰입의 일상을 완성하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+          </ul>
+          <a class="gnb-family__promo" href="https://www.itall.com/contents/mentorings" target="_blank" rel="noopener">
+            <span>명문대 타이틀을 수익과 커리어로 전환하는 선택</span>
+            <b>명문대 멘토(CA) 모집중</b>
+          </a>
+    </div>
+  </div>
+</div>
+
+<!-- 맨 위로 — GNB와 함께 공용 (스크롤 300px 이후 노출) -->
+<button class="gnb-top" type="button" aria-label="맨 위로 이동"><img src="assets/gnb/ic_scroll_up.svg" width="40" height="40" alt=""></button>
+
+<script>
+  /* GNB — 수능 D-day · 모바일 메뉴 · 아코디언 · 패밀리 사이트 바텀시트 */
+  (function () {
+    'use strict';
+    var d = Math.round((new Date(2026, 10, 19) - new Date(new Date().toDateString())) / 864e5);
+    document.querySelectorAll('.js-dday').forEach(function (el) { el.textContent = d > 0 ? 'D-' + d : 'D-DAY'; });
+
+    var root = document.documentElement;
+    var menu = document.getElementById('gnb-m');
+    var sheet = document.getElementById('gnb-sheet');
+    var opener = null;
+    var openedAt = 0;
+
+    /* 레이어 열림/닫힘 알림 — 랜딩 KV 영상은 이 이벤트로 일시정지(모바일에서 영상 위 고정 레이어 깜빡임 방지) */
+    function notify(isOpen) { document.dispatchEvent(new CustomEvent('gnb:toggle', { detail: { open: isOpen } })); }
+
+    function open(layer, trigger) {
+      clearTimeout(layer._closeTimer);   /* 직전 닫기 타이머가 남아 있으면 다시 연 레이어를 숨기므로 취소 */
+      opener = trigger;
+      openedAt = Date.now();
+      layer.hidden = false;
+      root.classList.add('gnb-lock');
+      void layer.offsetWidth;
+      layer.classList.add('is-open');
+      if (trigger.hasAttribute('aria-expanded')) trigger.setAttribute('aria-expanded', 'true');
+      notify(true);
+      var first = layer.querySelector('a, button');
+      if (first) first.focus({ preventScroll: true });
+    }
+    function close(layer) {
+      layer.classList.remove('is-open');
+      root.classList.remove('gnb-lock');
+      var done = function () { layer.hidden = true; };
+      clearTimeout(layer._closeTimer);
+      if (layer === menu || window.matchMedia('(prefers-reduced-motion: reduce)').matches) done();   /* 전체 메뉴는 즉시 (실사이트 동일) */
+      else layer._closeTimer = setTimeout(done, 300);
+      notify(false);
+      if (opener) {
+        if (opener.hasAttribute('aria-expanded')) opener.setAttribute('aria-expanded', 'false');
+        opener.focus({ preventScroll: true });
+      }
+    }
+    /* ☰ 자리에 ✕가 겹쳐 있어 터치 직후 따라오는 탭(더블탭·고스트 클릭)이 바로 닫지 않게 */
+    function guarded(fn) { return function () { if (Date.now() - openedAt < 400) return; fn(); }; }
+
+    document.querySelector('.js-menu-open').addEventListener('click', function (e) { open(menu, e.currentTarget); });
+    menu.querySelector('.js-menu-close').addEventListener('click', guarded(function () { close(menu); }));
+    document.querySelector('.js-sheet-open').addEventListener('click', function (e) { open(sheet, e.currentTarget); });
+    sheet.querySelector('.js-sheet-close').addEventListener('click', guarded(function () { close(sheet); }));
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (!sheet.hidden) close(sheet); else if (!menu.hidden) close(menu);
+    });
+
+    menu.querySelectorAll('.gnb-m__toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var sub = document.getElementById(btn.getAttribute('aria-controls'));
+        var expand = btn.getAttribute('aria-expanded') !== 'true';
+        btn.setAttribute('aria-expanded', String(expand));
+        sub.hidden = !expand;
+      });
+    });
+
+    /* 맨 위로 버튼 — 스크롤 300px 이후 노출 · 클릭 시 맨 위로 */
+    var topBtn = document.querySelector('.gnb-top');
+    if (topBtn) {
+      var onTop = function () { topBtn.classList.toggle('is-show', window.scrollY > 300); };
+      window.addEventListener('scroll', onTop, { passive: true });
+      onTop();
+      topBtn.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      });
+    }
+
+    /* PC로 넓어지면 모바일 레이어 정리 */
+    window.matchMedia('(min-width: 1024px)').addEventListener('change', function (mq) {
+      if (!mq.matches) return;
+      [menu, sheet].forEach(function (layer) { clearTimeout(layer._closeTimer); layer.classList.remove('is-open'); layer.hidden = true; });
+      root.classList.remove('gnb-lock');
+      notify(false);
+    });
+  })();
+</script>
+<!-- ============ /잇올 사이트 GNB ============ -->
+
+  <main class="page">
+    <div class="page__inner">
+      <div class="page__head">
+        <h1 class="page__title"><a class="page__back" href="https://www.itall.com/events" target="_blank" rel="noopener" aria-label="이벤트 목록으로"><img src="assets/gnb/ico_arrow_back_red.svg" width="20" height="20" alt=""></a>커뮤니티 후기 이벤트</h1>
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <ol>
+            <li><a href="https://www.itall.com/main" target="_blank" rel="noopener">홈</a></li>
+            <li><a href="https://www.itall.com/events" target="_blank" rel="noopener">이벤트</a></li>
+            <li><span aria-current="page">커뮤니티 후기 이벤트</span></li>
+          </ol>
+        </nav>
+      </div>
+      <div class="event-card">
+        <!-- ============ KV (PC 6301:13132 / MO 6301:13629) ============ -->
+        <section class="sec kv" aria-labelledby="h-kv">
+          <img class="kv__bg kv__bg--pc" src="assets/kv/kv_bg.svg" width="1801" height="1490" alt="" aria-hidden="true">
+          <img class="kv__bg kv__bg--mo" src="assets/kv/kv_bg_mo.svg" width="1011" height="1005" alt="" aria-hidden="true">
+          <div class="kv__head">
+            <p class="kv__chip">수능 끝난 잇올러 주목!</p>
+            <div class="kv__text">
+              <h2 class="kv__title" id="h-kv">이제는 <em>후기</em> <br class="mo-only">남길 시간!</h2>
+              <p class="kv__desc">잇올과 함께한 수험 생활<strong>커뮤니티에 여러분의 생생한 이야기를 남겨주세요.</strong></p>
+            </div>
+          </div>
+          <div class="kv__phone"><img src="assets/kv/phone.webp" width="768" height="1449" alt="잇올 커뮤니티 앱 화면 — #잇올 #수험 생활 게시글 목록"></div>
+          <img class="kv__fade kv__fade--pc" src="assets/kv/kv_fade.webp" width="1024" height="112" alt="" aria-hidden="true">
+          <img class="kv__fade kv__fade--mo" src="assets/kv/kv_fade_mo.webp" width="390" height="71" alt="" aria-hidden="true">
+          <!-- 인터랙션: 진입 시 1회, 후기-1 → 4 순서로 아래에서 위로 페이드인 (0.35초 간격, 24px) — 겹침 순서는 시안 레이어 순 -->
+          <ul class="kv__bubbles" aria-label="수강생 후기 예시">
+            <li class="bubble bubble--3" data-order="3">
+              <span class="bubble__stars" role="img" aria-label="별점 5점"></span>
+              <p class="bubble__text">매일 12시간, 흔들리지 않는 공부로 만든 결과</p>
+            </li>
+            <li class="bubble bubble--4" data-order="4">
+              <span class="bubble__stars bubble__stars--4" role="img" aria-label="별점 4점"></span>
+              <p class="bubble__text">두 번 선택한 잇올,<br>내 공부를 할 수 있는 환경이 답!</p>
+            </li>
+            <li class="bubble bubble--1" data-order="1">
+              <span class="bubble__stars" role="img" aria-label="별점 5점"></span>
+              <p class="bubble__text">33254→11211<br>잇올에서 뒤집은 서울대 합격</p>
+              <img class="bubble__emoji bubble__emoji--party" src="assets/kv/emoji_party.webp" width="140" height="117" alt="" aria-hidden="true">
+            </li>
+            <li class="bubble bubble--2" data-order="2">
+              <span class="bubble__stars" role="img" aria-label="별점 5점"></span>
+              <p class="bubble__text">잇올 스케줄로 완성한 올 1등급</p>
+              <img class="bubble__emoji bubble__emoji--thumb" src="assets/kv/emoji_thumb.webp" width="140" height="140" alt="" aria-hidden="true">
+            </li>
+          </ul>
+        </section>
+
+        <!-- ============ S3 · 혜택 · 참여 안내 (PC 6301:13179 / MO 6301:13677)
+             인터랙션: 상품 → 참여 안내 → 참여 방법 → 참여하기 순서로 페이드인 (20% 노출 시 1회, 0.2초 간격, 32px) ============ -->
+        <section class="sec s3" aria-labelledby="h-s3">
+          <div class="s3-head">
+            <p class="s3-head__kicker">EVENT</p>
+            <h2 class="s3-head__title" id="h-s3">참여 안내</h2>
+          </div>
+
+          <ul class="prize reveal" aria-label="이벤트 경품">
+            <li class="prize__card">
+              <div class="prize__visual">
+                <img class="prize__img" src="assets/sec/prize_10k.webp" width="600" height="366" alt="신세계 상품권 1만 원권" loading="lazy">
+              </div>
+              <div class="prize__info">
+                <p class="prize__title"><span class="prize__label prize__label--accent">선착순 혜택</span> <strong class="prize__name">상품권 1만 원</strong></p>
+                <p class="prize__note">※ 1인 최대 3건 인정</p>
+              </div>
+              <span class="seal seal--card" aria-hidden="true"><img src="assets/sec/seal_orange.svg" width="120" height="122" alt=""><span class="seal__text"><small>선착순</small><strong>100건</strong></span></span>
+            </li>
+            <li class="prize__card">
+              <div class="prize__visual">
+                <img class="prize__img" src="assets/sec/prize_100k.webp" width="600" height="366" alt="신세계 상품권 10만 원권" loading="lazy">
+              </div>
+              <div class="prize__info">
+                <p class="prize__title"><span class="prize__label">베스트 리뷰어</span> <strong class="prize__name">상품권 10만 원</strong></p>
+                <p class="prize__note">※ 추첨을 통해 제공</p>
+              </div>
+              <span class="seal seal--card" aria-hidden="true"><img src="assets/sec/seal_black.svg" width="120" height="122" alt=""><span class="seal__text"><small>추첨</small><strong>2명</strong></span></span>
+            </li>
+          </ul>
+
+          <dl class="info reveal">
+            <div class="info__row">
+              <dt class="pill">참여 기간</dt>
+              <dd class="info__value">2026.11.25(수) ~ 2027.01.31(일)</dd>
+            </div>
+            <div class="info__row">
+              <dt class="pill">참여 대상</dt>
+              <dd class="info__value">잇올 스파르타, 잇올 몰입관, 잇올 기숙학원 재원 이력이 있는 학생 및 학부모님</dd>
+            </div>
+            <div class="info__row info__row--top">
+              <dt class="pill">참여 혜택</dt>
+              <dd class="info__value">
+                <ul class="checks">
+                  <li>베스트 리뷰어: 10만 원 상품권 (2명)</li>
+                  <li>선착순 혜택: 1만 원 상품권 <b>(1인 당 최대 3건 인정)</b></li>
+                </ul>
+              </dd>
+            </div>
+          </dl>
+
+          <div class="method reveal">
+            <div class="info__row method__label">
+              <h3 class="pill">참여 방법</h3>
+              <p class="info__value">지정 커뮤니티에 <b>잇올 후기 작성 후, URL 등록</b></p>
+            </div>
+            <div class="method__body">
+              <table class="mtable">
+                <caption class="sr-only">참여 방법 상세</caption>
+                <tbody>
+                  <tr>
+                    <th scope="row">지정 커뮤니티</th>
+                    <td>수만휘 / 오르비 / 포만한 / 로물콘</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">필수 키워드</th>
+                    <td class="mtable__kw">
+                      <div class="kw kw--sparta">
+                        <p class="kw__group">스파르타/몰입관</p>
+                        <ul class="kw__chips"><li>잇올</li><li>독학재수학원</li><li>관리형독서실</li></ul>
+                      </div>
+                      <hr class="kw__line">
+                      <div class="kw kw--dorm">
+                        <p class="kw__group">기숙학원</p>
+                        <ul class="kw__chips"><li>잇올기숙학원</li><li>독학기숙학원</li><li>재수기숙학원</li></ul>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">글자수</th>
+                    <td>100자 이상</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">사진 첨부<small> (선택)</small></th>
+                    <td class="mtable__photo">
+                      <p class="mtable__accent">사진 첨부 시 베스트 리뷰어 <br class="mo-only">선정 확률 UP!</p>
+                      <p class="mtable__sub">(잇올에서 풀었던 문제집, 플래너, <br class="mo-only">수능 성적표 등)</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 참여하기 · 지정 커뮤니티 버튼은 새 창 이동, 등록하기는 등록 모달 노출 -->
+          <div class="join reveal">
+            <div class="join__step join__step--1">
+              <p class="join__head"><span class="join__badge">STEP 1</span>지정 커뮤니티 바로가기</p>
+              <ul class="join__links">
+                <li><a class="join__btn" href="https://cafe.naver.com/suhui" target="_blank" rel="noopener">수만휘<img src="assets/sec/ic_arrow_up_right.svg" width="24" height="24" alt="(새 창)"></a></li>
+                <li><a class="join__btn" href="https://orbi.kr" target="_blank" rel="noopener">오르비<img src="assets/sec/ic_arrow_up_right.svg" width="24" height="24" alt="(새 창)"></a></li>
+                <li class="join__item--pm"><a class="join__btn" href="https://cafe.naver.com/pnmath" target="_blank" rel="noopener">포만한<img src="assets/sec/ic_arrow_up_right.svg" width="24" height="24" alt="(새 창)"></a></li>
+                <li><a class="join__btn" href="https://cafe.naver.com/romul" target="_blank" rel="noopener">로물콘<img src="assets/sec/ic_arrow_up_right.svg" width="24" height="24" alt="(새 창)"></a></li>
+              </ul>
+            </div>
+            <div class="join__step join__step--2">
+              <p class="join__head"><span class="join__badge">STEP 2</span>게시물 URL 등록하기</p>
+              <button class="join__btn join__btn--register" type="button" id="btnRegister" aria-haspopup="dialog">등록하기</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ S6 · 이벤트 유의사항 (PC 6301:13306 / MO 6301:13806) ============ -->
+        <section class="sec notice" aria-labelledby="h-notice">
+          <h2 class="notice__title" id="h-notice">이벤트 유의사항</h2>
+          <ul class="notice__list">
+            <li class="is-yellow">선착순 혜택은 1인 최대 3건까지 인정되며, 1인 최대 상품권 수령액은 3만 원입니다.</li>
+            <li class="is-yellow">커뮤니티 후기 게시물은 전체 공개로 작성해야 하며, 게시 후 3개월간 게시 상태를 유지해야 합니다.</li>
+            <li class="is-yellow">동일 게시글의 반복 게시(복사/붙여넣기)하는 경우 인정되지 않습니다.</li>
+            <li class="is-yellow">필수 키워드가 누락된 경우, 이벤트 참여 게시물로 인정되지 않을 수 있습니다.</li>
+            <li>이벤트 참여 및 경품 발송을 위해 개인정보 수집 및 이용에 동의하신 경우에 한해 이벤트 참여가 가능합니다.</li>
+            <li>홍보 및 마케팅 활용 동의를 거부하실 수 있으나, 이 경우 이벤트 당첨이 제한될 수 있습니다.</li>
+            <li>등록된 후기는 잇올의 마케팅 소재로 활용될 수 있습니다.</li>
+          </ul>
+          <h3 class="notice__sub">&lt;이벤트 경품 안내&gt;</h3>
+          <ul class="notice__list">
+            <li>베스트 리뷰어는 후기의 성실도, 내용 완성도, 조회수 등을 종합 평가하여 선정됩니다. 단, 심사 기준에 부합하지 않는 리뷰만 접수된 경우 시상 인원이 조정될 수 있습니다.</li>
+            <li>경품 발송은 총 2회에 나누어 기프티콘 형태의 상품권이 발송됩니다.
+              <ul class="notice__dates">
+                <li>1차: 27년 1월 중순 (26년 11월 25일 ~ 26년 12월 31일까지 후기 작성자 대상)</li>
+                <li>2차: 27년 2월 중순 (27년 1월 1일 ~ 27년 1월 31일까지 후기 작성자 대상)</li>
+              </ul>
+            </li>
+            <li class="is-yellow-mark"><span class="is-yellow-text">후기 링크 입력 시 기재하신 휴대폰 번호로 기프티콘이 발송됩니다.</span> (참여자 정보 미기재 또는 오기입 시, 이벤트 경품 발송이 불가합니다.)</li>
+            <li>휴대폰 번호 오기입 등 고객 부주의로 인한 불이익은 당사에서 책임지지 않으며, 기프티콘의 정상적인 지급 이후 재발송 및 고객센터 응대는 불가합니다.</li>
+            <li>본 이벤트는 당사 사정에 따라 기간 및 발표 일정이 변동될 수 있습니다.</li>
+            <li>이벤트 선물은 별도의 고지 없이 동등한 가치의 다른 상품으로 대체될 수 있습니다.</li>
+            <li>상품권이 발송될 전화번호(1599-6289)가 스팸 등록되어 있으면 상품권을 확인 못하실 수 있으니, 반드시 스팸 해제 바랍니다.</li>
+            <li>상품권 유효기간이 지나면 사용할 수 없으니 반드시 기한 내 사용 바랍니다.</li>
+          </ul>
+        </section>
+      </div>
+
+      <!-- ============ 모달 · 커뮤니티 후기 등록 (PC 6301:12989·12749 / MO 6301:13060·12869)
+           PC 폭 900·최대 높이 600, MO 좌우 여백 20·최대 높이 560 — 넘치면 본문만 스크롤, 헤더 고정 ============ -->
+      <dialog class="modal" id="regModal" aria-labelledby="regTitle">
+        <div class="modal__header">
+          <h2 class="modal__title" id="regTitle">커뮤니티 후기 등록</h2>
+          <button class="modal__close" type="button" data-close aria-label="닫기"><img src="assets/modal/ic_close_24.svg" width="24" height="24" alt=""></button>
+        </div>
+        <div class="modal__body">
+          <div class="benefit">
+            <p class="benefit__band">잠깐! 커뮤니티 후기에 <br class="mo-only">사진을 첨부하면 <em>당첨 확률 UP!</em></p>
+            <ul class="benefit__items">
+              <li class="benefit__item">
+                <div class="benefit__image">
+                  <img src="assets/sec/prize_10k.webp" width="600" height="366" alt="신세계 상품권 1만 원권" loading="lazy">
+                  <span class="seal seal--modal" aria-hidden="true"><img src="assets/sec/seal_orange.svg" width="120" height="122" alt=""><span class="seal__text"><small>선착순</small><strong>100건</strong></span></span>
+                </div>
+                <p class="benefit__info"><span>선착순 혜택</span><strong>상품권 1만 원</strong></p>
+              </li>
+              <li class="benefit__item">
+                <div class="benefit__image">
+                  <img src="assets/sec/prize_100k.webp" width="600" height="366" alt="신세계 상품권 10만 원권" loading="lazy">
+                  <span class="seal seal--modal" aria-hidden="true"><img src="assets/sec/seal_black.svg" width="120" height="122" alt=""><span class="seal__text"><small>추첨</small><strong>2명</strong></span></span>
+                </div>
+                <p class="benefit__info"><span>베스트 리뷰어</span><strong>상품권 10만 원</strong></p>
+              </li>
+            </ul>
+          </div>
+
+          <form class="form" id="regForm" novalidate>
+            <fieldset class="field">
+              <legend class="field__label">참여자 구분 <span class="req" aria-hidden="true">*</span></legend>
+              <div class="radios">
+                <label class="radio"><input type="radio" name="role" value="student" required><span class="radio__mark" aria-hidden="true"></span>학생</label>
+                <label class="radio"><input type="radio" name="role" value="parent"><span class="radio__mark" aria-hidden="true"></span>학부모</label>
+              </div>
+            </fieldset>
+            <div class="field">
+              <label class="field__label" for="fName">학생 이름 <span class="req" aria-hidden="true">*</span></label>
+              <input class="input" id="fName" name="name" type="text" autocomplete="name" placeholder="이름 (당첨자 확인을 위해 실명 입력 필수)" required>
+            </div>
+            <div class="field">
+              <label class="field__label" for="fPhone">학생 휴대폰 번호 <span class="req" aria-hidden="true">*</span></label>
+              <input class="input" id="fPhone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="휴대폰 번호 (공백, -없이 번호만 입력)" maxlength="11" required>
+            </div>
+            <div class="field">
+              <label class="field__label" for="fCenter">재원했던 센터/캠프 <span class="req" aria-hidden="true">*</span></label>
+              <div class="select">
+                <select class="input" id="fCenter" name="center" required>
+                  <option value="" selected disabled>재원 중이거나 과거 재원했던 센터/캠프 선택</option>
+                  <option>강남센터</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <p class="field__label" id="urlLabel">커뮤니티 후기 게시글 URL 입력 <span class="req" aria-hidden="true">*</span></p>
+              <ul class="urls" id="urlList" aria-labelledby="urlLabel"></ul>
+              <button class="btn-dark btn-add" type="button" id="urlAdd">+ URL 추가하기 (<span id="urlCount">1</span>/3)</button>
+              <p class="field__note">* 등록한 커뮤니티 후기에 사진이 포함되어 있으면 베스트 리뷰어 선정 확률 UP!</p>
+            </div>
+
+            <div class="agree">
+              <label class="agree__all"><input class="check" type="checkbox" id="agreeAll"><span class="check__mark" aria-hidden="true"></span>전체 동의</label>
+              <div class="agree__item">
+                <label class="agree__label"><input class="check agree__one" type="checkbox" id="agreeReq" name="agreeRequired" required><span class="check__mark" aria-hidden="true"></span>[필수] 개인정보 수집 및 이용 동의</label>
+                <button class="agree__toggle" type="button" aria-expanded="false" aria-controls="agreeReqDetail" aria-label="[필수] 개인정보 수집 및 이용 동의 상세 보기"></button>
+              </div>
+              <div class="agree__detail" id="agreeReqDetail">
+                <div class="agree__clip"><div class="agree__box">
+                <dl class="agree__rows">
+                  <div><dt>[수집 항목]</dt><dd>참여자 구분, 학생 이름, 휴대폰 번호, 재원 센터/캠프명, 커뮤니티 후기 게시글 URL</dd></div>
+                  <div><dt>[이용 목적]</dt><dd>재원 이력 확인, 이벤트 참여 확인 및 당첨자 선정, 경품 발송, 경품 지급 내역 관리 및 관련 분쟁·민원 대응</dd></div>
+                  <div><dt>[보유 기간]</dt><dd>이벤트 종료 후 3년까지 보유 후 파기 (단, 관계 법령에 따라 보존이 필요한 정보는 해당 기간 동안 보관)</dd></div>
+                </dl>
+                <ul class="agree__notes">
+                  <li>개인정보의 수집 및 이용에 대한 동의를 거부할 수 있으나, 이 경우 이벤트 참여가 제한됩니다.</li>
+                </ul>
+                </div></div>
+              </div>
+              <div class="agree__item">
+                <label class="agree__label"><input class="check agree__one" type="checkbox" id="agreeOpt" name="agreeMarketing"><span class="check__mark" aria-hidden="true"></span>[선택] 홍보 및 마케팅 활용 동의</label>
+                <button class="agree__toggle" type="button" aria-expanded="false" aria-controls="agreeOptDetail" aria-label="[선택] 홍보 및 마케팅 활용 동의 상세 보기"></button>
+              </div>
+              <div class="agree__detail" id="agreeOptDetail">
+                <div class="agree__clip"><div class="agree__box">
+                <dl class="agree__rows">
+                  <div><dt>[활용 목적]</dt><dd>이벤트에 제출하신 후기를 잇올의 홍보 콘텐츠로 게시</dd></div>
+                  <div><dt>[활용 항목]</dt><dd>이름 일부(예: 김○○), 재원 센터/캠프, 후기 (텍스트, 이미지, 캡처 등)</dd></div>
+                  <div><dt>[활용 범위]</dt><dd>잇올 공식 홈페이지, 블로그, SNS, 온라인 광고, 보도자료, 오프라인 홍보물 등</dd></div>
+                  <div><dt>[보유 기간]</dt><dd>동의를 철회하실 때까지</dd></div>
+                  <div><dt>[동의 철회]</dt><dd>고객센터(1599-6289 · itall@itall.com)로 언제든지 철회하실 수 있습니다.</dd></div>
+                </dl>
+                <ul class="agree__notes">
+                  <li>마케팅 활용 동의를 거부하실 수 있습니다. 다만 동의하지 않을 경우 이벤트 당첨이 제한될 수 있습니다.</li>
+                  <li>활용 시 본인과 다른 사람의 실명 전체, 연락처, 얼굴 등 개인을 알아볼 수 있는 정보는 가림 처리합니다.</li>
+                  <li>철회 요청 시 홈페이지·SNS 게시물은 내리며, 이미 배포된 인쇄물은 회수되지 않습니다.</li>
+                </ul>
+                </div></div>
+              </div>
+            </div>
+
+            <button class="btn-dark btn-submit" type="submit" disabled>등록하기</button>
+          </form>
+        </div>
+      </dialog>
+
+      <template id="tplUrl">
+        <li class="urls__row">
+          <input class="input" type="url" name="url" inputmode="url" placeholder="작성하신 커뮤니티 게시글 URL을 등록해 주세요." aria-label="커뮤니티 후기 게시글 URL">
+          <button class="urls__del" type="button" aria-label="이 URL 입력 칸 삭제"></button>
+        </li>
+      </template>
+    </div>
+  </main>
+
+  <script>
+    /* ===== 커뮤니티 후기 이벤트 v1.0 (최종 시안 6301:12098) — 랜딩 인터랙션 + 등록 모달 ===== */
+    (function () {
+      'use strict';
+      var root = document.documentElement;
+      root.classList.add('js');
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      /* 포만한 제외 버전 미리보기 — ?ver=no-pomanhan */
+      if (/[?&]ver=no-pomanhan\b/.test(location.search)) root.classList.add('ver-no-pm');
+
+      /* KV 후기 말풍선 — 진입 시 1회, 후기-1 → 4 순서로 아래에서 위로 페이드인 (0.35초 간격) */
+      Array.prototype.slice.call(document.querySelectorAll('.kv__bubbles > .bubble'))
+        .sort(function (a, b) { return a.dataset.order - b.dataset.order; })
+        .forEach(function (el, i) {
+          setTimeout(function () { el.classList.add('is-in'); }, reduce ? 0 : 400 + i * 350);
+        });
+
+      /* 01 · 블록 순차 페이드인 — 20% 이상 보이면 1회, 동시에 들어오면 0.2초 간격 (상품 → 참여 안내 → 참여 방법 → 참여하기) */
+      var items = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+      if (reduce || !('IntersectionObserver' in window)) {
+        items.forEach(function (el) { el.classList.add('is-in'); });
+      } else {
+        var queue = [], timer = null;
+        var flush = function () {
+          var el = queue.shift();
+          if (!el) { timer = null; return; }
+          el.classList.add('is-in');
+          timer = setTimeout(flush, 200);
+        };
+        var io = new IntersectionObserver(function (entries) {
+          entries.filter(function (e) { return e.isIntersecting; })
+            .sort(function (a, b) { return items.indexOf(a.target) - items.indexOf(b.target); })
+            .forEach(function (e) { io.unobserve(e.target); queue.push(e.target); });
+          if (!timer) flush();
+        }, { threshold: 0.2 });
+        items.forEach(function (el) { io.observe(el); });
+      }
+
+      /* ===== 02 · 등록하기 → 커뮤니티 후기 등록 모달 ===== */
+      var modal = document.getElementById('regModal');
+      var form = document.getElementById('regForm');
+      var opener = document.getElementById('btnRegister');
+      var MAX_URL = 3;
+
+      function openModal() {
+        if (typeof modal.showModal === 'function') modal.showModal(); else modal.setAttribute('open', '');
+        root.classList.add('is-modal-open');
+        modal.querySelector('.modal__body').scrollTop = 0;
+        /* 약관은 열 때마다 모두 접힘으로 시작 */
+        form.querySelectorAll('.agree__toggle').forEach(function (btn) { setPanel(btn, false); });
+      }
+      function closeModal() {
+        if (typeof modal.close === 'function') modal.close(); else modal.removeAttribute('open');
+      }
+      opener.addEventListener('click', openModal);
+      modal.querySelector('[data-close]').addEventListener('click', closeModal);
+      modal.addEventListener('close', function () { root.classList.remove('is-modal-open'); opener.focus(); });
+
+      /* 게시글 URL — 최대 3개 (3/3이면 추가 비활성), X로 삭제, 1개뿐이면 X 비활성 */
+      var urlList = document.getElementById('urlList');
+      var urlAdd = document.getElementById('urlAdd');
+      var urlCount = document.getElementById('urlCount');
+      var tplUrl = document.getElementById('tplUrl');
+      function syncUrls() {
+        var rows = urlList.children;
+        urlCount.textContent = rows.length;
+        urlAdd.disabled = rows.length >= MAX_URL;
+        for (var i = 0; i < rows.length; i++) rows[i].querySelector('.urls__del').disabled = rows.length === 1;
+      }
+      function addUrl(focus) {
+        if (urlList.children.length >= MAX_URL) return;
+        urlList.appendChild(tplUrl.content.cloneNode(true));
+        syncUrls();
+        if (focus) urlList.lastElementChild.querySelector('input').focus();
+      }
+      urlAdd.addEventListener('click', function () { addUrl(true); });
+      urlList.addEventListener('click', function (e) {
+        var del = e.target.closest('.urls__del');
+        if (!del || del.disabled) return;
+        var row = del.closest('.urls__row');
+        var next = row.nextElementSibling || row.previousElementSibling;
+        row.remove();
+        syncUrls();
+        syncSubmit();
+        if (next) next.querySelector('input').focus();
+      });
+      addUrl(false);
+
+      /* 약관 동의 — 화살표로 상세 펼침/접힘, 전체 동의 ↔ 하위 항목 연동 */
+      var agreeAll = document.getElementById('agreeAll');
+      var agreeOnes = Array.prototype.slice.call(form.querySelectorAll('.agree__one'));
+      agreeAll.addEventListener('change', function () {
+        agreeOnes.forEach(function (c) { c.checked = agreeAll.checked; });
+      });
+      agreeOnes.forEach(function (c) {
+        c.addEventListener('change', function () { agreeAll.checked = agreeOnes.every(function (x) { return x.checked; }); });
+      });
+      form.querySelectorAll('.agree__toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () { setPanel(btn, btn.getAttribute('aria-expanded') !== 'true'); });
+      });
+      function setPanel(btn, open) {
+        var panel = document.getElementById(btn.getAttribute('aria-controls'));
+        btn.setAttribute('aria-expanded', open);
+        panel.classList.toggle('is-open', open);
+        panel.inert = !open;
+      }
+
+      /* 휴대폰 번호 — 숫자만 */
+      var phone = document.getElementById('fPhone');
+      phone.addEventListener('input', function () { phone.value = phone.value.replace(/\D/g, '').slice(0, 11); });
+      form.addEventListener('input', function (e) { if (e.target.matches('.input')) e.target.removeAttribute('aria-invalid'); });
+
+      /* 등록하기 — 필수 항목(구분·이름·번호·센터·URL 1개 이상·[필수] 동의)을 모두 채우면 활성 */
+      var submit = form.querySelector('.btn-submit');
+      function syncSubmit() {
+        var ok = form.querySelector('input[name="role"]:checked')
+          && document.getElementById('fName').value.trim()
+          && phone.value.length >= 10
+          && document.getElementById('fCenter').value
+          && Array.prototype.some.call(urlList.querySelectorAll('input'), function (u) { return u.value.trim(); })
+          && document.getElementById('agreeReq').checked;
+        submit.disabled = !ok;
+      }
+      form.addEventListener('input', syncSubmit);
+      form.addEventListener('change', syncSubmit);
+
+      /* 제출 — 형식 확인 (실제 전송은 개발 연동, 미리보기에서는 안내만) */
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!/^01\d{8,9}$/.test(phone.value)) return fail(phone, '학생 휴대폰 번호를 정확히 입력해 주세요.');
+        var bad = Array.prototype.filter.call(urlList.querySelectorAll('input'), function (u) {
+          return u.value.trim() && !/^https?:\/\/\S+\.\S+/.test(u.value.trim());
+        })[0];
+        if (bad) return fail(bad, 'URL 형식을 확인해 주세요.');
+        if (!document.getElementById('agreeReq').checked) return fail(document.getElementById('agreeReq'), '[필수] 개인정보 수집 및 이용에 동의해 주세요.');
+        alert('등록되었습니다. (미리보기 — 실제 전송은 개발 연동)');
+        closeModal();
+      });
+      function fail(el, msg) {
+        if (el.classList.contains('input')) el.setAttribute('aria-invalid', 'true');
+        alert(msg);
+        el.focus();
+      }
+    })();
+  </script>
+</body>
+</html>

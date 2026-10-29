@@ -1,0 +1,2141 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>티처스리그 재원생 프로그램</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="preload" as="image" href="assets/kv_bg.webp">
+  <style>
+    /* ===== 토큰 — Figma 변수명을 주석으로 ===== */
+    :root {
+      --point: #5158d7;            /* point */
+      --point-deep: #3e44bf;       /* KV 타이틀 */
+      --text-strong: #0d0f14;      /* semantic/text/strong */
+      --text-normal: #262628;      /* semantic/text/normal */
+      --text-neutral: #7a7a7c;     /* semantic/text/neutral */
+      --text-alt: #97989a;         /* semantic/text/alternative */
+      --text-assist: #bebfc1;      /* semantic/text/assistive */
+      --text-white: #f6f7f8;       /* semantic/text/white */
+      --neutral-20: #424345;       /* atomic/neutral/20 */
+      --fill-alt: #f6f7f8;         /* semantic/fill/alternative */
+      --bg-alt: #f1f2f4;           /* semantic/background/alternative */
+      --line-normal: #e1e3e5;      /* semantic/line/normal */
+      --line-alt: #ebedef;         /* semantic/line/alternative */
+      --black: #0d0f14;            /* semantic/common/black */
+      --white: #ffffff;            /* semantic/common/white */
+      --point-bg: #eef4ff;
+      --chip-bg: #e6e8ff;
+      --b8-bg: #e5f3ff;
+      --notice-bg: #262628;
+      --highlight: #fff58c;
+      --page-bg: #f1f2f4;          /* 잇올 사이트 본문 배경 */
+      --text-sub: #97989a;
+    }
+
+    /* ===== 기본 ===== */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      background: var(--white);
+      color: var(--text-normal);
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      word-break: keep-all;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, p, ul, ol, figure { margin: 0; }
+    ul, ol { padding: 0; list-style: none; }
+    img, video, canvas, svg { display: block; max-width: 100%; }
+    button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 2px solid var(--point); outline-offset: 2px; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+      overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    }
+    .pt { color: var(--point); }
+    .fn { position: relative; top: -0.7em; margin-left: 0.08em; font-size: 0.6em; font-weight: inherit; line-height: 0; vertical-align: baseline; }   /* 각주 윗첨자 — 행간 영향 없이 위로 */
+
+    /* ===== 반응형 단위 — 시안 1px = var(--u) =====
+       PC 시안 1280(본문 920) 기준, 768 미만은 MO 시안 390 기준(최대 480까지만 확대) */
+    .event-card { container: page / inline-size; overflow: clip; }   /* 본문 --u 기준 = 카드 폭(최대 1280) */
+    .lp { --u: calc(min(100cqw, 1280px) / 1280); }
+    @container page (max-width: 767px) {
+      .lp { --u: calc(min(100cqw, 480px) / 390); }
+    }
+    @supports not (width: 1cqw) {
+      .lp { --u: calc(min(100vw, 1280px) / 1280); }
+      @media (max-width: 767px) { .lp { --u: calc(min(100vw, 480px) / 390); } }
+    }
+    .only-mo { display: none; }
+    @container page (max-width: 767px) {
+      .only-pc { display: none; }
+      .only-mo { display: revert; }
+    }
+
+    /* ===== 공통 섹션 ===== */
+    .sec { position: relative; overflow: hidden; isolation: isolate; }
+    .sec__in {
+      position: relative;
+      width: calc(1280 * var(--u));
+      margin: 0 auto;
+      padding: calc(100 * var(--u)) calc(180 * var(--u));
+    }
+    .sec__deco { position: absolute; pointer-events: none; z-index: 1; }
+    .sec__deco img { width: 100%; height: auto; }
+    .sec__title {
+      font-size: calc(40 * var(--u));
+      font-weight: 800;
+      line-height: 1.3;
+      letter-spacing: -0.0282em;
+      color: var(--text-strong);
+    }
+    .sec__desc {
+      font-size: calc(18 * var(--u));
+      font-weight: 400;
+      line-height: 1.445;
+      color: var(--text-normal);
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: calc(8 * var(--u)); }
+    .chip {
+      padding: calc(8 * var(--u)) calc(14 * var(--u));
+      border: 1px solid var(--point);
+      border-radius: 999px;
+      background: var(--white);
+      color: var(--point);
+      font-size: calc(14 * var(--u));
+      font-weight: 600;
+      line-height: 1.429;
+      letter-spacing: 0.0145em;
+      white-space: nowrap;
+    }
+    .num {
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      border-radius: 999px;
+      background: var(--point);
+      color: var(--white);
+      font-weight: 600;
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: calc(8 * var(--u));
+      padding: calc(16 * var(--u));
+      border-radius: calc(8 * var(--u));
+      background: var(--point);
+      color: var(--text-white);
+      font-size: calc(18 * var(--u));
+      font-weight: 500;
+      line-height: 1.445;
+      white-space: nowrap;
+      transition: filter .2s ease;
+    }
+    .btn:hover { filter: brightness(1.08); }
+    .btn--dark { background: var(--black); }
+    .btn--dark:hover { filter: brightness(1.4); }
+
+    @container page (max-width: 767px) {
+      .sec__in { width: calc(390 * var(--u)); padding: calc(60 * var(--u)) calc(20 * var(--u)); }
+      .sec__title { font-size: calc(28 * var(--u)); line-height: 1.358; letter-spacing: -0.0236em; }
+      .sec__desc { font-size: calc(16 * var(--u)); line-height: 1.5; letter-spacing: 0.0057em; }
+    }
+
+    /* ===== B1 히어로 ===== */
+    .kv { background: var(--fill-alt); }
+    .kv .sec__in { height: calc(716 * var(--u)); padding: 0; }
+    .kv__bg {
+      position: absolute; z-index: 0;
+      top: calc(-26 * var(--u));
+      left: 50%;
+      width: max(calc(1344 * var(--u)), 105cqw);
+      transform: translateX(calc(-50% - 8 * var(--u)));
+      pointer-events: none;
+    }
+    .kv__bg img { width: 100%; height: auto; }
+    .kv__glow {
+      position: absolute; z-index: 1;
+      left: calc(114 * var(--u)); top: calc(-1.93 * var(--u));
+      width: calc(683 * var(--u)); height: calc(577.93 * var(--u));
+      opacity: .51;
+      background: linear-gradient(270deg, rgba(255,255,255,0) 0%, #fff 12.69%, #fff 90.34%, rgba(255,255,255,0) 100%);
+      -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 68%, transparent 100%);
+      mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 68%, transparent 100%);
+    }
+    .kv__copy {
+      position: absolute; z-index: 2;
+      left: calc(180 * var(--u)); top: calc(76 * var(--u));
+      width: calc(515 * var(--u));
+      display: flex; flex-direction: column; gap: calc(20 * var(--u));
+    }
+    .kv__head { display: flex; flex-direction: column; gap: calc(32 * var(--u)); }
+    .kv__logo { width: calc(166 * var(--u)); height: calc(46 * var(--u)); }
+    .kv__title {
+      font-family: "Black Han Sans", Pretendard, sans-serif;
+      font-weight: 400;
+      font-size: calc(96 * var(--u));
+      line-height: 1.03;
+      letter-spacing: -0.04em;
+      word-spacing: -0.09em;
+      color: var(--point-deep);
+      white-space: nowrap;
+    }
+    .kv__title span { display: block; filter: url(#kv-inset-pc); }   /* 시안 Inner shadow 0 4 4 rgba(0,0,0,.25) */
+    .kv__sub {
+      font-size: calc(28 * var(--u));
+      font-weight: 600;
+      line-height: 1.358;
+      letter-spacing: -0.0236em;
+      color: var(--text-strong);
+      text-shadow: 0 0 8px rgba(255,255,255,.94);
+    }
+    .kv .chip {
+      border-color: var(--line-alt);
+      filter: drop-shadow(0 3px 3px rgba(17,22,82,.22));
+    }
+    .kv__benefit {
+      position: absolute; z-index: 2;
+      left: calc(180 * var(--u)); top: calc(546 * var(--u));
+      width: calc(920 * var(--u));
+      display: flex; align-items: center; gap: calc(16 * var(--u));
+      padding: calc(24 * var(--u)) calc(32 * var(--u));
+      border-radius: calc(20 * var(--u));
+      background: rgba(255,255,255,.75);
+      -webkit-backdrop-filter: blur(3px);
+      backdrop-filter: blur(3px);
+      box-shadow: 0 calc(4 * var(--u)) calc(8 * var(--u)) rgba(0,0,0,.35);
+    }
+    .kv__benefit-copy { flex: 1; display: flex; flex-direction: column; gap: calc(6 * var(--u)); }
+    .kv__benefit-title {
+      font-size: calc(22 * var(--u)); font-weight: 600; line-height: 1.45;
+      letter-spacing: -0.0194em; color: var(--text-strong);
+    }
+    .kv__benefit-desc {
+      font-size: calc(16 * var(--u)); font-weight: 500; line-height: 1.5;
+      letter-spacing: 0.0057em; color: var(--text-normal);
+    }
+    .kv__benefit .btn { width: calc(280 * var(--u)); flex-shrink: 0; }
+
+    @container page (max-width: 767px) {
+      .kv .sec__in { height: calc(619 * var(--u)); }
+      .kv__bg { top: 0; width: max(calc(1099 * var(--u)), 100cqw); transform: translateX(calc(-50% - 60.5 * var(--u))); }
+      .kv__glow {
+        left: 0; top: calc(-160.08 * var(--u));
+        width: calc(408.46 * var(--u)); height: calc(625.08 * var(--u));
+      }
+      .kv__copy { left: calc(20 * var(--u)); top: calc(56 * var(--u)); width: calc(350 * var(--u)); gap: calc(16 * var(--u)); }
+      .kv__head { gap: calc(20 * var(--u)); }
+      .kv__logo { width: calc(124.5 * var(--u)); height: calc(34.68 * var(--u)); }
+      .kv__title { font-size: calc(57 * var(--u)); line-height: 1.044; letter-spacing: -0.057em; word-spacing: 0; }
+      .kv__title span { filter: url(#kv-inset-mo); }
+      .kv__sub { font-size: calc(18 * var(--u)); line-height: 1.445; letter-spacing: 0; }
+      .kv .chip { padding: calc(6 * var(--u)) calc(14 * var(--u)); font-size: calc(13 * var(--u)); line-height: 1.385; letter-spacing: 0.0194em; }
+      .kv__benefit {
+        left: calc(20 * var(--u)); top: calc(418.68 * var(--u));
+        width: calc(350 * var(--u));
+        flex-direction: column; align-items: stretch;
+        padding: calc(20 * var(--u));
+        border-radius: calc(12 * var(--u));
+      }
+      .kv__benefit-title { font-size: calc(18 * var(--u)); line-height: 1.445; letter-spacing: 0; }
+      .kv__benefit-desc { font-size: calc(15 * var(--u)); line-height: 1.625; letter-spacing: 0.0096em; }
+      .kv__benefit .btn { width: 100%; padding: calc(12 * var(--u)) calc(16 * var(--u)); font-size: calc(16 * var(--u)); line-height: 1.5; }
+    }
+
+    /* ===== B3 질문거리 ===== */
+    .b3 { background: var(--white); }
+    .b3__text { position: relative; z-index: 0; width: calc(740 * var(--u)); display: flex; flex-direction: column; gap: calc(20 * var(--u)); }
+    .b3 .sec__desc { color: var(--neutral-20); }
+    .b3__list { display: flex; flex-direction: column; gap: calc(12 * var(--u)); }
+    .b3__item {
+      display: flex; flex-direction: column; gap: calc(8 * var(--u));
+      padding: calc(20 * var(--u)) calc(24 * var(--u));
+      border-radius: calc(16 * var(--u));
+      background: var(--fill-alt);
+    }
+    .b3__item-head { display: flex; align-items: center; gap: calc(8 * var(--u)); }
+    .b3 .num { width: calc(24 * var(--u)); height: calc(24 * var(--u)); font-size: calc(13 * var(--u)); line-height: 1.385; }
+    .b3__item-title { font-size: calc(18 * var(--u)); font-weight: 600; line-height: 1.445; color: var(--text-strong); }
+    .b3__item-desc { font-size: calc(15 * var(--u)); line-height: 1.625; letter-spacing: 0.0096em; color: var(--text-normal); }
+    .b3__visual { left: calc(660 * var(--u)); top: calc(158 * var(--u)); width: calc(440 * var(--u)); }
+
+    @container page (max-width: 767px) {
+      .b3__text { width: 100%; }
+      .b3 .sec__desc { white-space: nowrap; }
+      .b3__item { padding: calc(16 * var(--u)) calc(20 * var(--u)); border-radius: calc(12 * var(--u)); }
+      .b3__item-head { flex-direction: column; align-items: flex-start; gap: calc(4 * var(--u)); }
+      .b3 .num { width: calc(20 * var(--u)); height: calc(20 * var(--u)); font-size: calc(12 * var(--u)); line-height: 1.334; }
+      .b3__item-title { font-size: calc(16 * var(--u)); line-height: 1.5; }
+      .b3__visual { left: calc(199 * var(--u)); top: calc(469.3 * var(--u)); width: calc(205.1 * var(--u)); }
+    }
+
+    /* ===== B4 왜 리그인가 ===== */
+    .b4 { background: var(--fill-alt); }
+    .b4__row { display: flex; align-items: center; gap: calc(40 * var(--u)); }
+    .b4__spacer { flex: 1; height: calc(370 * var(--u)); }
+    .b4__text { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; gap: calc(20 * var(--u)); }
+    .b4__compare { display: flex; gap: calc(12 * var(--u)); }
+    .b4__card {
+      flex: 1;
+      display: flex; flex-direction: column; gap: calc(8 * var(--u));
+      padding: calc(24 * var(--u)) calc(16 * var(--u));
+      border-radius: calc(16 * var(--u));
+      background: var(--white);
+      color: var(--text-neutral);
+    }
+    .b4__card--point { background: var(--point-bg); border: 1px solid var(--point); }
+    .b4__card-label { font-size: calc(14 * var(--u)); font-weight: 600; line-height: 1.429; letter-spacing: 0.0145em; }
+    .b4__card--point .b4__card-label { color: var(--point); }
+    .b4__card-desc { font-size: calc(15 * var(--u)); line-height: 1.625; letter-spacing: 0.0096em; }
+    .b4__card--point .b4__card-desc { font-size: calc(16 * var(--u)); font-weight: 500; line-height: 1.5; letter-spacing: 0.0057em; color: var(--text-strong); }
+    .b4__visual, .b5__cards { position: absolute; inset: 0; pointer-events: none; }
+    .b4__char { left: calc(246 * var(--u)); top: calc(73 * var(--u)); width: calc(328 * var(--u)); }
+    .b4__tier--left { left: calc(195 * var(--u)); top: calc(242 * var(--u)); width: calc(109 * var(--u)); }
+    .b4__tier--right { left: calc(499 * var(--u)); top: calc(92 * var(--u)); width: calc(101 * var(--u)); }
+
+    @container page (max-width: 767px) {
+      .b4__row { display: block; }
+      .b4__spacer { display: none; }
+      .b4__text { align-items: flex-end; }
+      .b4__text > .sec__title, .b4__text > .sec__desc { width: 100%; }
+      .b4__compare { flex-direction: column; width: max-content; }
+      .b4__card { padding: calc(16 * var(--u)); border-radius: calc(12 * var(--u)); }
+      .b4__card-label { font-size: calc(13 * var(--u)); line-height: 1.385; letter-spacing: 0.0194em; }
+      .b4__card-desc,
+      .b4__card--point .b4__card-desc { font-size: calc(14 * var(--u)); line-height: 1.429; letter-spacing: 0.0145em; }
+      .b4__char { left: calc(-11.3 * var(--u)); top: calc(265.9 * var(--u)); width: calc(182.1 * var(--u)); }
+      .b4__tier--left { left: calc(-39.7 * var(--u)); top: calc(359.9 * var(--u)); width: calc(60.6 * var(--u)); }
+      .b4__tier--right { left: calc(129.4 * var(--u)); top: calc(276.4 * var(--u)); width: calc(56.2 * var(--u)); }
+    }
+
+    /* ===== B5 내 라인업 ===== */
+    .b5 { background: var(--white); }
+    .b5__row { display: flex; align-items: center; gap: calc(40 * var(--u)); }
+    .b5__text { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; gap: calc(20 * var(--u)); }
+    .b5__spacer { flex: 1; height: calc(390 * var(--u)); }
+    .b5__card--1 { left: calc(707.65 * var(--u)); top: calc(94.9 * var(--u)); width: calc(160 * var(--u)); }
+    .b5__card--2 { left: calc(948.65 * var(--u)); top: calc(159.9 * var(--u)); width: calc(160 * var(--u)); }
+    .b5__card--3 { left: calc(673.8 * var(--u)); top: calc(306.3 * var(--u)); width: calc(334 * var(--u)); }
+    .b5__card--4 { left: calc(564.2 * var(--u)); top: calc(433.7 * var(--u)); width: calc(334 * var(--u)); }
+    .b5__visual { left: calc(736 * var(--u)); top: calc(94 * var(--u)); width: calc(313 * var(--u)); z-index: 2; }
+
+    @container page (max-width: 767px) {
+      .b5__row { flex-direction: column; align-items: stretch; gap: 0; }
+      .b5 .sec__in, .b6 .sec__in { padding-bottom: 0; }
+      .b5__spacer { flex: none; height: calc(348 * var(--u)); }
+      .b5__card--1 { left: calc(120.01 * var(--u)); top: calc(253 * var(--u)); width: calc(93.37 * var(--u)); }
+      .b5__card--2 { left: calc(260.65 * var(--u)); top: calc(290.96 * var(--u)); width: calc(93.37 * var(--u)); }
+      .b5__card--3 { left: calc(100.26 * var(--u)); top: calc(376.39 * var(--u)); width: calc(194.91 * var(--u)); }
+      .b5__card--4 { left: calc(36.3 * var(--u)); top: calc(450.74 * var(--u)); width: calc(194.91 * var(--u)); }
+      .b5__visual { left: calc(144.92 * var(--u)); top: calc(237.47 * var(--u)); width: calc(169.77 * var(--u)); }
+    }
+
+    /* ===== B6 답하는 사람들 ===== */
+    .b6 { background: var(--fill-alt); }
+    .b6__row { display: flex; align-items: center; gap: calc(40 * var(--u)); height: calc(300 * var(--u)); }
+    .b6__spacer { flex: 1; }
+    .b6__text { position: relative; z-index: 2; width: calc(399 * var(--u)); display: flex; flex-direction: column; gap: calc(20 * var(--u)); }
+    .b6__emblem { left: calc(132 * var(--u)); top: calc(160 * var(--u)); width: calc(535 * var(--u)); z-index: 0; }
+    .b6__visual { left: calc(180 * var(--u)); top: calc(50 * var(--u)); width: calc(440 * var(--u)); }
+
+    @container page (max-width: 767px) {
+      .b6__row { flex-direction: column-reverse; align-items: stretch; gap: 0; height: auto; }
+      .b6__spacer { flex: none; height: calc(321 * var(--u)); }
+      .b6__text { width: 100%; }
+      .b6__emblem { left: calc(20 * var(--u)); top: calc(420 * var(--u)); width: calc(350 * var(--u)); }
+      .b6__visual { left: calc(49.5 * var(--u)); top: calc(360 * var(--u)); width: calc(291 * var(--u)); }
+    }
+
+    /* ===== B2 숫자 ===== */
+    .b2 { background: var(--white); }
+    .b2 .sec__in { display: flex; flex-direction: column; gap: calc(48 * var(--u)); padding-top: calc(120 * var(--u)); padding-bottom: calc(120 * var(--u)); }
+    .b2__card {
+      display: flex; align-items: center; gap: calc(48 * var(--u));
+      padding: calc(48 * var(--u));
+      border-radius: calc(24 * var(--u));
+      background: var(--fill-alt);
+    }
+    .b2__score { flex: 1; display: flex; flex-direction: column; gap: calc(24 * var(--u)); }
+    .b2__total { display: flex; flex-direction: column; gap: calc(4 * var(--u)); white-space: nowrap; }
+    .b2__total-num {
+      font-size: calc(60 * var(--u)); font-weight: 800; line-height: 1.3;
+      letter-spacing: -0.0319em; color: var(--point);
+      font-variant-numeric: tabular-nums;
+    }
+    .b2__total-label { font-size: calc(18 * var(--u)); font-weight: 500; line-height: 1.445; color: var(--text-normal); }
+    .b2__stats { display: flex; align-items: stretch; gap: calc(12 * var(--u)); }
+    .b2__stat {
+      flex: 1;
+      display: flex; flex-direction: column; gap: calc(4 * var(--u));
+      padding: calc(16 * var(--u)) calc(20 * var(--u));
+      border-radius: calc(16 * var(--u));
+      background: var(--white);
+    }
+    .b2__stat-num {
+      font-size: calc(28 * var(--u)); font-weight: 800; line-height: 1.358;
+      letter-spacing: -0.0236em; color: var(--point);
+      font-variant-numeric: tabular-nums;
+    }
+    .b2__stat-unit { font-size: calc(18 * var(--u)); }
+    .b2__stat-label { font-size: calc(15 * var(--u)); font-weight: 500; line-height: 1.625; letter-spacing: 0.0096em; color: var(--text-normal); }
+
+    .dist {
+      position: relative;
+      width: calc(396 * var(--u));
+      align-self: stretch;
+      display: flex; flex-direction: column; justify-content: center; gap: calc(32 * var(--u));
+    }
+    .dist__title { font-size: calc(18 * var(--u)); font-weight: 600; line-height: 1.445; color: var(--text-strong); }
+    .dist__list { display: flex; flex-direction: column; gap: calc(20 * var(--u)); }
+    .dist__row { display: flex; align-items: center; gap: calc(16 * var(--u)); }
+    .dist__label {
+      width: calc(57 * var(--u));
+      font-size: calc(15 * var(--u)); font-weight: 500; line-height: 1.625;
+      letter-spacing: 0.0096em; color: var(--text-normal); white-space: nowrap;
+    }
+    .dist__track {
+      position: relative; flex: 1; overflow: hidden;
+      height: calc(12 * var(--u));
+      border-radius: 999px;
+      background: var(--white);
+    }
+    .dist__bar {
+      position: absolute; left: 0; top: 0; height: 100%;
+      width: var(--w);
+      border-radius: 999px;
+      background: var(--text-assist);
+    }
+    .dist__val {
+      width: calc(52 * var(--u)); text-align: right;
+      font-size: calc(15 * var(--u)); font-weight: 500; line-height: 1.625;
+      letter-spacing: 0.0096em; color: var(--text-neutral);
+    }
+    .dist__row--top .dist__label { width: auto; font-weight: 600; color: var(--point); }
+    .dist__row--top .dist__track { height: calc(18 * var(--u)); box-shadow: 0 2px 7px rgba(52,38,104,.3); }
+    .dist__row--top .dist__bar { background: var(--point); }
+    .dist__row--top .dist__val { font-weight: 600; color: var(--point); }
+    .dist__tip {
+      position: absolute;
+      left: calc(238 * var(--u)); top: calc(27 * var(--u));
+      padding: calc(4 * var(--u)) calc(14 * var(--u));
+      border-radius: 999px;
+      background: var(--white);
+      color: var(--point);
+      font-size: calc(14 * var(--u)); font-weight: 600; line-height: 1.429;
+      letter-spacing: 0.0145em; white-space: nowrap;
+      filter: drop-shadow(0 2px 3.5px rgba(52,38,104,.3));   /* 시안 Drop shadow 0 2 7 — 꼬리 포함 */
+    }
+    .dist__tip-tail {
+      position: absolute; left: calc(124 * var(--u)); top: calc(19 * var(--u));
+      width: calc(19 * var(--u)); height: calc(19 * var(--u));
+      transform: rotate(180deg);
+    }
+    .dist__tip-tail img { position: absolute; left: 10.54%; right: 10.54%; top: 5.26%; bottom: 25%; width: 78.92%; height: 69.74%; }
+
+    .basis { display: flex; flex-direction: column; align-items: center; gap: calc(16 * var(--u)); }
+    .basis__toggle {
+      display: inline-flex; align-items: center; gap: 2px;
+      padding: calc(4 * var(--u)) calc(8 * var(--u)) calc(4 * var(--u)) calc(14 * var(--u));
+      border: 1px solid var(--line-normal);
+      border-radius: calc(4 * var(--u));
+      background: var(--bg-alt);
+      color: var(--text-alt);
+      font-size: max(12px, calc(13 * var(--u))); font-weight: 500; line-height: 1.385; letter-spacing: 0.0194em;
+    }
+    .basis__toggle img { width: calc(16 * var(--u)); height: calc(16 * var(--u)); transition: transform .3s ease; }
+    .basis__toggle[aria-expanded="false"] img { transform: rotate(180deg); }
+    .basis__panel { width: 100%; display: grid; grid-template-rows: 1fr; transition: grid-template-rows .4s ease; }
+    .basis__panel[hidden] { display: grid; grid-template-rows: 0fr; }
+    .basis__panel > div { overflow: hidden; }
+    .basis__box {
+      padding: calc(20 * var(--u)) calc(28 * var(--u));
+      border: 1px solid var(--line-normal);
+      border-radius: calc(12 * var(--u));
+      background: var(--fill-alt);
+    }
+    .basis__list { display: flex; flex-direction: column; gap: 2px; }
+    .basis__list li {
+      display: flex; gap: 4px;
+      font-size: max(12px, calc(13 * var(--u))); line-height: 1.385; letter-spacing: 0.0194em; color: var(--text-alt);
+    }
+
+    @container page (max-width: 767px) {
+      .b2 .sec__in { gap: calc(28 * var(--u)); padding-top: calc(64 * var(--u)); padding-bottom: calc(64 * var(--u)); }
+      .b2__card { flex-direction: column; align-items: stretch; gap: calc(28 * var(--u)); padding: calc(32 * var(--u)) calc(20 * var(--u)); }
+      .b2__total { flex-direction: row; align-items: center; gap: calc(8 * var(--u)); }
+      .b2__total-num { font-size: calc(36 * var(--u)); line-height: 1.334; letter-spacing: -0.027em; }
+      .b2__total-label { font-size: calc(16 * var(--u)); line-height: 1.5; letter-spacing: 0.0057em; }
+      .b2__stat { padding: calc(12 * var(--u)); border-radius: calc(12 * var(--u)); }
+      .b2__stat-num { font-size: calc(22 * var(--u)); line-height: 1.45; letter-spacing: -0.0194em; }
+      .b2__stat-unit { font-size: calc(16 * var(--u)); font-weight: 600; letter-spacing: 0.0057em; }
+      .b2__stat-label { font-size: calc(14 * var(--u)); line-height: 1.429; letter-spacing: 0.0145em; }
+      .dist { width: 100%; gap: calc(24 * var(--u)); }
+      .dist__title { font-size: calc(16 * var(--u)); line-height: 1.5; }
+      .dist__row { gap: calc(12 * var(--u)); }
+      .dist__track { height: calc(11.05 * var(--u)); }
+      .dist__row--top .dist__track { height: calc(11.63 * var(--u)); box-shadow: 0 1.3px 4.5px rgba(52,38,104,.3); }
+      .dist__val { width: auto; white-space: nowrap; }
+      .dist__tip { left: auto; right: 0; top: calc(0.32 * var(--u)); }
+      .basis__box { padding: calc(20 * var(--u)); }
+    }
+
+    /* ===== B7 이렇게 씁니다 ===== */
+    .b7 { background: var(--fill-alt); }
+    .b7 .sec__in { display: flex; flex-direction: column; gap: calc(48 * var(--u)); padding-top: calc(120 * var(--u)); padding-bottom: calc(120 * var(--u)); }
+    .steps { position: relative; display: flex; justify-content: space-between; }
+    /* 구분선 — 1번 넘버 오른쪽(153)부터 3번 넘버(769)까지 */
+    .steps::before {
+      content: ""; position: absolute;
+      left: calc(153 * var(--u)); top: calc(18 * var(--u));
+      width: calc(616 * var(--u)); height: 2px;
+      background: repeating-linear-gradient(90deg, rgba(81,88,215,.35) 0 4px, transparent 4px 10px);
+    }
+    .step { position: relative; width: calc(256 * var(--u)); display: flex; flex-direction: column; align-items: center; }
+    .step:nth-child(2) { width: calc(408 * var(--u)); }
+    .step__copy { display: flex; flex-direction: column; align-items: center; gap: calc(12 * var(--u)); padding: 0 calc(12 * var(--u)); text-align: center; }
+    .step:nth-child(3) .step__copy { width: calc(220 * var(--u)); padding: 0; }
+    .step__head { display: flex; flex-direction: column; align-items: center; gap: calc(12 * var(--u)); }
+    .step .num { width: calc(36 * var(--u)); height: calc(36 * var(--u)); font-size: calc(16 * var(--u)); line-height: 1.5; }
+    .step__title { font-size: calc(36 * var(--u)); font-weight: 800; line-height: 1.334; letter-spacing: -0.027em; color: var(--text-strong); white-space: nowrap; }
+    .step__desc { font-size: calc(18 * var(--u)); font-weight: 500; line-height: 1.445; color: var(--text-normal); }
+    .step__phone { width: calc(256 * var(--u)); margin-top: calc(32 * var(--u)); }
+    .step__phone img { width: 100%; height: auto; }
+    .tip {
+      display: flex; align-items: center; gap: calc(8 * var(--u));
+      padding: calc(20 * var(--u)) calc(24 * var(--u));
+      border: 1px solid var(--point);
+      border-radius: calc(16 * var(--u));
+      background: var(--white);
+      color: var(--point);
+    }
+    .tip__tag {
+      flex-shrink: 0;
+      padding: calc(6 * var(--u)) calc(12 * var(--u));
+      border-radius: 999px; background: var(--chip-bg);
+      font-size: calc(14 * var(--u)); font-weight: 600; line-height: 1.429; letter-spacing: 0.0145em;
+    }
+    .tip__text { font-size: calc(16 * var(--u)); font-weight: 600; line-height: 1.5; letter-spacing: 0.0057em; }
+
+    @container page (max-width: 767px) {
+      .b7 .sec__in { gap: calc(28 * var(--u)); padding-top: calc(64 * var(--u)); padding-bottom: calc(64 * var(--u)); }
+      .steps { display: block; height: calc(1130 * var(--u)); }   /* 350 × 3 + 간격 40 × 2 */
+      .steps::before { display: none; }
+      .step, .step:last-child { position: absolute; left: 0; width: 100%; height: calc(350 * var(--u)); }
+      .step:nth-child(1) { top: 0; }
+      .step:nth-child(2) { top: calc(390 * var(--u)); }
+      .step:nth-child(3) { top: calc(780 * var(--u)); }
+      .step:nth-child(2) { width: 100%; }
+      .step__copy,
+      .step:nth-child(3) .step__copy { position: absolute; left: 0; top: calc(117 * var(--u)); width: calc(158 * var(--u)); align-items: flex-start; padding: 0; text-align: left; }
+      .step:nth-child(2) .step__copy { left: calc(192 * var(--u)); }
+      .step:nth-child(3) .step__copy { top: calc(105 * var(--u)); }
+      .step__head { flex-direction: row; align-items: center; gap: calc(8 * var(--u)); }
+      .step { align-items: stretch; }
+      .step .num { width: calc(28 * var(--u)); height: calc(28 * var(--u)); font-size: calc(14 * var(--u)); line-height: 1.429; }
+      .step__title { font-size: calc(22 * var(--u)); line-height: 1.45; letter-spacing: -0.0194em; }
+      .step__desc { font-size: calc(15 * var(--u)); line-height: 1.625; letter-spacing: 0.0096em; }
+      .step__phone,
+      .step:nth-child(2) .step__phone,
+      .step:nth-child(3) .step__phone { position: absolute; top: 0; left: calc(178 * var(--u)); width: calc(172 * var(--u)); margin: 0; }
+      .step:nth-child(2) .step__phone { left: 0; }
+      .tip { flex-direction: column; align-items: flex-start; padding: calc(16 * var(--u)); border-radius: calc(12 * var(--u)); }
+      .tip__tag { padding: calc(2 * var(--u)) calc(12 * var(--u)); }
+      .tip__text { font-size: calc(14 * var(--u)); line-height: 1.429; letter-spacing: 0.0145em; }
+    }
+
+    /* ===== B8 포인트 지급 ===== */
+    .b8 { background: var(--b8-bg); }
+    .b8 .sec__in { display: flex; align-items: stretch; gap: calc(52 * var(--u)); }
+    .b8__left { position: relative; z-index: 2; width: calc(411 * var(--u)); display: flex; flex-direction: column; gap: calc(32 * var(--u)); }
+    .b8__logos { display: flex; align-items: flex-end; gap: calc(12 * var(--u)); }
+    .b8__logo { width: calc(125 * var(--u)); height: calc(34.82 * var(--u)); }
+    .b8__x { width: calc(14 * var(--u)); font-size: calc(22 * var(--u)); font-weight: 500; line-height: 1.45; color: var(--text-alt); }
+    .b8__itall { width: calc(57 * var(--u)); height: calc(30 * var(--u)); }
+    .b8__head { display: flex; flex-direction: column; gap: calc(16 * var(--u)); }
+    .b8__head .sec__title { white-space: nowrap; }
+    .b8__right { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; gap: calc(16 * var(--u)); }
+    .coupon { flex: 1; display: flex; flex-direction: column; overflow: hidden; border-radius: calc(24 * var(--u)); background: var(--white); }
+    .coupon__top { flex: 1; display: flex; align-items: center; justify-content: center; padding: calc(48 * var(--u)) calc(40 * var(--u)) calc(40 * var(--u)); }
+    .coupon__amount { font-size: calc(60 * var(--u)); font-weight: 800; line-height: 1.3; letter-spacing: -0.0319em; color: var(--point); white-space: nowrap; }
+    .coupon__bottom {
+      padding: calc(16 * var(--u)) calc(28 * var(--u));
+      background: var(--point); color: var(--white);
+      font-size: calc(16 * var(--u)); line-height: 1.5; letter-spacing: 0.0057em;
+    }
+    .coupon__divider { position: absolute; left: calc(-12 * var(--u)); top: calc(146.42 * var(--u)); width: calc(501 * var(--u)); height: calc(24 * var(--u)); }
+    .coupon__divider img { width: 100%; height: 100%; }
+    .b8__note { font-size: max(12px, calc(13 * var(--u))); line-height: 1.385; letter-spacing: 0.0194em; color: var(--text-alt); }
+    .coin { position: absolute; z-index: 3; pointer-events: none; }
+    .coin img { width: 100%; height: auto; }
+    .coin--1 { left: calc(1064.84 * var(--u)); top: calc(98.83 * var(--u)); width: calc(70.77 * var(--u)); }
+    .coin--2 { left: calc(589.41 * var(--u)); top: calc(247.97 * var(--u)); width: calc(70.65 * var(--u)); }
+    .coin--3 { left: calc(1080.73 * var(--u)); top: calc(300.51 * var(--u)); width: calc(38.18 * var(--u)); }
+    .coin--4 { left: calc(499.81 * var(--u)); top: calc(145.44 * var(--u)); width: calc(55.57 * var(--u)); }
+
+    @container page (max-width: 767px) {
+      .b8 .sec__in { flex-direction: column; gap: calc(32 * var(--u)); }
+      .b8__left { width: 100%; gap: calc(20 * var(--u)); }
+      .b8__logos { gap: calc(8 * var(--u)); }
+      .b8__logo { width: calc(101 * var(--u)); height: calc(28 * var(--u)); }
+      .b8__x { flex: 1; width: auto; max-width: calc(12 * var(--u)); font-size: calc(18 * var(--u)); line-height: 1.445; }
+      .b8__itall { width: calc(46 * var(--u)); height: calc(24 * var(--u)); }
+      .coupon { flex: none; border-radius: calc(16 * var(--u)); }
+      .coupon__top { padding: calc(32 * var(--u)) calc(28 * var(--u)) calc(28 * var(--u)); }
+      .coupon__amount { font-size: calc(48 * var(--u)); line-height: 1.16; letter-spacing: -0.0282em; }
+      .coupon__bottom { padding: calc(12 * var(--u)) calc(16 * var(--u)); font-size: calc(14 * var(--u)); line-height: 1.429; letter-spacing: 0.0145em; }
+      .coupon__divider { left: calc(-10 * var(--u)); top: calc(106.32 * var(--u)); width: calc(368.66 * var(--u)); height: calc(18.66 * var(--u)); }
+      .coin--1 { left: calc(348.81 * var(--u)); top: calc(255.33 * var(--u)); width: calc(39.16 * var(--u)); }
+      .coin--2 { left: calc(-7.35 * var(--u)); top: calc(421.1 * var(--u)); width: calc(46.26 * var(--u)); }
+      .coin--3 { left: calc(341.28 * var(--u)); top: calc(433.54 * var(--u)); width: calc(31.23 * var(--u)); }
+      .coin--4 { left: calc(2.31 * var(--u)); top: calc(276.12 * var(--u)); width: calc(35.75 * var(--u)); }
+    }
+
+    /* ===== B9 사용법 ===== */
+    .b9 { background: var(--white); }
+    .b9 .sec__in { display: flex; flex-direction: column; gap: calc(60 * var(--u)); }
+    .b9__body { display: flex; flex-direction: column; gap: calc(40 * var(--u)); }
+    .how { display: flex; flex-direction: column; gap: calc(12 * var(--u)); }
+    .how__item {
+      display: flex; align-items: flex-start; gap: calc(20 * var(--u));
+      padding: calc(24 * var(--u)) calc(28 * var(--u));
+      border-radius: calc(16 * var(--u));
+      background: var(--fill-alt);
+    }
+    .how .num { width: calc(36 * var(--u)); height: calc(36 * var(--u)); font-size: calc(16 * var(--u)); line-height: 1.5; }
+    .how__copy { flex: 1; display: flex; flex-direction: column; gap: calc(4 * var(--u)); }
+    .how__title { font-size: calc(18 * var(--u)); font-weight: 600; line-height: 1.445; color: var(--text-strong); }
+    .how__desc { font-size: calc(15 * var(--u)); line-height: 1.625; letter-spacing: 0.0096em; color: var(--text-neutral); }
+    .cta { display: flex; gap: calc(16 * var(--u)); }
+    .cta .btn { flex: 1; }
+    .cta__icon { width: calc(24 * var(--u)); height: calc(24 * var(--u)); display: flex; align-items: center; justify-content: center; }
+    .cta__icon img { width: 100%; height: 100%; }
+    .cta__icon--gp img { width: 75%; height: 83.34%; }
+
+    @container page (max-width: 767px) {
+      .b9 .sec__in { gap: calc(32 * var(--u)); }
+      .b9__body { gap: calc(24 * var(--u)); }
+      .how__item { gap: calc(12 * var(--u)); padding: calc(20 * var(--u)); }
+      .how .num { width: calc(24 * var(--u)); height: calc(24 * var(--u)); font-size: calc(14 * var(--u)); line-height: 1.429; }
+      .how__title { font-size: calc(16 * var(--u)); line-height: 1.5; }
+      .cta { flex-direction: column; }
+      .cta .btn { padding: calc(12 * var(--u)) calc(16 * var(--u)); font-size: calc(16 * var(--u)); line-height: 1.5; }
+    }
+
+    /* ===== FAQ ===== */
+    .faq { background: var(--fill-alt); }
+    .faq .sec__in { display: flex; flex-direction: column; gap: calc(40 * var(--u)); }
+    .faq .sec__title { font-size: calc(32 * var(--u)); line-height: 1.32; letter-spacing: -0.02em; }
+    .faq__list { display: flex; flex-direction: column; gap: calc(10 * var(--u)); }
+    .faq__item { border-radius: calc(14 * var(--u)); background: var(--white); box-shadow: inset 0 0 0 2px transparent; transition: box-shadow .3s ease; }
+    .faq__item.is-open { box-shadow: inset 0 0 0 2px var(--point); }
+    .faq__q {
+      width: 100%;
+      display: flex; align-items: center; gap: calc(12 * var(--u));
+      padding: calc(22 * var(--u)) calc(28 * var(--u));
+      text-align: left;
+      font-size: calc(17 * var(--u)); font-weight: 600; line-height: 1.5; color: var(--text-strong);
+    }
+    .faq__q span { flex: 1; }
+    .faq__q img { width: calc(28 * var(--u)); height: calc(28 * var(--u)); flex-shrink: 0; }
+    .faq__ic--off { transform: scaleY(-1); }
+    .faq__ic--on, .faq__item.is-open .faq__ic--off { display: none; }
+    .faq__item.is-open .faq__ic--on { display: block; }
+    .faq__a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s ease; }
+    .faq__item.is-open .faq__a { grid-template-rows: 1fr; }
+    .faq__a > div { overflow: hidden; }
+    .faq__a p {
+      padding: 0 calc(28 * var(--u)) calc(22 * var(--u));
+      font-size: calc(15 * var(--u)); line-height: 1.625; letter-spacing: 0.0096em; color: var(--text-normal);
+    }
+    .faq__a p.is-todo { color: var(--text-alt); }
+
+    @container page (max-width: 767px) {
+      .faq .sec__in { gap: calc(24 * var(--u)); }
+      .faq .sec__title { font-size: calc(28 * var(--u)); line-height: 1.358; letter-spacing: -0.0236em; }
+      .faq__list { gap: calc(8 * var(--u)); }
+      .faq__q { padding: calc(22 * var(--u)) calc(20 * var(--u)); font-size: calc(16 * var(--u)); }
+      .faq__q img { width: calc(24 * var(--u)); height: calc(24 * var(--u)); }
+      .faq__a p { padding: 0 calc(20 * var(--u)) calc(22 * var(--u)); }
+    }
+
+    /* ===== 마무리 ===== */
+    .end { background: var(--point); color: var(--white); }
+    .end .sec__in { display: flex; flex-direction: column; align-items: flex-start; gap: calc(40 * var(--u)); }
+    .end__head { position: relative; z-index: 2; display: flex; flex-direction: column; gap: calc(20 * var(--u)); }
+    .end__logo { width: calc(114 * var(--u)); height: calc(32 * var(--u)); }
+    .end__copy { display: flex; flex-direction: column; gap: calc(12 * var(--u)); }
+    .end__title { font-size: calc(44 * var(--u)); font-weight: 800; line-height: 1.32; letter-spacing: -0.02em; }
+    .end__title em { font-style: normal; color: var(--highlight); }
+    .end__desc { font-size: calc(18 * var(--u)); line-height: 1.445; }
+    .end .btn { position: relative; z-index: 2; width: calc(280 * var(--u)); }
+    .end__visual { left: calc(603 * var(--u)); top: calc(82.18 * var(--u)); width: calc(691 * var(--u)); z-index: 1; }
+
+    @container page (max-width: 767px) {
+      .end .sec__in { gap: calc(200 * var(--u)); padding-top: calc(48 * var(--u)); padding-bottom: calc(48 * var(--u)); }
+      .end__title { font-size: calc(28 * var(--u)); line-height: 1.358; letter-spacing: -0.0236em; white-space: nowrap; }
+      .end__desc { font-size: calc(16 * var(--u)); line-height: 1.5; letter-spacing: 0.0057em; }
+      .end .btn { width: 100%; }
+      .end__visual { left: calc(-10 * var(--u)); top: calc(186.32 * var(--u)); width: calc(400 * var(--u)); }
+    }
+
+    /* ===== 주석 ===== */
+    .notice { background: var(--notice-bg); }
+    .notice .sec__in { display: flex; flex-direction: column; gap: calc(20 * var(--u)); padding-top: calc(60 * var(--u)); padding-bottom: calc(60 * var(--u)); }
+    .notice__title {
+      padding-bottom: calc(8 * var(--u));
+      border-bottom: 1px solid var(--text-neutral);
+      font-size: calc(16 * var(--u)); font-weight: 600; line-height: 1.5; letter-spacing: 0.0057em; color: var(--text-assist);
+    }
+    .notice__list { display: flex; flex-direction: column; gap: calc(6 * var(--u)); }
+    .notice__list li { font-size: max(12px, calc(14 * var(--u))); line-height: 1.429; letter-spacing: 0.0145em; color: var(--text-alt); }
+
+    @container page (max-width: 767px) {
+      .notice .sec__in { padding-top: calc(32 * var(--u)); padding-bottom: calc(32 * var(--u)); }
+    }
+
+  /* ============ 잇올 사이트 GNB (명예의전당 공용 틀 · 실측 www.itall.com) ============ */
+  @font-face { font-family: "nanumSquareNeo"; font-weight: 400; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-bRg.woff") format("woff"); }
+  @font-face { font-family: "nanumSquareNeo"; font-weight: 700; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-cBd.woff") format("woff"); }
+  @font-face { font-family: "nanumSquareNeo"; font-weight: 800; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-dEb.woff") format("woff"); }
+
+  .site-head, .gnb-m, .gnb-sheet { color: #3e3a39; font-family: nanumSquareNeo, Pretendard, sans-serif; word-break: keep-all; }
+  .site-head a, .gnb-m a, .gnb-sheet a { color: inherit; text-decoration: none; }
+  .site-head ul, .gnb-m ul, .gnb-sheet ul { margin: 0; padding: 0; list-style: none; }
+  .site-head img, .gnb-m img, .gnb-sheet img { display: block; max-width: none; }
+  .site-head button, .gnb-m button { padding: 0; border: 0; background: none; cursor: pointer; }
+  .site-head { position: sticky; top: 0; z-index: 100; background: #fff; }
+  .gnb-lock, .gnb-lock body { overflow: hidden; }
+
+  /* 상단 띠배너 — PC 54 / MO 60 */
+  .site-banner { background: #0f0f14; }
+  .site-banner__inner { display: grid; grid-template-columns: repeat(3, 1fr); height: 60px; }
+  .site-banner__item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; padding-top: 2px; }
+  .site-banner__item img { width: auto; height: 15px; }
+  .site-banner__item span { font-size: 14px; font-weight: 800; line-height: 1.5; }
+  .site-banner__red { color: #f93026; }
+  .site-banner__yellow { color: #fcc800; }
+  .site-banner__green { color: #00b450; }
+  @media (min-width: 660px) {
+    .site-banner__item { flex-direction: row; gap: 8px; }
+  }
+  @media (min-width: 1024px) {
+    .site-banner__inner { max-width: 1100px; height: 54px; margin: 0 auto; padding: 0 32px; }
+    .site-banner__item { padding-top: 0; }
+    .site-banner__item:first-child { justify-content: flex-start; }
+    .site-banner__item:last-child { justify-content: flex-end; }
+    .site-banner__item img { height: 18px; }
+    .site-banner__item span { font-size: 16px; }
+  }
+
+  /* 공용 — 수능 D-day · 패밀리 사이트 목록 */
+  .gnb__dday { padding: 4px 12px; border-radius: 8px; background: #0d0f14; color: #fff; font-family: Pretendard, sans-serif; font-size: 13px; line-height: 1.5; white-space: nowrap; }
+  .gnb-family__link { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid #e6e6e6; }
+  .gnb-family__list li:last-child .gnb-family__link { border-bottom: 0; }
+  .gnb-family__brand { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .gnb-family__brand img { width: auto; height: 16px; }
+  .gnb-family__brand span { color: #7f7f7f; font-size: 13px; line-height: 1.5; }
+  .gnb-family__promo { display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: 16px; background: #f8f8f8; font-size: 13px; line-height: 1.4; }
+  .gnb-family__promo span { color: #4d4847; }
+  .gnb-family__promo b { color: #7f7f7f; font-weight: 800; }
+
+  /* ── PC (1024~) ── */
+  .gnb { display: none; }
+
+  @media (min-width: 1024px) {
+    .gnb { display: flex; align-items: center; justify-content: space-between; height: 76px; padding: 16px 60px; }
+    .gnb__brand { display: flex; flex-shrink: 0; align-items: center; }
+    .gnb__family { position: relative; }
+    .gnb__family-btn { display: grid; place-items: center; width: 44px; height: 44px; }
+
+    /* 1차 메뉴 — 1024~1279: 14px·간격 12 / 1280~: 16px·30 / 1536~: 48 */
+    .gnb__menu { display: flex; gap: 12px; white-space: nowrap; }
+    .gnb__menu > li { position: relative; }
+    .gnb__link { display: block; font-size: 14px; font-weight: 700; line-height: 1.5; }
+
+    .gnb__shine {
+      background: linear-gradient(90deg, #e6433b, #ff6b63, #fca5a5, #e6433b) 0 center / 200% 100%;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: gnb-shine 2s linear infinite;
+    }
+
+    /* 2차 메뉴 (1차 메뉴 가운데 정렬, GNB 행 기준 top 39) */
+    .gnb__sub { position: absolute; top: 13px; left: 50%; display: none; padding-top: 16px; transform: translateX(-50%); }
+    .gnb__menu > li:hover .gnb__sub,
+    .gnb__menu > li:focus-within .gnb__sub { display: block; }
+    .gnb__sub ul {
+      display: flex; flex-direction: column; min-width: 224px; padding: 16px 0;
+      border-radius: 24px; background: #fff; filter: drop-shadow(0 8px 12px rgba(148, 148, 165, .36));
+    }
+    .gnb__sub a {
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      padding: 6px 32px; color: #4d4847; font-size: 16px; font-weight: 700; line-height: 1.5; white-space: nowrap;
+    }
+    .gnb__sub a:hover, .gnb__sub a:focus-visible { background: #f3f3f3; }
+    .gnb__badge {
+      display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center;
+      width: 50px; padding: 2px 6px; border-radius: 999px; background: #c40f06;
+      color: #fff; font-size: 10px; font-weight: 700; line-height: 1.4;
+    }
+    .gnb__badge--dorm { background: #00b450; }
+
+    /* 패밀리 사이트 (⊙ 버튼 호버) */
+    .gnb__family-panel {
+      position: absolute; top: 37px; right: -60px; z-index: 10; padding-top: 10px;
+      opacity: 0; visibility: hidden; transform: translateY(-8px);
+      transition: opacity .3s cubic-bezier(.4, 0, .2, 1), transform .3s cubic-bezier(.4, 0, .2, 1), visibility .3s;
+    }
+    .gnb__family:hover .gnb__family-panel,
+    .gnb__family:focus-within .gnb__family-panel { opacity: 1; visibility: visible; transform: translateY(0); }
+    .gnb__family-panel .gnb-family { width: 250px; padding: 12px 16px 41px; border-radius: 16px; background: #fff; box-shadow: 0 0 12px rgba(9, 13, 18, .16); }
+
+    .gnb__util { display: flex; flex-shrink: 0; align-items: center; gap: 8px; }
+    .gnb__util .gnb__dday { padding: 4px 16px; }
+    .gnb__util-box {
+      display: flex; align-items: center; justify-content: center; min-width: 118px; height: 28px; padding: 4px 18px;
+      border: 1px solid #e6e6e6; border-radius: 6px; background: #fff; font-size: 13px; font-weight: 800; line-height: 1.5;
+    }
+
+    .gnb-bar, .gnb-m, .gnb-sheet { display: none !important; }
+  }
+  @media (min-width: 1280px) {
+    .gnb__menu { gap: 30px; }
+    .gnb__link { font-size: 16px; }
+    .gnb__util { gap: 16px; }
+  }
+  @media (min-width: 1536px) {
+    .gnb__menu { gap: 48px; }
+  }
+  @keyframes gnb-shine { to { background-position: 200% center; } }
+
+  /* ── MO (~1023) — 헤더 행 69 ── */
+  .gnb-bar { display: flex; align-items: center; justify-content: space-between; height: 69px; padding: 0 20px; background: #fff; }
+  .gnb-bar__brand { display: flex; align-items: center; gap: 4px; }
+  .gnb-bar__family { padding: 4px !important; }
+  .gnb-bar__util { display: flex; align-items: center; }
+  .gnb-bar__box {
+    display: flex; align-items: center; justify-content: center; min-width: 100px; height: 29px; padding: 4px 12px;
+    border: 1px solid #e6e6e6; border-radius: 6px; background: #fff; font-size: 12px; font-weight: 800; line-height: 1.5; white-space: nowrap;
+  }
+  .gnb-bar__menu { margin-left: 16px; }
+
+  /* 전체 메뉴 */
+  .gnb-m { position: fixed; inset: 0; z-index: 1001; overflow-y: auto; overscroll-behavior: contain; padding-bottom: 20px; background: #fff; transform: translateZ(0); }
+  .gnb-m__top { display: flex; align-items: center; justify-content: space-between; height: 68px; padding: 0 20px; }
+  .gnb-m__util { display: flex; align-items: center; gap: 12px; }
+  .gnb-m__close { margin-left: 4px; }
+  .gnb-m__body { padding: 0 20px; }
+  .gnb-m__title { margin: 0; color: #000; font-size: 24px; font-weight: 700; line-height: 1.4; }
+  .gnb-m__title span { display: block; color: #c40f06; }
+  .gnb-m__pair { display: flex; gap: 8px; }
+  .gnb-m__stack { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+  .gnb-m--sparta .gnb-m__pair { margin-top: 24px; }
+  .gnb-m__btn {
+    display: flex; flex: 1; align-items: center; justify-content: center; min-height: 38px; padding: 8px 18px;
+    border-radius: 6px; font-size: 13px; font-weight: 800; line-height: 1.5; text-align: center;
+  }
+  .gnb-m__btn--dark { border: 1px solid #3e3a39; background: #000; color: #fff !important; }
+  .gnb-m__btn--line { border: 1px solid #e6e6e6; background: #fff; color: #000 !important; }
+  .gnb-m__btn--line em { margin: 0 .25em; color: #c40f06; font-style: normal; }
+  .gnb-m__list { margin-top: 32px !important; }
+  .gnb-m__row { display: flex; align-items: center; justify-content: space-between; height: 60px; border-bottom: 1px solid #e6e6e6; }
+  .gnb-m__label { flex: 1; color: #000 !important; font-size: 16px; font-weight: 800; line-height: 1.8; }
+  .gnb-m__toggle { display: flex; align-items: center; height: 100%; padding-left: 32px !important; }
+  .gnb-m__toggle img { transition: transform .2s cubic-bezier(.4, 0, .2, 1); }
+  .gnb-m__toggle[aria-expanded="true"] img { transform: rotate(180deg); }
+  .gnb-m__sub { display: flex; flex-direction: column; gap: 20px; padding: 20px 0 !important; animation: gnb-unfold .3s cubic-bezier(.34, 1.4, .64, 1); transform-origin: top; }
+  .gnb-m__sub[hidden] { display: none; }
+  .gnb-m__sub a { display: flex; align-items: center; justify-content: space-between; color: #000 !important; font-size: 14px; line-height: 1.5; white-space: nowrap; }
+  .gnb-m__badge {
+    display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; width: 50px; height: 18px;
+    border-radius: 20px; background: #c40f06; color: #fff; font-size: 10px; font-weight: 700; line-height: 1;
+  }
+  .gnb-m__badge--dorm { background: #00b450; }
+  @keyframes gnb-unfold { from { opacity: 0; transform: scaleY(.6); } to { opacity: 1; transform: scaleY(1); } }
+
+  /* 패밀리 사이트 바텀시트 */
+  .gnb-sheet { position: fixed; inset: 0; z-index: 1002; display: flex; align-items: flex-end; }
+  .gnb-sheet[hidden] { display: none; }
+  .gnb-sheet__dim { position: absolute; inset: 0; background: rgba(0, 0, 0, .5); opacity: 0; transition: opacity .3s ease; }
+  .gnb-sheet__panel {
+    position: relative; width: 100%; max-height: 90dvh; overflow-y: auto; padding: 40px 20px 60px;
+    border-radius: 8px 8px 0 0; background: #fff; transform: translateY(100%); transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+  }
+  .gnb-sheet.is-open .gnb-sheet__dim { opacity: 1; }
+  .gnb-sheet.is-open .gnb-sheet__panel { transform: translateY(0); }
+  .gnb-sheet__title { margin: 0 0 8px; color: #222; font-size: 18px; font-weight: 800; line-height: 1.4; }
+
+  /* 맨 위로 버튼 (GNB 공용) — MO 우하단 20 / PC 우하단 40 */
+  .gnb-top {
+    position: fixed; z-index: 50; right: 20px; bottom: 20px; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%;
+    background: none; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .3s, bottom .4s cubic-bezier(.4,0,.2,1);
+  }
+  .gnb-top img { display: block; width: 40px; height: 40px; }
+  .gnb-top.is-show { opacity: 1; pointer-events: auto; }
+  .gnb-top:focus-visible { outline: 2px solid #3e3a39; outline-offset: 2px; }
+  @media (min-width: 1024px) { .gnb-top { right: 40px; bottom: 40px; } }
+  /* 모바일 — 하단 고정 CTA가 떠 있으면 그 위로 비켜 줌 (CTA 높이 + 간격 12) */
+  @media (max-width: 767px) { .is-cta-docked .gnb-top { bottom: calc(20px + env(safe-area-inset-bottom, 0px) + var(--cta-h, 48px) + 12px); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gnb__shine, .gnb-m__sub { animation: none; }
+    .gnb-sheet__dim, .gnb-sheet__panel, .gnb__family-panel, .gnb-top { transition: none; }
+  }
+  /* ============ /잇올 사이트 GNB ============ */
+
+    /* ── 페이지 타이틀 + 브레드크럼 ── */
+    .page { background: var(--page-bg); }
+    .page__head { color: #3e3a39; font-family: nanumSquareNeo, Pretendard, sans-serif; }
+
+    .page__inner {
+      max-width: calc(1280px + 64px);
+      margin: 0 auto;
+      padding: 40px 32px 80px;
+    }
+
+    .page__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 50px;
+      margin-bottom: 40px;
+    }
+
+    .page__title { margin: 0; font-size: 36px; font-weight: 800; line-height: 1.4; }
+
+    .breadcrumb ol { display: flex; align-items: center; margin: 0; padding: 0; list-style: none; }
+    .breadcrumb li { display: flex; align-items: center; font-size: 14px; font-weight: 700; line-height: 20px; }
+
+    .breadcrumb li + li::before {
+      content: "";
+      width: 24px;
+      height: 24px;
+      margin: 0 4px;
+      background: url("assets/gnb/ico_breadcrumbs_arrow.svg") center / contain no-repeat;
+    }
+
+    .breadcrumb__home img { display: block; margin-right: 4px; }
+    .breadcrumb li:nth-child(2) a { color: var(--text-sub); }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .event-card { border-radius: 24px; overflow: hidden; }
+
+    .page__back { display: none; }
+
+    @media (max-width: 1023px) {
+      .page__inner { padding: 0 0 40px; }
+      .page__head { min-height: 0; margin: 0; padding: 28px 20px; }
+      .page__title { display: flex; align-items: flex-start; gap: 4px; font-size: 22px; }
+      .page__back { display: block; flex-shrink: 0; margin-top: 5px; }
+      .page__back img { display: block; }
+      .breadcrumb { display: none; }
+      .event-card { border-radius: 0; }
+    }
+
+  /* ============ 잇올 사이트 푸터 (실측 www.itall.com · 2026-10-27) ============ */
+  .site-foot { padding: 60px 20px; background: #000; color: #a5a5a5; font-family: nanumSquareNeo, Pretendard, sans-serif; word-break: keep-all; }
+  .site-foot a { color: inherit; text-decoration: none; }
+  .site-foot :where(p, ul) { margin: 0; padding: 0; list-style: none; }
+  .site-foot img { display: block; }
+  .site-foot__in { max-width: 1280px; margin: 0 auto; }
+  .site-foot__top { display: flex; flex-direction: column; }
+  .site-foot__label { color: #fff; font-size: 16px; font-weight: 800; line-height: 24px; }
+  .site-foot__tel { margin-top: 20px; color: #999; font-size: 32px; font-weight: 800; line-height: 48px; }
+  .site-foot__hours { display: flex; flex-direction: column; gap: 4px; margin-top: 16px; color: #999; font-size: 12px; font-weight: 700; line-height: 16px; }
+  .site-foot__cs { display: flex; flex-direction: column; margin-top: 20px; }
+  .site-foot__btns { display: flex; gap: 10px; }
+  .site-foot__btn {
+    display: flex; flex: 1; align-items: center; justify-content: center; gap: 8px; height: 54px; padding: 0 8px;
+    border-radius: 6px; background: #333; color: #fff !important; font-size: 14px; font-weight: 700; line-height: 20px;
+    transition: background .2s;
+  }
+  .site-foot__btn:hover { background: #444; }
+  .site-foot__btn img { width: 20px; height: 20px; }
+  .site-foot__sns { display: flex; justify-content: flex-end; gap: 16px; margin-top: 30px; }
+  .site-foot__sns img { width: 36px; height: 36px; }
+  .site-foot__mid { display: flex; flex-direction: column; gap: 40px; margin-top: 60px; }
+  .site-foot__brand { display: flex; align-items: center; justify-content: space-between; }
+  .site-foot__brand h2 { margin: 0; }
+  .site-foot__logo { width: 88px; height: 46px; }
+  .site-foot__family { position: relative; }
+  .site-foot__family summary {
+    display: flex; align-items: center; justify-content: space-between; width: 170px; height: 44px; padding: 0 16px;
+    border: 1px solid #666; border-radius: 6px; background: #000; color: #fff;
+    font-size: 14px; font-weight: 800; line-height: 20px; list-style: none; cursor: pointer;
+  }
+  .site-foot__family summary::-webkit-details-marker { display: none; }
+  .site-foot__family summary img { width: 16px; height: 16px; transition: transform .2s; }
+  .site-foot__family[open] summary img { transform: rotate(180deg); }
+  .site-foot__family ul {
+    position: absolute; right: 0; bottom: calc(100% + 4px); z-index: 2; width: 100%; padding: 8px 0;
+    border: 1px solid #666; border-radius: 6px; background: #1a1a1a;
+  }
+  .site-foot__family li a { display: block; padding: 8px 16px; color: #fff; font-size: 14px; font-weight: 700; line-height: 20px; }
+  .site-foot__family li a:hover { background: #333; }
+  .site-foot__links { display: flex; gap: 20px; }
+  .site-foot__links a { color: #fff; font-size: 14px; font-weight: 700; line-height: 20px; }
+  .site-foot__info { margin-top: 40px; font-size: 11px; font-weight: 700; line-height: 24px; }
+  .site-foot__info i { margin: 0 8px; font-style: normal; }
+  .site-foot__row, .site-foot__row2 { display: flex; flex-direction: column; }
+  .site-foot__row > span { display: flex; }
+  .site-foot__fee {
+    display: inline-flex; align-items: center; justify-content: center; height: 15px; margin: 4px 0 0 4px; padding: 0 4px;
+    border-radius: 2px; background: #6b7280; color: #fff !important; font-size: 10px; font-weight: 700; line-height: normal; white-space: nowrap;
+  }
+  .site-foot__comma { display: none; }
+  .site-foot__copy { margin-top: 40px; font-size: 12px; line-height: 16px; }
+  @media (min-width: 768px) {
+    .site-foot__top { flex-direction: row; justify-content: space-between; }
+    .site-foot__cs { margin-top: 0; }
+    .site-foot__btn { flex: none; width: 160px; }
+    .site-foot__row { flex-direction: row; }
+  }
+  @media (min-width: 1024px) {
+    .site-foot__tel { font-size: 40px; line-height: 60px; }
+    .site-foot__btns { gap: 40px; }
+    .site-foot__btn { width: 220px; height: 60px; font-weight: 800; }
+    .site-foot__sns { margin-top: 40px; }
+    .site-foot__mid { gap: 35px; margin-top: 65px; }
+    .site-foot__family summary { width: 220px; height: 56px; }
+    .site-foot__links { gap: 40px; }
+    .site-foot__info { font-size: 14px; font-weight: 400; line-height: 32px; }
+    .site-foot__row2 { flex-direction: row; }
+    .site-foot__fee { width: 82px; height: 25px; border-radius: 4px; font-size: 14px; font-weight: 400; }
+    .site-foot__comma { display: inline; margin: 0 4px; }
+  }
+  /* ============ /잇올 사이트 푸터 ============ */
+
+    /* ===== KV 혜택 배너 → 하단 고정 버튼 (팀 시안 kimye4 방식) =====
+       스크롤을 시작하면 배너가 그 자리에서 고정되고, 문구·배경·여백이 접히면서 버튼만 남은 채 화면 하단(20px)까지 내려감.
+       맨 위로 돌아오면 반대로 배너 자리로 펼쳐지며 돌아감. 같은 버튼이 있는 하단 배너(.end)에서는 숨김.
+       버튼 크기(폭·글자·여백)는 배너 안에 있을 때 그대로 고정 — 접히는 동안 버튼이 커지거나 줄지 않게 (PC·태블릿·모바일 공통) */
+    .kv.is-bar-out { z-index: 60; }   /* 고정된 배너가 아래 섹션들 위로 */
+    .kv__benefit {
+      transition: top .6s cubic-bezier(.4,0,.2,1), left .6s cubic-bezier(.4,0,.2,1), width .6s cubic-bezier(.4,0,.2,1),
+        padding .6s cubic-bezier(.4,0,.2,1), gap .6s cubic-bezier(.4,0,.2,1),
+        background-color .4s ease, box-shadow .4s ease, opacity .3s ease, transform .3s ease;
+    }
+    /* 문구 — 접힐 때는 바로 사라지고(.25s), 펼칠 때는 배너가 거의 다 커진 뒤(.3s 지연) 나타남 */
+    .kv__benefit-copy {
+      overflow: hidden; max-height: 120px;
+      transition: opacity .3s ease .3s, max-height .6s cubic-bezier(.4,0,.2,1);
+    }
+    .kv__benefit-copy p { white-space: nowrap; }
+    .kv__benefit-copy.is-w { flex: none; transition: width .6s cubic-bezier(.4,0,.2,1), opacity .3s ease .3s, max-height .6s cubic-bezier(.4,0,.2,1); }
+    .kv__benefit .btn { transition: filter .2s ease, box-shadow .4s ease; }
+    .kv__benefit.bar-fixed { position: fixed; }
+    .kv__benefit.bar-pinned { top: auto !important; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); }
+    .kv__benefit.bar-docked {
+      left: calc(50% - 140 * var(--u)); width: calc(280 * var(--u));   /* = 배너 안 버튼 폭 */
+      padding: 0; gap: 0;
+      background-color: transparent; box-shadow: none;
+      -webkit-backdrop-filter: none; backdrop-filter: none;
+    }
+    .kv__benefit.bar-docked .kv__benefit-copy {
+      opacity: 0; max-height: 0;
+      transition: width .6s cubic-bezier(.4,0,.2,1), opacity .25s ease, max-height .6s cubic-bezier(.4,0,.2,1);
+    }
+    .kv__benefit.bar-docked .btn { box-shadow: 0 6px 18px rgba(81,88,215,.35); }
+    .kv__benefit.bar-docked.bar-hide { opacity: 0; transform: translateY(16px); pointer-events: none; }
+    .kv__benefit.no-tr, .kv__benefit.no-tr * { transition: none !important; }
+    @container page (max-width: 767px) {
+      .kv__benefit-copy p { white-space: normal; }
+      .kv__benefit.bar-docked { left: calc(50% - 175 * var(--u)); width: calc(350 * var(--u)); }   /* 본문 좌우 여백 20에 맞춤 = 배너 바깥 폭 350 (접히며 안쪽 여백만큼 버튼이 넓어짐) */
+    }
+
+    /* ===== 인터랙션 ===== */
+    /* 페이드인 — JS가 켜진 경우에만 숨김 */
+    .js [data-fade] {
+      opacity: 0;
+      transform: translate3d(0, 48px, 0);
+      transition: opacity 1s ease, transform 1s cubic-bezier(.22,.61,.36,1);
+      transition-delay: var(--d, 0s);
+    }
+    .js [data-fade].is-in { opacity: 1; transform: none; }
+
+    /* 게이지바 채움 + 툴팁 페이드인 */
+    .js .dist__bar { width: 0; transition: width 1.2s cubic-bezier(.22,.61,.36,1); transition-delay: var(--d, 0s); }
+    .js .dist.is-in .dist__bar { width: var(--w); }
+    /* 말풍선 — 게이지가 찬 뒤 한 번 통통 튐 */
+    @keyframes tip-bounce {
+      0%, 100% { transform: translateY(0); }
+      30% { transform: translateY(calc(-10 * var(--u))); }
+      50% { transform: translateY(0); }
+      68% { transform: translateY(calc(-4 * var(--u))); }
+      84% { transform: translateY(0); }
+    }
+    .js .dist.is-in .dist__tip { animation: tip-bounce .7s ease-out 1.15s both; }
+
+    /* B7 단계 — 회색 점선 위로 포인트 점선이 좌→우로 차오르고, 선이 닿는 순간 넘버링 색이 채워짐 (PC만, 모바일은 선 없음) */
+    @media (min-width: 768px) {
+      .js .steps::before { background: repeating-linear-gradient(90deg, var(--line-normal) 0 4px, transparent 4px 10px); }
+      .js .steps::after {
+        content: ""; position: absolute;
+        left: calc(153 * var(--u)); top: calc(18 * var(--u));
+        width: 0; height: 2px;
+        background: repeating-linear-gradient(90deg, rgba(81,88,215,.6) 0 4px, transparent 4px 10px);
+        transition: width 1.4s linear .1s;
+      }
+      .js .steps.is-in::after { width: calc(616 * var(--u)); }
+      .js .steps .num { position: relative; z-index: 1; background: var(--text-assist); transition: background-color .4s ease; }
+      .js .steps.is-in .num { background: var(--point); }
+      /* 선 지연 .1s + 1.4s 중 각 넘버 위치(0 / 50% / 100%)에 닿는 시점 */
+      .js .steps .step:nth-child(1) .num { transition-delay: .1s; }
+      .js .steps .step:nth-child(2) .num { transition-delay: .8s; }
+      .js .steps .step:nth-child(3) .num { transition-delay: 1.5s; }
+    }
+
+    /* B3 캐릭터 — 하단(발)을 축으로 좌우로 흔들리다 점점 잦아들며 멈춤 (1회, 5s) */
+    @keyframes sway {
+      0% { transform: rotate(0); }
+      12% { transform: rotate(1.6deg); }
+      30% { transform: rotate(-1.3deg); }
+      47% { transform: rotate(1deg); }
+      63% { transform: rotate(-.6deg); }
+      78% { transform: rotate(.3deg); }
+      90% { transform: rotate(-.1deg); }
+      100% { transform: rotate(0); }
+    }
+    .b3__visual img { transform-origin: 60% 100%; }
+    /* 캐릭터는 처음부터 보이고, 화면에 들어오면 잠시 뒤 흔들림 시작 */
+    .b3__visual.is-in img,
+    html:not(.js) .b3__visual img { animation: sway 5s ease-in-out .3s 1 both; }
+
+    /* B4 티어 — 아래에서 위로 떠오름 */
+    .js .b4__tier[data-fade] { transform: translate3d(0, calc(60 * var(--u)), 0); transition-duration: 1s; }
+    .js .b4__tier[data-fade].is-in { transform: none; }
+
+    /* B6 캐릭터 — 세로 5% 늘었다 복귀 */
+    @keyframes boing {
+      0% { transform: scaleY(1); }
+      30% { transform: scaleY(1.05); }
+      55% { transform: scaleY(.98); }
+      75% { transform: scaleY(1.012); }
+      100% { transform: scaleY(1); }
+    }
+    .b6__visual img { transform-origin: 50% 100%; }
+    .b6__visual.is-in img { animation: boing .8s ease-out .7s both; }
+
+    /* 코인 둥둥 — 위아래 12px, 코인마다 주기(2.6s + 순번×.45s)·시작점 다르게 */
+    @keyframes coin-float {
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      50% { transform: translate3d(0, calc(-12 * var(--u)), 0); }
+    }
+    .coin img { animation: coin-float calc(2.6s + var(--i) * .45s) ease-in-out calc(var(--i) * -.7s) infinite; }
+    .coin--1 { --i: 0; }
+    .coin--2 { --i: 1; }
+    .coin--4 { --i: 2; }
+    .coin--3 { --i: 3; }
+
+    /* B5 — 학생이 오른쪽에서 들어오고(.8s), 카드가 .7s 뒤부터 순서대로 오른쪽에서 튕기듯 들어옴 */
+    .js .b5__visual { opacity: 0; transform: translate3d(calc(120 * var(--u)), 0, 0); transition: transform .8s cubic-bezier(.2,.8,.2,1), opacity .8s ease; }
+    .js .b5__card {
+      opacity: 0; transform: translate3d(calc(90 * var(--u)), 0, 0);
+      transition: transform .45s cubic-bezier(.2,.9,.3,1.15), opacity .4s ease;
+      transition-delay: calc(.7s + var(--i) * .12s);
+    }
+    .b5__card--1 { --i: 0; }
+    .b5__card--2 { --i: 1; }
+    .b5__card--3 { --i: 2; }
+    .b5__card--4 { --i: 3; }
+    .js .b5.is-in .b5__visual, .js .b5.is-in .b5__card { opacity: 1; transform: none; }
+
+    /* B9 — .7s 동안 올라옴 */
+    .js .how__item[data-fade] { transition: opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1); transition-delay: var(--d, 0s); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 키비주얼 타이틀 이너섀도 필터 -->
+  <svg class="sr-only" aria-hidden="true" focusable="false">
+    <filter id="kv-inset-pc" x="-5%" y="-5%" width="110%" height="110%">
+      <feComponentTransfer in="SourceAlpha"><feFuncA type="table" tableValues="1 0"/></feComponentTransfer>
+      <feGaussianBlur stdDeviation="2"/>
+      <feOffset dy="4" result="shadow"/>
+      <feFlood flood-color="#000" flood-opacity=".25"/>
+      <feComposite in2="shadow" operator="in"/>
+      <feComposite in2="SourceAlpha" operator="in" result="inner"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="inner"/></feMerge>
+    </filter>
+    <filter id="kv-inset-mo" x="-5%" y="-5%" width="110%" height="110%">
+      <feComponentTransfer in="SourceAlpha"><feFuncA type="table" tableValues="1 0"/></feComponentTransfer>
+      <feGaussianBlur stdDeviation="1.36"/>
+      <feOffset dy="2.72" result="shadow"/>
+      <feFlood flood-color="#000" flood-opacity=".25"/>
+      <feComposite in2="shadow" operator="in"/>
+      <feComposite in2="SourceAlpha" operator="in" result="inner"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="inner"/></feMerge>
+    </filter>
+  </svg>
+
+<!-- ============ 잇올 사이트 GNB (명예의전당 공용 틀 · PC 1024~ / MO ~1023) ============ -->
+<div class="site-head">
+  <div class="site-banner">
+    <div class="site-banner__inner">
+      <a class="site-banner__item" href="https://www.itall.com/recruit/highschool-final-exam-pass" target="_blank" rel="noopener"><img src="assets/gnb/new-sparta-white.svg" width="101" height="18" alt="잇올 스파르타"><img src="assets/gnb/new-study-cafe-white.svg" width="84" height="18" alt="잇올 몰입관"><span class="site-banner__red">고등 기말고사패스</span></a>
+      <a class="site-banner__item" href="https://www.itall.com/recruit/2027_winter" target="_blank" rel="noopener"><img src="assets/gnb/new-sparta-white.svg" width="101" height="18" alt="잇올 스파르타"><img src="assets/gnb/new-study-cafe-white.svg" width="84" height="18" alt="잇올 몰입관"><span class="site-banner__yellow">윈터스쿨</span></a>
+      <a class="site-banner__item" href="https://dormitory.itall.com/recruit/2027_winter" target="_blank" rel="noopener"><img src="assets/gnb/new-dormitory-white.svg" width="98" height="18" alt="잇올 기숙학원"><span class="site-banner__green">윈터스쿨</span></a>
+    </div>
+  </div>
+  <header class="gnb" aria-label="사이트 메뉴">
+    <div class="gnb__brand">
+      <a href="https://www.itall.com/" target="_blank" rel="noopener"><img src="assets/gnb/itall_logo.svg" width="134" height="24" alt="잇올 스파르타"></a>
+      <div class="gnb__family">
+        <button class="gnb__family-btn" type="button" aria-label="패밀리 사이트" aria-haspopup="true"><img src="assets/gnb/ico_dropdown.svg" width="20" height="20" alt=""></button>
+        <div class="gnb__family-panel">
+          <div class="gnb-family">
+          <ul class="gnb-family__list">
+            <li><a class="gnb-family__link" href="https://www.itall.com/" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-sparta.svg" width="89" height="16" alt="잇올 스파르타"><span>몰입의 기준을 세우다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+            <li><a class="gnb-family__link" href="https://www.itall.com/immersion-camp" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-study-cafe.svg" width="75" height="16" alt="잇올 몰입관"><span>몰입의 경험을 최적화하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+            <li><a class="gnb-family__link" href="https://dormitory.itall.com" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-dormitory.svg" width="87" height="16" alt="잇올 기숙학원"><span>몰입의 일상을 완성하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+          </ul>
+          <a class="gnb-family__promo" href="https://www.itall.com/contents/mentorings" target="_blank" rel="noopener">
+            <span>명문대 타이틀을 수익과 커리어로 전환하는 선택</span>
+            <b>명문대 멘토(CA) 모집중</b>
+          </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <nav aria-label="주 메뉴">
+      <ul class="gnb__menu">
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/immersion/system" target="_blank" rel="noopener">몰입공부 시스템</a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/immersion/system" target="_blank" rel="noopener">몰입공부 시스템</a></li>
+            <li><a href="https://www.itall.com/immersion/space" target="_blank" rel="noopener">공간/생활</a></li>
+            <li><a href="https://www.itall.com/immersion/study" target="_blank" rel="noopener">학습/입시/콘텐츠</a></li>
+            <li><a href="https://www.itall.com/immersion/billboard" target="_blank" rel="noopener">빌보드/부트캠프</a></li>
+            <li><a href="https://www.itall.com/immersion/ai" target="_blank" rel="noopener">티처스/잇생부</a></li>
+            <li><a href="https://www.itall.com/immersion/admission-2028" target="_blank" rel="noopener">2028 입시정보</a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/direct-center" target="_blank" rel="noopener"><span class="gnb__shine">직영 센터/캠프</span></a>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/recruit" target="_blank" rel="noopener">모집안내</a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/recruit/2027_winter" target="_blank" rel="noopener">스파르타/몰입관 윈터스쿨<span class="gnb__badge">모집중</span></a></li>
+            <li><a href="https://www.itall.com/recruit/2027_Bansu" target="_blank" rel="noopener">스파르타/몰입관 반수반<span class="gnb__badge">마감임박</span></a></li>
+            <li><a href="https://www.itall.com/recruit/highschool-final-exam-pass" target="_blank" rel="noopener">스파르타/몰입관 고등 기말고사패스<span class="gnb__badge">모집중</span></a></li>
+            <li><a href="https://www.itall.com/recruit/high_immersion" target="_blank" rel="noopener">스파르타/몰입관 고등 몰입 관리반<span class="gnb__badge">상시모집</span></a></li>
+            <li><a href="https://dormitory.itall.com/recruit/2027_winter" target="_blank" rel="noopener">기숙 윈터스쿨<span class="gnb__badge gnb__badge--dorm">모집중</span></a></li>
+            <li><a href="https://dormitory.itall.com/recruit/2027-jaesu" target="_blank" rel="noopener">기숙 재수정규반<span class="gnb__badge gnb__badge--dorm">대기접수</span></a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/glory_honor" target="_blank" rel="noopener">입시 결과</a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/glory_honor" target="_blank" rel="noopener">입시 결과</a></li>
+            <li><a href="https://www.itall.com/glory_honor/perfect-story" target="_blank" rel="noopener">수능 만점자 스토리</a></li>
+            <li><a href="https://www.itall.com/glory_honor/passing-story" target="_blank" rel="noopener">합격 수기</a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/scholarship" target="_blank" rel="noopener">장학</a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/scholarship?tab=allkey" target="_blank" rel="noopener">올키 장학</a></li>
+            <li><a href="https://www.itall.com/scholarship?tab=foundation" target="_blank" rel="noopener">백태규백다애 장학회</a></li>
+            <li><a href="https://www.itall.com/scholarship?tab=principal-recommendation" target="_blank" rel="noopener">원장추천 특별장학</a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/customer-service" target="_blank" rel="noopener">고객센터</a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/customer-service?tab=faq" target="_blank" rel="noopener">자주 하는 질문</a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=online-consultant" target="_blank" rel="noopener">온라인 상담</a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=story" target="_blank" rel="noopener">잇올 스토리</a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=bamboo" target="_blank" rel="noopener">잇올 대나무숲</a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=notice" target="_blank" rel="noopener">공지사항</a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/contents" target="_blank" rel="noopener">콘텐츠</a>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/events" target="_blank" rel="noopener">이벤트</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="gnb__util">
+      <span class="gnb__dday">수능 <span class="js-dday">D-43</span></span>
+      <span class="gnb__util-box">학사 일정</span>
+    </div>
+  </header>
+
+  <div class="gnb-bar">
+    <div class="gnb-bar__brand">
+      <a href="https://www.itall.com/" target="_blank" rel="noopener"><img src="assets/gnb/itall_logo.svg" width="100" height="18" alt="잇올 스파르타"></a>
+      <button class="gnb-bar__family js-sheet-open" type="button" aria-label="패밀리 사이트" aria-haspopup="dialog" aria-controls="gnb-sheet"><img src="assets/gnb/ico_dropdown.svg" width="16" height="16" alt=""></button>
+    </div>
+    <div class="gnb-bar__util">
+      <span class="gnb-bar__box">학사 일정</span>
+      <button class="gnb-bar__menu js-menu-open" type="button" aria-label="전체 메뉴 열기" aria-expanded="false" aria-controls="gnb-m"><img src="assets/gnb/ico_menu.svg" width="24" height="24" alt=""></button>
+    </div>
+  </div>
+</div>
+
+<div class="gnb-m gnb-m--sparta" id="gnb-m" role="dialog" aria-modal="true" aria-label="전체 메뉴" hidden>
+  <div class="gnb-m__top">
+    <a class="gnb-m__home" href="https://www.itall.com/" target="_blank" rel="noopener"><img src="assets/gnb/ico_home.svg" width="28" height="28" alt="홈"></a>
+    <div class="gnb-m__util">
+      <span class="gnb__dday">수능 <span class="js-dday">D-43</span></span>
+      <span class="gnb-bar__box">학사 일정</span>
+      <button class="gnb-m__close js-menu-close" type="button" aria-label="전체 메뉴 닫기"><img src="assets/gnb/ico_close_new.svg" width="24" height="24" alt=""></button>
+    </div>
+  </div>
+  <div class="gnb-m__body">
+      <p class="gnb-m__title">꿈이 모두 이루어지는 공간<span>잇올 스파르타</span></p>
+      <div class="gnb-m__pair">
+        <a class="gnb-m__btn gnb-m__btn--dark" href="https://www.itall.com/contents" target="_blank" rel="noopener">콘텐츠</a>
+        <a class="gnb-m__btn gnb-m__btn--dark" href="https://www.itall.com/events" target="_blank" rel="noopener">이벤트/혜택</a>
+      </div>
+      <div class="gnb-m__stack">
+        <a class="gnb-m__btn gnb-m__btn--line" href="https://onlinebooks.co.kr/books/itall_sparta/#p=1" target="_blank" rel="noopener">잇올 한눈에 보기 <em>잇올 매뉴얼 e-Book</em></a>
+        <a class="gnb-m__btn gnb-m__btn--line" href="https://onlinebooks.co.kr/books/csjg/#p=1" target="_blank" rel="noopener">잇올 <em>합격수기 공모전 당선작</em> 확인하기</a>
+      </div>
+    <ul class="gnb-m__list">
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/immersion/system" target="_blank" rel="noopener">몰입공부 시스템</a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-0" aria-label="몰입공부 시스템 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-0" hidden>
+            <li><a href="https://www.itall.com/immersion/system" target="_blank" rel="noopener"><span>몰입공부 시스템</span></a></li>
+            <li><a href="https://www.itall.com/immersion/space" target="_blank" rel="noopener"><span>공간/생활</span></a></li>
+            <li><a href="https://www.itall.com/immersion/study" target="_blank" rel="noopener"><span>학습/입시/콘텐츠</span></a></li>
+            <li><a href="https://www.itall.com/immersion/billboard" target="_blank" rel="noopener"><span>빌보드/부트캠프</span></a></li>
+            <li><a href="https://www.itall.com/immersion/ai" target="_blank" rel="noopener"><span>티처스/잇생부</span></a></li>
+            <li><a href="https://www.itall.com/immersion/admission-2028" target="_blank" rel="noopener"><span>2028 입시정보</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row"><a class="gnb-m__label" href="https://www.itall.com/direct-center" target="_blank" rel="noopener">직영 센터/캠프</a></div>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/recruit" target="_blank" rel="noopener">모집안내</a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-2" aria-label="모집안내 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-2" hidden>
+            <li><a href="https://www.itall.com/recruit/2027_winter" target="_blank" rel="noopener"><span>스파르타/몰입관 윈터스쿨</span><span class="gnb-m__badge">모집중</span></a></li>
+            <li><a href="https://www.itall.com/recruit/2027_Bansu" target="_blank" rel="noopener"><span>스파르타/몰입관 반수반</span><span class="gnb-m__badge">마감임박</span></a></li>
+            <li><a href="https://www.itall.com/recruit/highschool-final-exam-pass" target="_blank" rel="noopener"><span>스파르타/몰입관 고등 기말고사패스</span><span class="gnb-m__badge">모집중</span></a></li>
+            <li><a href="https://www.itall.com/recruit/high_immersion" target="_blank" rel="noopener"><span>스파르타/몰입관 고등 몰입 관리반</span><span class="gnb-m__badge">상시모집</span></a></li>
+            <li><a href="https://dormitory.itall.com/recruit/2027_winter" target="_blank" rel="noopener"><span>기숙 윈터스쿨</span><span class="gnb-m__badge gnb-m__badge--dorm">모집중</span></a></li>
+            <li><a href="https://dormitory.itall.com/recruit/2027-jaesu" target="_blank" rel="noopener"><span>기숙 재수정규반</span><span class="gnb-m__badge gnb-m__badge--dorm">대기접수</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/glory_honor" target="_blank" rel="noopener">입시 결과</a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-3" aria-label="입시 결과 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-3" hidden>
+            <li><a href="https://www.itall.com/glory_honor" target="_blank" rel="noopener"><span>입시 결과</span></a></li>
+            <li><a href="https://www.itall.com/glory_honor/perfect-story" target="_blank" rel="noopener"><span>수능 만점자 스토리</span></a></li>
+            <li><a href="https://www.itall.com/glory_honor/passing-story" target="_blank" rel="noopener"><span>합격 수기</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/scholarship" target="_blank" rel="noopener">장학</a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-4" aria-label="장학 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-4" hidden>
+            <li><a href="https://www.itall.com/scholarship?tab=allkey" target="_blank" rel="noopener"><span>올키 장학</span></a></li>
+            <li><a href="https://www.itall.com/scholarship?tab=foundation" target="_blank" rel="noopener"><span>백태규백다애 장학회</span></a></li>
+            <li><a href="https://www.itall.com/scholarship?tab=principal-recommendation" target="_blank" rel="noopener"><span>원장추천 특별장학</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/customer-service" target="_blank" rel="noopener">고객센터</a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-5" aria-label="고객센터 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-5" hidden>
+            <li><a href="https://www.itall.com/customer-service?tab=faq" target="_blank" rel="noopener"><span>자주 하는 질문</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=online-consultant" target="_blank" rel="noopener"><span>온라인 상담</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=story" target="_blank" rel="noopener"><span>잇올 스토리</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=bamboo" target="_blank" rel="noopener"><span>잇올 대나무숲</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=notice" target="_blank" rel="noopener"><span>공지사항</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row"><a class="gnb-m__label" href="https://www.itall.com/contents" target="_blank" rel="noopener">콘텐츠</a></div>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row"><a class="gnb-m__label" href="https://www.itall.com/events" target="_blank" rel="noopener">이벤트</a></div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="gnb-sheet" id="gnb-sheet" role="dialog" aria-modal="true" aria-labelledby="gnb-sheet-title" hidden>
+  <div class="gnb-sheet__dim js-sheet-close"></div>
+  <div class="gnb-sheet__panel">
+    <p class="gnb-sheet__title" id="gnb-sheet-title">어떤 사이트로 이동할까요?</p>
+    <div class="gnb-family gnb-family--sheet">
+          <ul class="gnb-family__list">
+            <li><a class="gnb-family__link" href="https://www.itall.com/" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-sparta.svg" width="89" height="16" alt="잇올 스파르타"><span>몰입의 기준을 세우다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+            <li><a class="gnb-family__link" href="https://www.itall.com/immersion-camp" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-study-cafe.svg" width="75" height="16" alt="잇올 몰입관"><span>몰입의 경험을 최적화하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+            <li><a class="gnb-family__link" href="https://dormitory.itall.com" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-dormitory.svg" width="87" height="16" alt="잇올 기숙학원"><span>몰입의 일상을 완성하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+          </ul>
+          <a class="gnb-family__promo" href="https://www.itall.com/contents/mentorings" target="_blank" rel="noopener">
+            <span>명문대 타이틀을 수익과 커리어로 전환하는 선택</span>
+            <b>명문대 멘토(CA) 모집중</b>
+          </a>
+    </div>
+  </div>
+</div>
+
+<!-- 맨 위로 — GNB와 함께 공용 (스크롤 300px 이후 노출) -->
+<button class="gnb-top" type="button" aria-label="맨 위로 이동"><img src="assets/gnb/ic_scroll_up.svg" width="40" height="40" alt=""></button>
+
+<script>
+  /* GNB — 수능 D-day · 모바일 메뉴 · 아코디언 · 패밀리 사이트 바텀시트 */
+  (function () {
+    'use strict';
+    var d = Math.round((new Date(2026, 10, 19) - new Date(new Date().toDateString())) / 864e5);
+    document.querySelectorAll('.js-dday').forEach(function (el) { el.textContent = d > 0 ? 'D-' + d : 'D-DAY'; });
+
+    var root = document.documentElement;
+    var menu = document.getElementById('gnb-m');
+    var sheet = document.getElementById('gnb-sheet');
+    var opener = null;
+    var openedAt = 0;
+
+
+    function open(layer, trigger) {
+      clearTimeout(layer._closeTimer);   /* 직전 닫기 타이머가 남아 있으면 다시 연 레이어를 숨기므로 취소 */
+      opener = trigger;
+      openedAt = Date.now();
+      layer.hidden = false;
+      root.classList.add('gnb-lock');
+      void layer.offsetWidth;
+      layer.classList.add('is-open');
+      if (trigger.hasAttribute('aria-expanded')) trigger.setAttribute('aria-expanded', 'true');
+      var first = layer.querySelector('a, button');
+      if (first) first.focus({ preventScroll: true });
+    }
+    function close(layer) {
+      layer.classList.remove('is-open');
+      root.classList.remove('gnb-lock');
+      var done = function () { layer.hidden = true; };
+      clearTimeout(layer._closeTimer);
+      if (layer === menu || window.matchMedia('(prefers-reduced-motion: reduce)').matches) done();   /* 전체 메뉴는 즉시 (실사이트 동일) */
+      else layer._closeTimer = setTimeout(done, 300);
+      if (opener) {
+        if (opener.hasAttribute('aria-expanded')) opener.setAttribute('aria-expanded', 'false');
+        opener.focus({ preventScroll: true });
+      }
+    }
+    /* ☰ 자리에 ✕가 겹쳐 있어 터치 직후 따라오는 탭(더블탭·고스트 클릭)이 바로 닫지 않게 */
+    function guarded(fn) { return function () { if (Date.now() - openedAt < 400) return; fn(); }; }
+
+    document.querySelector('.js-menu-open').addEventListener('click', function (e) { open(menu, e.currentTarget); });
+    menu.querySelector('.js-menu-close').addEventListener('click', guarded(function () { close(menu); }));
+    document.querySelector('.js-sheet-open').addEventListener('click', function (e) { open(sheet, e.currentTarget); });
+    sheet.querySelector('.js-sheet-close').addEventListener('click', guarded(function () { close(sheet); }));
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (!sheet.hidden) close(sheet); else if (!menu.hidden) close(menu);
+    });
+
+    menu.querySelectorAll('.gnb-m__toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var sub = document.getElementById(btn.getAttribute('aria-controls'));
+        var expand = btn.getAttribute('aria-expanded') !== 'true';
+        btn.setAttribute('aria-expanded', String(expand));
+        sub.hidden = !expand;
+      });
+    });
+
+    /* 맨 위로 버튼 — 스크롤 300px 이후 노출 · 클릭 시 맨 위로 */
+    var topBtn = document.querySelector('.gnb-top');
+    if (topBtn) {
+      var onTop = function () { topBtn.classList.toggle('is-show', window.scrollY > 300); };
+      window.addEventListener('scroll', onTop, { passive: true });
+      onTop();
+      topBtn.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      });
+    }
+
+    /* PC로 넓어지면 모바일 레이어 정리 */
+    window.matchMedia('(min-width: 1024px)').addEventListener('change', function (mq) {
+      if (!mq.matches) return;
+      [menu, sheet].forEach(function (layer) { clearTimeout(layer._closeTimer); layer.classList.remove('is-open'); layer.hidden = true; });
+      root.classList.remove('gnb-lock');
+    });
+  })();
+</script>
+<!-- ============ /잇올 사이트 GNB ============ -->
+
+  <main class="page">
+    <div class="page__inner">
+      <div class="page__head">
+        <h1 class="page__title"><a class="page__back" href="https://www.itall.com/events" target="_blank" rel="noopener" aria-label="이벤트/혜택 목록으로"><img src="assets/gnb/ico_arrow_back_red.svg" width="20" height="20" alt=""></a>티처스리그</h1>
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <ol>
+            <li><a class="breadcrumb__home" href="https://www.itall.com/main" target="_blank" rel="noopener"><img src="assets/gnb/ico_breadcrumbs_home.svg" width="20" height="20" alt="메인"></a></li>
+            <li><a href="https://www.itall.com/events" target="_blank" rel="noopener">이벤트/혜택</a></li>
+            <li><span aria-current="page">티처스리그</span></li>
+          </ol>
+        </nav>
+      </div>
+
+      <div class="event-card">
+    <div class="lp">
+
+      <!-- B1 히어로 -->
+      <section class="sec kv" aria-labelledby="kv-title">
+        <div class="kv__bg" aria-hidden="true"><img src="assets/kv_bg.webp" alt="" width="2688" height="1513" fetchpriority="high"></div>
+        <div class="sec__in">
+          <div class="kv__glow" aria-hidden="true"></div>
+          <div class="kv__copy">
+            <div class="kv__head">
+              <img class="kv__logo" src="assets/logo_teachers.svg" alt="티처스리그" width="166" height="46">
+              <h2 class="kv__title" id="kv-title"><span>막히는 건 뭐든,</span><span>리그가 답한다.</span></h2>
+            </div>
+            <p class="kv__sub">학습 Q&amp;A, 이제 순위를 겨루는 티처들이 답해요<br>막힌 문제도, 막막한 공부 방향도요.</p>
+            <ul class="chips">
+              <li class="chip">#명문대 출신 티처</li>
+              <li class="chip">#5단계 티처 티어</li>
+              <li class="chip">#학생 평가가 반영되는 순위</li>
+            </ul>
+          </div>
+          <div class="kv__benefit">
+            <div class="kv__benefit-copy">
+              <p class="kv__benefit-title">잇올 재원생이라면, 가장 먼저</p>
+              <p class="kv__benefit-desc">별도 결제 없이, 매달 6,000포인트를 잇올이 드려요<sup class="fn">1</sup></p>
+            </div>
+            <a class="btn" href="#">재원생 혜택으로 시작하기</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- B3 질문거리 -->
+      <section class="sec b3" aria-labelledby="b3-title">
+        <div class="sec__in">
+          <div class="b3__text">
+            <h2 class="sec__title" id="b3-title"><span class="pt">공부</span>하다<br><span class="pt">질문</span>이 생기는 순간</h2>
+            <p class="sec__desc">이제 고민하지 말고, 티처스리그로 해결하세요!</p>
+            <ol class="b3__list">
+              <li class="b3__item">
+                <div class="b3__item-head"><span class="num">1</span><h3 class="b3__item-title">정답은 맞췄는데 왜 맞았는지 모르겠을 때</h3></div>
+                <p class="b3__item-desc">맞긴 맞았는데 완벽히 이해하지 못했거나 <br class="only-mo">다음에도 풀 수 있을지 자신이 없어요.</p>
+              </li>
+              <li class="b3__item">
+                <div class="b3__item-head"><span class="num">2</span><h3 class="b3__item-title">어려워서 그냥 넘긴 문제가 있을 때</h3></div>
+                <p class="b3__item-desc">어디서부터 막혔는지 모르겠고 <br class="only-mo">마땅히 물어볼 사람도 생각나지 않아요.</p>
+              </li>
+              <li class="b3__item">
+                <div class="b3__item-head"><span class="num">3</span><h3 class="b3__item-title">이 시기에 뭘 해야 할지 모르는 날</h3></div>
+                <p class="b3__item-desc">수능/입시까지 얼마 남지 않았는데, <br class="only-mo">지금 이 순간 무엇에 집중해야할지 <br class="only-mo">모르겠어요.</p>
+              </li>
+            </ol>
+          </div>
+          <div class="sec__deco b3__visual" data-sway>
+            <picture>
+              <source media="(max-width: 767px)" srcset="assets/b3_girl_mo.webp">
+              <img src="assets/b3_girl_pc.webp" alt="" width="880" height="1060" loading="lazy">
+            </picture>
+          </div>
+        </div>
+      </section>
+
+      <!-- B4 왜 리그인가 -->
+      <section class="sec b4" aria-labelledby="b4-title">
+        <div class="sec__in">
+          <div class="b4__row">
+            <div class="b4__spacer" aria-hidden="true"></div>
+            <div class="b4__text">
+              <h2 class="sec__title" id="b4-title">경쟁은 티처가,<br><span class="pt">이득</span>은 내가</h2>
+              <p class="sec__desc">티처의 순위와 티어는 시즌 내내 오르내려요. <br>잘 설명해야 올라가니까, 질문 하나하나에 <br class="only-mo">정성을 들여요. <br class="only-pc">지금 가장 실력있는 티처가 누구인지 <br class="only-mo">티어로 알 수 있어요.</p>
+              <div class="b4__compare">
+                <div class="b4__card">
+                  <p class="b4__card-label">한 번쯤</p>
+                  <p class="b4__card-desc">높은 학력에 기대했지만<br>낮은 답변 퀄리티에<br>실망한 적이 있을 거예요.</p>
+                </div>
+                <div class="b4__card b4__card--point">
+                  <p class="b4__card-label">티처스리그에선</p>
+                  <p class="b4__card-desc">티처의 티어 · 순위가 학생 <br>평점으로 결정돼요! 덕분에<br>답변을 신뢰할 수 있어요.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="b4__visual" data-seq aria-hidden="true">
+            <div class="sec__deco b4__tier b4__tier--right" data-fade data-seq-item data-delay="0.5"><img src="assets/b4_tier_right.webp" alt="" width="202" height="400" loading="lazy"></div>
+            <div class="sec__deco b4__tier b4__tier--left" data-fade data-seq-item data-delay="0.72"><img src="assets/b4_tier_left.webp" alt="" width="218" height="392" loading="lazy"></div>
+            <div class="sec__deco b4__char" data-fade data-seq-item data-delay="0">
+              <img src="assets/b4_char.webp" alt="" width="656" height="1210" loading="lazy">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- B5 내 라인업 -->
+      <section class="sec b5" aria-labelledby="b5-title" data-reveal>
+        <div class="sec__in">
+          <div class="b5__cards" aria-hidden="true">
+            <div class="sec__deco b5__card b5__card--1"><img src="assets/b5_card_01.webp" alt="" width="320" height="408" loading="lazy"></div>
+            <div class="sec__deco b5__card b5__card--2"><img src="assets/b5_card_02.webp" alt="" width="320" height="408" loading="lazy"></div>
+            <div class="sec__deco b5__card b5__card--3"><img src="assets/b5_card_03.webp" alt="" width="668" height="245" loading="lazy"></div>
+            <div class="sec__deco b5__card b5__card--4"><img src="assets/b5_card_04.webp" alt="" width="668" height="245" loading="lazy"></div>
+          </div>
+          <div class="b5__row">
+            <div class="b5__text">
+              <h2 class="sec__title" id="b5-title">리그를<br>결정짓는 건 <span class="pt">학생</span></h2>
+              <p class="sec__desc">국어는 이OO 티처, 수학은 박OO 티처. <br class="only-pc">목표 대학 출신 <br class="only-mo">티처의 티어·리뷰를 보고 내 라인업을 짜요.<br>나의 평점과 리뷰가 모여 다음 스타 티처가 탄생해요.</p>
+            </div>
+            <div class="b5__spacer" aria-hidden="true"></div>
+          </div>
+          <div class="sec__deco b5__visual">
+            <img src="assets/b5_boy.webp" alt="" width="626" height="1458" loading="lazy">
+          </div>
+        </div>
+      </section>
+
+      <!-- B6 답하는 사람들 -->
+      <section class="sec b6" aria-labelledby="b6-title">
+        <div class="sec__in">
+          <div class="sec__deco b6__emblem" data-fade data-delay="0.35">
+            <picture>
+              <source media="(max-width: 767px)" srcset="assets/b6_emblem_mo.webp">
+              <img src="assets/b6_emblem_pc.webp" alt="" width="1121" height="546" loading="lazy">
+            </picture>
+          </div>
+          <div class="b6__row">
+            <div class="b6__spacer" aria-hidden="true"></div>
+            <div class="b6__text">
+              <h2 class="sec__title" id="b6-title"><span class="pt">대학 합격</span>을 먼저<br>이루어낸 <span class="pt">티처</span>들</h2>
+              <p class="sec__desc">학적 확인을 거친 명문대 출신<sup class="fn">3</sup> 티처들이 답해요. <br>입시 경험을 통해 얻은 노하우를 바탕으로<br>문제 풀이부터 학습 방향까지 알려줘요.</p>
+              <ul class="chips">
+                <li class="chip">#명문대 학적 확인</li>
+                <li class="chip">#엄격한 티처 심사</li>
+                <li class="chip">#지속적인 실력 검증</li>
+              </ul>
+            </div>
+          </div>
+          <div class="sec__deco b6__visual" data-fade>
+            <picture>
+              <source media="(max-width: 767px)" srcset="assets/b6_couple_mo.webp">
+              <img src="assets/b6_couple_pc.webp" alt="" width="880" height="900" loading="lazy">
+            </picture>
+          </div>
+        </div>
+      </section>
+
+      <!-- B2 숫자 -->
+      <section class="sec b2" aria-labelledby="b2-title">
+        <div class="sec__in">
+          <h2 class="sec__title" id="b2-title">먼저 써 본 수험생<br><span class="pt">10명 중 8명</span>이 만족<sup class="fn">2</sup></h2>
+          <div class="b2__card">
+            <div class="b2__score">
+              <p class="b2__total">
+                <span class="b2__total-num" data-count="4.33" data-decimals="2">4.33</span>
+                <span class="b2__total-label">5점 만점 만족도</span>
+              </p>
+              <div class="b2__stats">
+                <p class="b2__stat">
+                  <span class="b2__stat-num"><span data-count="84.3" data-decimals="1">84.3</span>%</span>
+                  <span class="b2__stat-label">만족·매우 만족이라고 <br>답한 비율</span>
+                </p>
+                <p class="b2__stat">
+                  <span class="b2__stat-num"><span data-count="1640">1,640</span><span class="b2__stat-unit">명</span></span>
+                  <span class="b2__stat-label">먼저 써 본 <br>수험생</span>
+                </p>
+              </div>
+            </div>
+            <div class="dist" data-gauge>
+              <h3 class="dist__title">응답 분포</h3>
+              <ul class="dist__list">
+                <li class="dist__row dist__row--top">
+                  <span class="dist__label">5점 · 4점</span>
+                  <span class="dist__track" role="img" aria-label="84.3%"><span class="dist__bar" data-w="84.3"></span></span>
+                  <span class="dist__val">84.3%</span>
+                </li>
+                <li class="dist__row">
+                  <span class="dist__label">3점</span>
+                  <span class="dist__track" role="img" aria-label="12.1%"><span class="dist__bar" data-w="12.1"></span></span>
+                  <span class="dist__val">12.1%</span>
+                </li>
+                <li class="dist__row">
+                  <span class="dist__label">2점</span>
+                  <span class="dist__track" role="img" aria-label="2.4%"><span class="dist__bar" data-w="2.4"></span></span>
+                  <span class="dist__val">2.4%</span>
+                </li>
+                <li class="dist__row">
+                  <span class="dist__label">1점</span>
+                  <span class="dist__track" role="img" aria-label="1.2%"><span class="dist__bar" data-w="1.2"></span></span>
+                  <span class="dist__val">1.2%</span>
+                </li>
+              </ul>
+              <p class="dist__tip">만족한 사용자 1,383명<span class="dist__tip-tail" aria-hidden="true"><img src="assets/ic_tooltip_tail.svg" alt="" width="15" height="13"></span></p>
+            </div>
+          </div>
+          <div class="basis">
+            <button class="basis__toggle" type="button" aria-expanded="false" aria-controls="basis-panel">산출 근거<img src="assets/ic_chevron_up.svg" alt="" width="16" height="16"></button>
+            <div class="basis__panel" id="basis-panel" hidden>
+              <div>
+                <div class="basis__box">
+                  <ul class="basis__list">
+                    <li><span>※</span><span>조사명: 2026 하반기 잇올 통합 만족도 설문조사</span></li>
+                    <li><span>※</span><span>조사 주체·기간: (주)잇올 · 2026.10.2 ~ 10.11</span></li>
+                    <li><span>※</span><span>조사 대상·방법: 잇올 전국 센터·캠프 재원생 · 온라인 설문(실명·익명 선택)</span></li>
+                    <li><span>※</span><span>응답: 전체 3,186건 제출(고유 응답자 3,080명). 이 중 티처스 1.0 이용 경험자 1,640명이 아래 문항에 응답</span></li>
+                    <li><span>※</span><span>문항: 「티처스를 이용하면서 전반적으로 얼마나 만족하셨나요?」 — 5점 척도(1점 매우 불만족 ~ 5점 매우 만족)</span></li>
+                    <li><span>※</span><span>만족도 4.33점: 응답자 1,640명 점수의 산술 평균</span></li>
+                    <li><span>※</span><span>만족 비율 84.3%: 만족(4점) 515명 + 매우 만족(5점) 868명 = 1,383명 ÷ 1,640명</span></li>
+                    <li><span>※</span><span>응답 분포: 5점 868명(52.9%) · 4점 515명(31.4%) · 3점 198명(12.1%) · 2점 40명(2.4%) · 1점 19명(1.2%)</span></li>
+                    <li><span>※</span><span>비고: 티처스 1.0(2025.12~2026.04 운영)은 티처스리그의 이전 서비스입니다. 중복 제출로 추정되는 응답을 제외해도(1,618명) 평균 4.33점 · 만족 비율 84.4%로 같습니다.</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- B7 이렇게 씁니다 -->
+      <section class="sec b7" aria-labelledby="b7-title">
+        <div class="sec__in">
+          <h2 class="sec__title" id="b7-title">올리고, 받고,<br><span class="pt">이해</span>될 때까지</h2>
+          <ol class="steps" data-seq="0.22" data-seq-mo="each">
+            <li class="step">
+              <div class="step__copy">
+                <div class="step__head"><span class="num">1</span><h3 class="step__title">올리고</h3></div>
+                <p class="step__desc">질문할 과목, <br>난이도와 함께 궁금한 점을 <br>작성해요.</p>
+              </div>
+              <div class="step__phone" data-fade data-seq-item><img src="assets/b7_phone_01.webp" alt="질문하기 화면 — 과목·난이도와 함께 질문 내용을 작성하는 모습" width="512" height="1040" loading="lazy"></div>
+            </li>
+            <li class="step">
+              <div class="step__copy">
+                <div class="step__head"><span class="num">2</span><h3 class="step__title">받고</h3></div>
+                <p class="step__desc">풀이와 함께, <br>내가 어디서 막혔는지까지 <br>짚어 줘요.</p>
+              </div>
+              <div class="step__phone" data-fade data-seq-item><img src="assets/b7_phone_02.webp" alt="티처 답변 화면 — 티처가 단계별 풀이와 막힌 지점을 설명하는 모습" width="512" height="1040" loading="lazy"></div>
+            </li>
+            <li class="step">
+              <div class="step__copy">
+                <div class="step__head"><span class="num">3</span><h3 class="step__title">이해될 때까지</h3></div>
+                <p class="step__desc">답변을 읽고도 헷갈리는 <br>부분이 있다면 <br class="only-mo">이어서 질문하고 <br>답을 받을 수 있어요.</p>
+              </div>
+              <div class="step__phone" data-fade data-seq-item><img src="assets/b7_phone_03.webp" alt="추가 질문 화면 — 답변에 이어 질문하고 다시 답을 받는 대화 모습" width="512" height="1040" loading="lazy"></div>
+            </li>
+          </ol>
+          <p class="tip">
+            <span class="tip__tag">TIP</span>
+            <span class="tip__text">나와 비슷한 고민을 가진 학생들의 질문과 티처의 답변을 둘러볼 수 도 있어요! <br class="only-mo">먼저 올라온 답변에서 답을 찾아보세요.</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- B8 포인트 지급 -->
+      <section class="sec b8" aria-labelledby="b8-title">
+        <div class="sec__in">
+          <div class="b8__left">
+            <div class="b8__logos">
+              <img class="b8__logo" src="assets/logo_teachers.svg" alt="티처스리그" width="125" height="35">
+              <span class="b8__x" aria-hidden="true">×</span>
+              <img class="b8__itall" src="assets/logo_itall.svg" alt="잇올" width="57" height="30">
+            </div>
+            <div class="b8__head">
+              <h2 class="sec__title" id="b8-title">재원생이 <br class="only-pc">먼저 써 본 서비스,<br><span class="pt">재원생에게 먼저</span></h2>
+              <p class="sec__desc">재원생들의 사랑을 받은 잇올 티처스<sup class="fn">4</sup>가 새롭게 탄생했어요. 이제 재원생 전용 혜택으로 보답 해드려요.</p>
+            </div>
+          </div>
+          <div class="b8__right">
+            <div class="coupon">
+              <div class="coupon__top"><p class="coupon__amount">매달 6,000P</p></div>
+              <p class="coupon__bottom">한 달 100문제 가량<sup class="fn">1</sup><br>별도로 안내드릴 코드를 입력하면 매달 새로 지급돼요.</p>
+            </div>
+            <p class="b8__note">* 잇올스파르타/기숙학원과 제휴하여 제공되는 외부 플랫폼 서비스입니다. 혜택은 잇올과 티처스리그의 정책에 따라 달라질 수 있습니다.</p>
+            <div class="coupon__divider" aria-hidden="true">
+              <picture>
+                <source media="(max-width: 767px)" srcset="assets/coupon_divider_mo.svg">
+                <img src="assets/coupon_divider.svg" alt="" width="481" height="24">
+              </picture>
+            </div>
+          </div>
+          <div class="coin coin--1" aria-hidden="true"><img src="assets/coin_01.webp" alt="" width="212" height="228" loading="lazy"></div>
+          <div class="coin coin--2" aria-hidden="true"><img src="assets/coin_02.webp" alt="" width="212" height="228" loading="lazy"></div>
+          <div class="coin coin--3" aria-hidden="true"><img src="assets/coin_03.webp" alt="" width="115" height="120" loading="lazy"></div>
+          <div class="coin coin--4" aria-hidden="true"><img src="assets/coin_04.webp" alt="" width="167" height="148" loading="lazy"></div>
+        </div>
+      </section>
+
+      <!-- B9 사용법 -->
+      <section class="sec b9" aria-labelledby="b9-title">
+        <div class="sec__in">
+          <div class="b9__body">
+            <h2 class="sec__title" id="b9-title">세 단계면 <span class="pt">첫 질문</span>까지</h2>
+            <ol class="how" data-seq="0.25" data-seq-start="0">
+              <li class="how__item" data-fade data-seq-item>
+                <span class="num">1</span>
+                <div class="how__copy"><h3 class="how__title">티처스리그 실행하기</h3><p class="how__desc">아래 버튼으로 앱을 받거나, <br class="only-mo">잇올앱 홈에서 바로 열어요.</p></div>
+              </li>
+              <li class="how__item" data-fade data-seq-item>
+                <span class="num">2</span>
+                <div class="how__copy"><h3 class="how__title">가입하고 코드 넣기</h3><p class="how__desc">회원 가입을 하고, <br class="only-mo">안내받은 코드만 넣으면 끝이에요.</p></div>
+              </li>
+              <li class="how__item" data-fade data-seq-item>
+                <span class="num">3</span>
+                <div class="how__copy"><h3 class="how__title">첫 질문 작성</h3><p class="how__desc">공부 중 생긴 질문을 등록해요.</p></div>
+              </li>
+            </ol>
+          </div>
+          <div class="cta">
+            <a class="btn btn--dark" href="#" target="_blank" rel="noopener"><span class="cta__icon"><img src="assets/ic_apple.svg" alt="" width="24" height="24"></span>App Store</a>
+            <a class="btn btn--dark" href="#" target="_blank" rel="noopener"><span class="cta__icon cta__icon--gp"><img src="assets/ic_google_play.svg" alt="" width="18" height="20"></span>Google Play</a>
+            <a class="btn" href="#" target="_blank" rel="noopener">PC에서는 웹으로 시작하기</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section class="sec faq" aria-labelledby="faq-title">
+        <div class="sec__in">
+          <h2 class="sec__title" id="faq-title">자주 묻는 질문</h2>
+          <ul class="faq__list" data-accordion>
+            <li class="faq__item">
+              <h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a1" id="faq-q1"><span>답변은 언제 받을 수 있어요?</span><img class="faq__ic faq__ic--off" src="assets/ic_faq_down.svg" alt="" width="28" height="28"><img class="faq__ic faq__ic--on" src="assets/ic_faq_up.svg" alt="" width="28" height="28"></button></h3>
+              <div class="faq__a" id="faq-a1" role="region" aria-labelledby="faq-q1"><div><p>질문마다 달라요. 티처가 답을 작성하면 알림으로 알려 드려요. <br>급한 질문은 부스트로 순서를 앞당길 수 있고, 기다리는 동안엔 티처스 라이브러리에서 다른 학생들 질문 및 티처들의 답변을 찾아볼 수도 있어요.</p></div></div>
+            </li>
+            <li class="faq__item">
+              <h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a2" id="faq-q2"><span>문제 말고 공부 방법도 물어봐도 돼요?</span><img class="faq__ic faq__ic--off" src="assets/ic_faq_down.svg" alt="" width="28" height="28"><img class="faq__ic faq__ic--on" src="assets/ic_faq_up.svg" alt="" width="28" height="28"></button></h3>
+              <div class="faq__a" id="faq-a2" role="region" aria-labelledby="faq-q2"><div><p>네. 티처스리그에서는 공부 방법도 물어볼 수 있어요. <br>질문을 작성할 때 문제풀이 대신 "학습방향"을 선택해서 질문을 등록하면 티처들이 답변해 드려요.</p></div></div>
+            </li>
+            <li class="faq__item">
+              <h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a3" id="faq-q3"><span>원하는 티처한테만 물을 수 있나요?</span><img class="faq__ic faq__ic--off" src="assets/ic_faq_down.svg" alt="" width="28" height="28"><img class="faq__ic faq__ic--on" src="assets/ic_faq_up.svg" alt="" width="28" height="28"></button></h3>
+              <div class="faq__a" id="faq-a3" role="region" aria-labelledby="faq-q3"><div><p class="is-todo">답변 문구 준비 중</p></div></div>
+            </li>
+            <li class="faq__item">
+              <h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a4" id="faq-q4"><span>답변을 받지 못하면 질문 등록에 사용된 포인트는 어떻게 되나요?</span><img class="faq__ic faq__ic--off" src="assets/ic_faq_down.svg" alt="" width="28" height="28"><img class="faq__ic faq__ic--on" src="assets/ic_faq_up.svg" alt="" width="28" height="28"></button></h3>
+              <div class="faq__a" id="faq-a4" role="region" aria-labelledby="faq-q4"><div><p class="is-todo">답변 문구 준비 중</p></div></div>
+            </li>
+            <li class="faq__item">
+              <h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a5" id="faq-q5"><span>티처가 잘못된 답변을 하면 어떻게 되나요?</span><img class="faq__ic faq__ic--off" src="assets/ic_faq_down.svg" alt="" width="28" height="28"><img class="faq__ic faq__ic--on" src="assets/ic_faq_up.svg" alt="" width="28" height="28"></button></h3>
+              <div class="faq__a" id="faq-a5" role="region" aria-labelledby="faq-q5"><div><p>오답 신고를 하거나, 평점 작성 시 반영하여 티처의 순위 또는 리그 점수에 반영할 수 있어요.</p></div></div>
+            </li>
+            <li class="faq__item">
+              <h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a6" id="faq-q6"><span>내 질문도 공개되나요?</span><img class="faq__ic faq__ic--off" src="assets/ic_faq_down.svg" alt="" width="28" height="28"><img class="faq__ic faq__ic--on" src="assets/ic_faq_up.svg" alt="" width="28" height="28"></button></h3>
+              <div class="faq__a" id="faq-a6" role="region" aria-labelledby="faq-q6"><div><p>네, 같은 데서 막힌 수험생이 볼 수 있게 라이브러리에 쌓여요. <br>닉네임과 아바타로만 표시되고 실명·학교·반은 나가지 않아요. 원하면 비공개로도 물을 수 있어요.</p></div></div>
+            </li>
+            <li class="faq__item">
+              <h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a7" id="faq-q7"><span>포인트를 모두 소진하면 어떻게 되나요?</span><img class="faq__ic faq__ic--off" src="assets/ic_faq_down.svg" alt="" width="28" height="28"><img class="faq__ic faq__ic--on" src="assets/ic_faq_up.svg" alt="" width="28" height="28"></button></h3>
+              <div class="faq__a" id="faq-a7" role="region" aria-labelledby="faq-q7"><div><p class="is-todo">답변 문구 준비 중</p></div></div>
+            </li>
+            <li class="faq__item">
+              <h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a8" id="faq-q8"><span>잇올 아이디로 로그인이 안 돼요.</span><img class="faq__ic faq__ic--off" src="assets/ic_faq_down.svg" alt="" width="28" height="28"><img class="faq__ic faq__ic--on" src="assets/ic_faq_up.svg" alt="" width="28" height="28"></button></h3>
+              <div class="faq__a" id="faq-a8" role="region" aria-labelledby="faq-q8"><div><p class="is-todo">답변 문구 준비 중</p></div></div>
+            </li>
+            <li class="faq__item">
+              <h3><button class="faq__q" type="button" aria-expanded="false" aria-controls="faq-a9" id="faq-q9"><span>앱을 꼭 설치해야하나요?</span><img class="faq__ic faq__ic--off" src="assets/ic_faq_down.svg" alt="" width="28" height="28"><img class="faq__ic faq__ic--on" src="assets/ic_faq_up.svg" alt="" width="28" height="28"></button></h3>
+              <div class="faq__a" id="faq-a9" role="region" aria-labelledby="faq-q9"><div><p class="is-todo">답변 문구 준비 중</p></div></div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 마무리 -->
+      <section class="sec end" aria-labelledby="end-title">
+        <div class="sec__in">
+          <div class="sec__deco end__visual">
+            <img src="assets/end_qa.webp" alt="" width="1382" height="1324" loading="lazy">
+          </div>
+          <div class="end__head">
+            <img class="end__logo" src="assets/logo_mix.svg" alt="티처스리그" width="114" height="32">
+            <div class="end__copy">
+              <h2 class="end__title" id="end-title">티처의 실력이 <em>곧 나의 실력</em>으로</h2>
+              <p class="end__desc">잘 설명하는 티처가 위로 올라가고, 그 설명이 내 실력이 돼요.</p>
+            </div>
+          </div>
+          <a class="btn btn--dark" href="#">재원생 혜택으로 시작하기</a>
+        </div>
+      </section>
+
+      <!-- 주석 -->
+      <section class="sec notice" aria-labelledby="notice-title">
+        <div class="sec__in">
+          <h2 class="notice__title" id="notice-title">주석</h2>
+          <ul class="notice__list">
+            <li><sup class="fn">1</sup> 잇올 재원생 전용 혜택. 별도 결제 없이 시작하며, 평균 난이도 질문 기준 한 달 100문제 가량. 질문 난이도와 티처 티어에 따라 사용 포인트가 다릅니다. 혜택은 잇올과 티처스리그의 정책에 따라 달라질 수 있습니다.</li>
+            <li><sup class="fn">2</sup> 2026 하반기 잇올 통합 만족도 설문(2026.10.2~10.11), 티처스 1.0 이용 경험자 1,640명 응답 기준. 자세한 산출 근거는 해당 영역 「산출 근거 보기」.</li>
+            <li><sup class="fn">3</sup> 재학·휴학·졸업 포함.</li>
+            <li><sup class="fn">4</sup> 티처스 1.0(2025.12~2026.04) 기준.</li>
+          </ul>
+        </div>
+      </section>
+
+
+    </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ 잇올 사이트 푸터 ============ -->
+  <footer class="site-foot">
+    <div class="site-foot__in">
+      <div class="site-foot__top">
+        <div>
+          <p class="site-foot__label">고객센터</p>
+          <p class="site-foot__tel"><a href="tel:1599-6289">1599-6289</a></p>
+          <div class="site-foot__hours">
+            <p>전화상담: 월~금 09:00~21:00 / 토~일 09:00~18:00</p>
+            <p>카톡상담: 월~금 09:00~21:00 / 토~일 09:00~18:00</p>
+          </div>
+        </div>
+        <div class="site-foot__cs">
+          <div class="site-foot__btns">
+            <a class="site-foot__btn" href="https://www.itall.com/customer-service/online-consultation" target="_blank" rel="noopener"><img src="assets/ft/ico_online_w.svg" width="20" height="20" alt="">온라인 상담</a>
+            <a class="site-foot__btn" href="https://pf.kakao.com/_xjxgnvd/chat" target="_blank" rel="noopener"><img src="assets/ft/ico_kakao_w.svg" width="20" height="20" alt="">카카오톡 상담</a>
+          </div>
+          <div class="site-foot__sns">
+            <a href="https://pf.kakao.com/_xjxgnvd" target="_blank" rel="noopener" aria-label="잇올 스파르타 카카오톡 채널"><img src="assets/ft/ico_kakao_filled_w.svg" width="36" height="36" alt=""></a>
+            <a href="https://www.youtube.com/channel/UCvI9xPW4lcEtcsgxkRe16Uw/featured" target="_blank" rel="noopener" aria-label="잇올 스파르타 유튜브"><img src="assets/ft/ico_youtube_filled_w.svg" width="36" height="36" alt=""></a>
+            <a href="https://blog.naver.com/yachtroths" target="_blank" rel="noopener" aria-label="잇올 스파르타 네이버 블로그"><img src="assets/ft/ico_blog_filled_w.svg" width="36" height="36" alt=""></a>
+            <a href="https://www.instagram.com/itall_sparta/" target="_blank" rel="noopener" aria-label="잇올 스파르타 인스타그램"><img src="assets/ft/ico_instagram_filled_w.svg" width="36" height="36" alt=""></a>
+          </div>
+        </div>
+      </div>
+      <div class="site-foot__mid">
+        <div class="site-foot__brand">
+          <h2><span class="sr-only">잇올 스파르타</span><img class="site-foot__logo" src="assets/ft/itall_logo_primary_reverse.svg" width="88" height="46" alt=""></h2>
+          <details class="site-foot__family">
+            <summary>Family Site<img src="assets/ft/ico_arrow_down_w.svg" width="16" height="16" alt=""></summary>
+            <ul>
+              <li><a href="https://www.itall.com/" target="_blank" rel="noopener">잇올 스파르타</a></li>
+              <li><a href="https://www.itall.com/immersion-camp" target="_blank" rel="noopener">잇올 몰입관</a></li>
+              <li><a href="https://dormitory.itall.com" target="_blank" rel="noopener">잇올 기숙학원</a></li>
+            </ul>
+          </details>
+        </div>
+        <div class="site-foot__links">
+          <a href="https://www.itallcorp.com" target="_blank" rel="noopener">회사소개</a>
+          <a href="https://www.itall.com/service-policy?tab=terms" target="_blank" rel="noopener">이용약관</a>
+          <a href="https://www.itall.com/service-policy?tab=privacy" target="_blank" rel="noopener">개인정보 처리방침</a>
+        </div>
+      </div>
+      <div class="site-foot__info">
+        <p>(주)잇올<i>|</i>대표이사 의장 백태규<i>|</i>e-mail: <a href="mailto:itall@itall.com">itall@itall.com</a></p>
+        <div class="site-foot__row">
+          <span><span>개인정보보호책임자: 최보서<i>|</i></span><span>대표번호 <a href="tel:1599-6289">1599-6289</a><i>|</i></span></span>
+          <p>주소: 서울시 서초구 사임당로 143 크로스타워 5층(서초동)</p>
+        </div>
+        <div class="site-foot__row2">
+          <p>사업자등록 번호 740-86-00102<i>|</i></p>
+          <p>학원설립·운영등록번호:</p>
+          <p>제13269호 잇올스파르타원격학원<a class="site-foot__fee" href="https://dc0abxddhy2pa.cloudfront.net/SPARTA/COMMON/Anonymous/2025_952e2ef607c04307b2835f38d07eae99" target="_blank" rel="noopener">교습비 안내</a><span class="site-foot__comma">,</span></p>
+          <p>제13259호 잇올랩(LAB)입시전략연구소학원<a class="site-foot__fee" href="https://dc0abxddhy2pa.cloudfront.net/SPARTA/COMMON/Anonymous/2025_09f4c89d841d44e4a9781bb1d4186489" target="_blank" rel="noopener">교습비 안내</a></p>
+        </div>
+      </div>
+      <p class="site-foot__copy">Copyright @ itall corp. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+      var root = document.documentElement;
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // 게이지 목표 폭
+      document.querySelectorAll('.dist__bar').forEach(function (bar, i) {
+        bar.style.setProperty('--w', bar.getAttribute('data-w') + '%');
+        bar.style.setProperty('--d', (i * 0.12) + 's');
+      });
+
+      // 아코디언 — 하나만 펼침
+      document.querySelectorAll('[data-accordion]').forEach(function (list) {
+        list.addEventListener('click', function (e) {
+          var btn = e.target.closest('.faq__q');
+          if (!btn) return;
+          var item = btn.closest('.faq__item');
+          var willOpen = !item.classList.contains('is-open');
+          list.querySelectorAll('.faq__item.is-open').forEach(function (it) {
+            it.classList.remove('is-open');
+            it.querySelector('.faq__q').setAttribute('aria-expanded', 'false');
+          });
+          if (willOpen) {
+            item.classList.add('is-open');
+            btn.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+
+      // 산출 근거 토글
+      document.querySelectorAll('.basis__toggle').forEach(function (btn) {
+        var panel = document.getElementById(btn.getAttribute('aria-controls'));
+        btn.addEventListener('click', function () {
+          var open = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', String(!open));
+          panel.hidden = open;
+        });
+      });
+
+      if (!('IntersectionObserver' in window)) return;
+      root.classList.add('js');
+
+      // KV 혜택 배너 → 하단 고정 버튼 (팀 시안 kimye4 방식)
+      // 스크롤 10px을 넘기면 배너를 지금 위치에 고정 → 문구 폭·여백·배경을 접으며 하단으로 이동 → 이동이 끝나면 bottom 20px에 핀.
+      // 10px 이하로 돌아오면 반대로 배너 자리까지 펼치며 이동한 뒤 원래 배치로 복귀. 하단 배너(.end)가 보이면 숨김
+      var bar = document.querySelector('.kv__benefit');
+      var kvSec = document.querySelector('.kv');
+      var endSec = document.querySelector('.end');
+      if (bar && kvSec) {
+        var barIn = bar.offsetParent;   // .kv .sec__in — 원래 자리 기준
+        var copy = bar.querySelector('.kv__benefit-copy');
+        var cta = bar.querySelector('.btn');
+        var DUR = reduce ? 0 : 620, GAP = 20, docked = false, tok = 0;
+        var isMoBar = function () { return getComputedStyle(bar).flexDirection === 'column'; };
+        var docRoot = document.documentElement, ctaHidden = false;
+        var syncTop = function () {   // 맨 위로 버튼이 피할 수 있게 — 하단 CTA가 보이는 동안만
+          docRoot.style.setProperty('--cta-h', cta.offsetHeight + 'px');
+          docRoot.classList.toggle('is-cta-docked', docked && !ctaHidden);
+        };
+        var later = function (fn) { var t = ++tok; setTimeout(function () { if (t === tok) fn(); }, DUR); };
+        var freeze = function (fn) { bar.classList.add('no-tr'); fn(); bar.offsetHeight; bar.classList.remove('no-tr'); };
+        var place = function (r) { bar.style.top = r.top + 'px'; bar.style.left = r.left + 'px'; bar.style.width = r.width + 'px'; };
+        var dock = function (anim) {
+          var r = bar.getBoundingClientRect(), mo = isMoBar(), copyW = copy.offsetWidth;
+          if (r.bottom <= 0 || r.top >= window.innerHeight) anim = false;   // 배너가 화면 밖이면(새로고침 후 스크롤 복원 등) 바로 고정
+          kvSec.classList.add('is-bar-out');
+          freeze(function () {
+            bar.classList.remove('bar-pinned'); bar.classList.add('bar-fixed'); place(r);
+            if (!mo) { copy.style.width = copyW + 'px'; copy.classList.add('is-w'); }
+          });
+          if (!anim) bar.classList.add('no-tr');
+          bar.style.left = ''; bar.style.width = '';
+          if (!mo) copy.style.width = '0px';
+          bar.classList.add('bar-docked');
+          bar.style.top = (window.innerHeight - GAP - cta.offsetHeight) + 'px';
+          if (!anim) { bar.offsetHeight; bar.classList.remove('no-tr'); }
+          later(function () { freeze(function () { bar.style.top = ''; bar.classList.add('bar-pinned'); }); });
+        };
+        var undock = function () {
+          var r = bar.getBoundingClientRect(), mo = isMoBar();
+          freeze(function () { bar.classList.remove('bar-pinned'); place(r); });
+          bar.classList.remove('bar-docked');
+          var home = barIn.getBoundingClientRect();
+          bar.style.top = (home.top + bar.offsetTop0) + 'px';
+          bar.style.left = (home.left + bar.offsetLeft0) + 'px';
+          bar.style.width = bar.offsetWidth0 + 'px';
+          if (!mo) copy.style.width = bar.copyW0 + 'px';
+          later(function () {
+            freeze(function () {
+              bar.classList.remove('bar-fixed'); bar.style.top = bar.style.left = bar.style.width = '';
+              copy.classList.remove('is-w'); copy.style.width = '';
+            });
+            kvSec.classList.remove('is-bar-out');
+          });
+        };
+        // 원래 자리(.sec__in 기준 위치·폭) 기억 — 고정 전, 화면 크기가 바뀔 때마다
+        var measure = function () {
+          // 고정 중이거나 돌아가는 애니메이션 중(bar-fixed)에는 재지 않음 — 고정 위치를 원래 자리로 잘못 기억해 엉뚱한 곳으로 갔다가 튀는 문제
+          // (모바일·태블릿은 맨 위 튕김 스크롤·주소창 리사이즈로 이 순간에 자주 다시 불림)
+          if (docked || bar.classList.contains('bar-fixed')) return;
+          bar.offsetTop0 = bar.offsetTop; bar.offsetLeft0 = bar.offsetLeft; bar.offsetWidth0 = bar.offsetWidth; bar.copyW0 = copy.offsetWidth;
+        };
+        measure();
+        var onScroll = function () {
+          var want = window.scrollY > 10;
+          if (want !== docked) { if (want) { measure(); docked = true; dock(true); } else { docked = false; undock(); } syncTop(); }
+        };
+        if (window.scrollY > 10) { docked = true; dock(false); syncTop(); }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', measure);
+        if (endSec) {
+          new IntersectionObserver(function (entries) {
+            var e = entries[0];
+            ctaHidden = e.isIntersecting || e.boundingClientRect.top < 0;   // 배너 이후(주석·푸터)에서도 숨김 유지
+            bar.classList.toggle('bar-hide', ctaHidden);
+            syncTop();
+          }).observe(endSec);
+        }
+      }
+
+      // 페이드 지연값
+      document.querySelectorAll('[data-delay]').forEach(function (el) {
+        el.style.setProperty('--d', el.getAttribute('data-delay') + 's');
+      });
+      // 순서대로 등장 — data-seq-mo="each"면 모바일에서는 항목마다 화면에 들어올 때 등장 (세로로 길게 쌓이는 B7 폰)
+      var isMo = window.matchMedia('(max-width: 767px)').matches;
+      document.querySelectorAll('[data-seq]').forEach(function (group) {
+        var step = parseFloat(group.getAttribute('data-seq') || '0.22');
+        var each = isMo && group.getAttribute('data-seq-mo') === 'each';
+        var base = parseFloat(group.getAttribute('data-seq-start') || '0.1');
+        group.querySelectorAll('[data-seq-item]').forEach(function (el, i) {
+          var own = el.getAttribute('data-delay');
+          el.style.setProperty('--d', (own !== null ? parseFloat(own) : each ? base : base + i * step) + 's');
+          if (each) el.removeAttribute('data-seq-item');   // 개별 관찰 대상으로 전환
+        });
+        if (each) group.removeAttribute('data-seq');
+      });
+
+      // 숫자 카운팅
+      function format(n, dec) {
+        return n.toFixed(dec).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      }
+      function countUp(el) {
+        var target = parseFloat(el.getAttribute('data-count'));
+        var dec = parseInt(el.getAttribute('data-decimals') || '0', 10);
+        if (reduce) { el.textContent = format(target, dec); return; }
+        var dur = 1400, start = null;
+        function tick(t) {
+          if (start === null) start = t;
+          var p = Math.min((t - start) / dur, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = format(target * eased, dec);
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
+      var counters = document.querySelectorAll('[data-count]');
+      counters.forEach(function (el) {
+        el.textContent = format(0, parseInt(el.getAttribute('data-decimals') || '0', 10));
+      });
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var el = entry.target;
+          if (el.hasAttribute('data-seq')) {
+            el.classList.add('is-in');   // 그룹 자체 연출(B7 구분선 채움)용
+            el.querySelectorAll('[data-seq-item]').forEach(function (it) { it.classList.add('is-in'); });
+          } else if (el.hasAttribute('data-count')) {
+            countUp(el);
+          } else {
+            el.classList.add('is-in');
+          }
+          io.unobserve(el);
+        });
+      }, { threshold: 0, rootMargin: '0px 0px -25% 0px' });   // 화면 아래 25% 지점을 넘어야 등장
+
+      document.querySelectorAll('[data-fade]:not([data-seq-item]), [data-seq], [data-gauge], [data-count], [data-boing], [data-sway], [data-reveal]').forEach(function (el) {
+        io.observe(el);
+      });
+    })();
+  </script>
+</body>
+</html>

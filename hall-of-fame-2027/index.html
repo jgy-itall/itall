@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="data:,">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>2027 잇올 명예의 전당 — KV 조명 테스트</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <style>
+    /*
+      KV 조명 애니메이션 테스트 (PC 전용, KV 최대 1280)
+      - 사이트 틀: itall.com/events/30 실측 (상단 배너·GNB·타이틀·브레드크럼·배경 #F1F2F4·카드 radius 24)
+      - 레퍼런스: EBSi 2027 수능 D-100 이벤트 KV — 조명 스윙 + 반짝임
+      - 소스는 2배수(2560 기준) → 화면에는 절반 크기
+      - 조명: 빔 꼭짓점(조명 기구 위치)을 transform-origin으로 잡고 좌우 스윙 + 밝기 깜빡임
+        빔 이미지는 2차 소스(2026-10-07 오후) 그대로 — 디자이너가 진하기 올려서 전달(상단 최대 40%, 하단 24%)
+        LT/RT = 상단 좌/우, LB/RB = 하단 좌/우(Left/Right Bottom) — 각 모서리에 붙임
+      - 반짝이: light_1 / light_2 교차 페이드 (KV 크기 이미지를 KV 전체에 덮음)
+      - KV 효과 위치·크기는 KV 박스 기준 % (가로 ÷1280, 세로 ÷747) — 스크롤바·화면 폭과 무관하게 KV와 함께 비례
+    */
+
+    /* 잇올 사이트 폰트 (나눔스퀘어 네오, 네이버 한글 CDN) */
+    @font-face { font-family: "nanumSquareNeo"; font-weight: 400; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-bRg.woff") format("woff"); }
+    @font-face { font-family: "nanumSquareNeo"; font-weight: 700; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-cBd.woff") format("woff"); }
+    @font-face { font-family: "nanumSquareNeo"; font-weight: 800; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-dEb.woff") format("woff"); }
+
+    *,
+    *::before,
+    *::after { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+
+    :root {
+      --u: calc(min(100vw - 64px, 1280px) / 1280);   /* KV = 콘텐츠 영역(좌우 32), 최대 1280 */
+      --beam-top-opacity: 1;       /* 상단 빔 LT/RT — 새 소스(피치/주황 톤)는 완성 예시처럼 100%로 */
+      --beam-bottom-opacity: 1;    /* 하단 빔 LB/RB */
+      --beam-top-speed: 1;         /* 움직임 속도 배수 (2 = 2배 빠르게) */
+      --beam-bottom-speed: 1;
+      --text: #3e3a39;
+      --text-sub: #97989a;
+      --page-bg: #f1f2f4;
+    }
+
+    body {
+      background: #fff;
+      color: var(--text);
+      font-family: nanumSquareNeo, Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      word-break: keep-all;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+  /* ============ 잇올 사이트 GNB (gen_gnb.py 생성 · 실측 www/dormitory.itall.com) ============ */
+  @font-face { font-family: "nanumSquareNeo"; font-weight: 400; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-bRg.woff") format("woff"); }
+  @font-face { font-family: "nanumSquareNeo"; font-weight: 700; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-cBd.woff") format("woff"); }
+  @font-face { font-family: "nanumSquareNeo"; font-weight: 800; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-dEb.woff") format("woff"); }
+
+  .site-head, .gnb-m, .gnb-sheet { color: #3e3a39; font-family: nanumSquareNeo, Pretendard, sans-serif; word-break: keep-all; }
+  .site-head a, .gnb-m a, .gnb-sheet a { color: inherit; text-decoration: none; }
+  .site-head ul, .gnb-m ul, .gnb-sheet ul { margin: 0; padding: 0; list-style: none; }
+  .site-head img, .gnb-m img, .gnb-sheet img { display: block; max-width: none; }
+  .site-head button, .gnb-m button { padding: 0; border: 0; background: none; cursor: pointer; }
+  .site-head { position: sticky; top: 0; z-index: 100; background: #fff; }
+  .gnb-lock, .gnb-lock body { overflow: hidden; }
+
+  /* 상단 띠배너 — PC 54 / MO 60 */
+  .site-banner { background: #0f0f14; }
+  .site-banner__inner { display: grid; grid-template-columns: repeat(3, 1fr); height: 60px; }
+  .site-banner__item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; padding-top: 2px; }
+  .site-banner__item img { width: auto; height: 15px; }
+  .site-banner__item span { font-size: 14px; font-weight: 800; line-height: 1.5; }
+  .site-banner__red { color: #f93026; }
+  .site-banner__yellow { color: #fcc800; }
+  .site-banner__green { color: #00b450; }
+  @media (min-width: 660px) {
+    .site-banner__item { flex-direction: row; gap: 8px; }
+  }
+  @media (min-width: 1024px) {
+    .site-banner__inner { max-width: 1100px; height: 54px; margin: 0 auto; padding: 0 32px; }
+    .site-banner__item { padding-top: 0; }
+    .site-banner__item:first-child { justify-content: flex-start; }
+    .site-banner__item:last-child { justify-content: flex-end; }
+    .site-banner__item img { height: 18px; }
+    .site-banner__item span { font-size: 16px; }
+  }
+
+  /* 공용 — 수능 D-day · 패밀리 사이트 목록 */
+  .gnb__dday { padding: 4px 12px; border-radius: 8px; background: #0d0f14; color: #fff; font-family: Pretendard, sans-serif; font-size: 13px; line-height: 1.5; white-space: nowrap; }
+  .gnb-family__link { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid #e6e6e6; }
+  .gnb-family__list li:last-child .gnb-family__link { border-bottom: 0; }
+  .gnb-family__brand { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .gnb-family__brand img { width: auto; height: 16px; }
+  .gnb-family__brand span { color: #7f7f7f; font-size: 13px; line-height: 1.5; }
+  .gnb-family__promo { display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: 16px; background: #f8f8f8; font-size: 13px; line-height: 1.4; }
+  .gnb-family__promo span { color: #4d4847; }
+  .gnb-family__promo b { color: #7f7f7f; font-weight: 800; }
+
+  /* ── PC (1024~) ── */
+  .gnb { display: none; }
+
+  @media (min-width: 1024px) {
+    .gnb { display: flex; align-items: center; justify-content: space-between; height: 76px; padding: 16px 60px; }
+    .gnb__brand { display: flex; flex-shrink: 0; align-items: center; }
+    .gnb__family { position: relative; }
+    .gnb__family-btn { display: grid; place-items: center; width: 44px; height: 44px; }
+
+    /* 1차 메뉴 — 1024~1279: 14px·간격 12 / 1280~: 16px·30 / 1536~: 48 */
+    .gnb__menu { display: flex; gap: 12px; white-space: nowrap; }
+    .gnb__menu > li { position: relative; }
+    .gnb__link { display: block; font-size: 14px; font-weight: 700; line-height: 1.5; }
+
+    .gnb__shine {
+      background: linear-gradient(90deg, #e6433b, #ff6b63, #fca5a5, #e6433b) 0 center / 200% 100%;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: gnb-shine 2s linear infinite;
+    }
+
+    /* 2차 메뉴 (1차 메뉴 가운데 정렬, GNB 행 기준 top 39) */
+    .gnb__sub { position: absolute; top: 13px; left: 50%; display: none; padding-top: 16px; transform: translateX(-50%); }
+    .gnb__menu > li:hover .gnb__sub,
+    .gnb__menu > li:focus-within .gnb__sub { display: block; }
+    .gnb__sub ul {
+      display: flex; flex-direction: column; min-width: 224px; padding: 16px 0;
+      border-radius: 24px; background: #fff; filter: drop-shadow(0 8px 12px rgba(148, 148, 165, .36));
+    }
+    .gnb__sub a {
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      padding: 6px 32px; color: #4d4847; font-size: 16px; font-weight: 700; line-height: 1.5; white-space: nowrap;
+    }
+    .gnb__sub a:hover, .gnb__sub a:focus-visible { background: #f3f3f3; }
+    .gnb__badge {
+      display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center;
+      width: 50px; padding: 2px 6px; border-radius: 999px; background: #c40f06;
+      color: #fff; font-size: 10px; font-weight: 700; line-height: 1.4;
+    }
+    .gnb__badge--dorm { background: #00b450; }
+
+    /* 패밀리 사이트 (⊙ 버튼 호버) */
+    .gnb__family-panel {
+      position: absolute; top: 37px; right: -60px; z-index: 10; padding-top: 10px;
+      opacity: 0; visibility: hidden; transform: translateY(-8px);
+      transition: opacity .3s cubic-bezier(.4, 0, .2, 1), transform .3s cubic-bezier(.4, 0, .2, 1), visibility .3s;
+    }
+    .gnb__family:hover .gnb__family-panel,
+    .gnb__family:focus-within .gnb__family-panel { opacity: 1; visibility: visible; transform: translateY(0); }
+    .gnb__family-panel .gnb-family { width: 250px; padding: 12px 16px 41px; border-radius: 16px; background: #fff; box-shadow: 0 0 12px rgba(9, 13, 18, .16); }
+
+    .gnb__util { display: flex; flex-shrink: 0; align-items: center; gap: 8px; }
+    .gnb__util .gnb__dday { padding: 4px 16px; }
+    .gnb__util-box {
+      display: flex; align-items: center; justify-content: center; min-width: 118px; height: 28px; padding: 4px 18px;
+      border: 1px solid #e6e6e6; border-radius: 6px; background: #fff; font-size: 13px; font-weight: 800; line-height: 1.5;
+    }
+
+    .gnb-bar, .gnb-m, .gnb-sheet { display: none !important; }
+  }
+  @media (min-width: 1280px) {
+    .gnb__menu { gap: 30px; }
+    .gnb__link { font-size: 16px; }
+    .gnb__util { gap: 16px; }
+  }
+  @media (min-width: 1536px) {
+    .gnb__menu { gap: 48px; }
+  }
+  @keyframes gnb-shine { to { background-position: 200% center; } }
+
+  /* ── MO (~1023) — 헤더 행 69 ── */
+  .gnb-bar { display: flex; align-items: center; justify-content: space-between; height: 69px; padding: 0 20px; background: #fff; }
+  .gnb-bar__brand { display: flex; align-items: center; gap: 4px; }
+  .gnb-bar__family { padding: 4px !important; }
+  .gnb-bar__util { display: flex; align-items: center; }
+  .gnb-bar__box {
+    display: flex; align-items: center; justify-content: center; min-width: 100px; height: 29px; padding: 4px 12px;
+    border: 1px solid #e6e6e6; border-radius: 6px; background: #fff; font-size: 12px; font-weight: 800; line-height: 1.5; white-space: nowrap;
+  }
+  .gnb-bar__menu { margin-left: 16px; }
+
+  /* 전체 메뉴 */
+  .gnb-m { position: fixed; inset: 0; z-index: 1001; overflow-y: auto; overscroll-behavior: contain; padding-bottom: 20px; background: #fff; transform: translateZ(0); }
+  .gnb-m__top { display: flex; align-items: center; justify-content: space-between; height: 68px; padding: 0 20px; }
+  .gnb-m__util { display: flex; align-items: center; gap: 12px; }
+  .gnb-m__close { margin-left: 4px; }
+  .gnb-m__body { padding: 0 20px; }
+  .gnb-m__title { margin: 0; color: #000; font-size: 24px; font-weight: 700; line-height: 1.4; }
+  .gnb-m__title span { display: block; color: #c40f06; }
+  .gnb-m__pair { display: flex; gap: 8px; }
+  .gnb-m__stack { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+  .gnb-m--sparta .gnb-m__pair { margin-top: 24px; }
+  .gnb-m__btn {
+    display: flex; flex: 1; align-items: center; justify-content: center; min-height: 38px; padding: 8px 18px;
+    border-radius: 6px; font-size: 13px; font-weight: 800; line-height: 1.5; text-align: center;
+  }
+  .gnb-m__btn--dark { border: 1px solid #3e3a39; background: #000; color: #fff !important; }
+  .gnb-m__btn--line { border: 1px solid #e6e6e6; background: #fff; color: #000 !important; }
+  .gnb-m__btn--line em { margin: 0 .25em; color: #c40f06; font-style: normal; }
+  .gnb-m__btn--green { min-height: 36px; background: #00b450; color: #fff !important; }
+  .gnb-m__list { margin-top: 32px !important; }
+  .gnb-m__row { display: flex; align-items: center; justify-content: space-between; height: 60px; border-bottom: 1px solid #e6e6e6; }
+  .gnb-m__label { flex: 1; color: #000 !important; font-size: 16px; font-weight: 800; line-height: 1.8; }
+  .gnb-m__toggle { display: flex; align-items: center; height: 100%; padding-left: 32px !important; }
+  .gnb-m__toggle img { transition: transform .2s cubic-bezier(.4, 0, .2, 1); }
+  .gnb-m__toggle[aria-expanded="true"] img { transform: rotate(180deg); }
+  .gnb-m__sub { display: flex; flex-direction: column; gap: 20px; padding: 20px 0 !important; animation: gnb-unfold .3s cubic-bezier(.34, 1.4, .64, 1); transform-origin: top; }
+  .gnb-m__sub[hidden] { display: none; }
+  .gnb-m__sub a { display: flex; align-items: center; justify-content: space-between; color: #000 !important; font-size: 14px; line-height: 1.5; white-space: nowrap; }
+  .gnb-m__badge {
+    display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; width: 50px; height: 18px;
+    border-radius: 20px; background: #c40f06; color: #fff; font-size: 10px; font-weight: 700; line-height: 1;
+  }
+  .gnb-m__badge--dorm { background: #00b450; }
+  @keyframes gnb-unfold { from { opacity: 0; transform: scaleY(.6); } to { opacity: 1; transform: scaleY(1); } }
+
+  /* 기숙 메뉴 — 로고 + 테두리 #CCC 버튼 + 녹색 버튼, 행 높이 60·구분선 #CCC */
+  .gnb-m--dorm .gnb-m__top { height: 65px; }
+  .gnb-m--dorm .gnb-m__body { display: flex; flex-direction: column; gap: 20px; padding-top: 20px; }
+  .gnb-m--dorm .gnb-m__stack { margin-top: 0; gap: 8px; }
+  .gnb-m--dorm .gnb-m__btn--line { border-color: #ccc; color: #3e3a39 !important; }
+  .gnb-m--dorm .gnb-m__list { margin-top: 0 !important; }
+  .gnb-m--dorm .gnb-m__row { border-color: #ccc; }
+  .gnb-m--dorm .gnb-m__label { color: #3e3a39 !important; }
+
+  /* 패밀리 사이트 바텀시트 */
+  .gnb-sheet { position: fixed; inset: 0; z-index: 1002; display: flex; align-items: flex-end; }
+  .gnb-sheet[hidden] { display: none; }
+  .gnb-sheet__dim { position: absolute; inset: 0; background: rgba(0, 0, 0, .5); opacity: 0; transition: opacity .3s ease; }
+  .gnb-sheet__panel {
+    position: relative; width: 100%; max-height: 90dvh; overflow-y: auto; padding: 40px 20px 60px;
+    border-radius: 8px 8px 0 0; background: #fff; transform: translateY(100%); transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+  }
+  .gnb-sheet.is-open .gnb-sheet__dim { opacity: 1; }
+  .gnb-sheet.is-open .gnb-sheet__panel { transform: translateY(0); }
+  .gnb-sheet__title { margin: 0 0 8px; color: #222; font-size: 18px; font-weight: 800; line-height: 1.4; }
+
+  /* 맨 위로 버튼 (GNB 공용) — MO 우하단 20 / 모바일 하단 바 있으면 그 위 / PC 우하단 40 */
+  .gnb-top {
+    position: fixed; z-index: 50; right: 20px; bottom: 20px; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%;
+    background: none; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .3s;
+  }
+  .gnb-top img { display: block; width: 40px; height: 40px; }
+  .gnb-top.is-show { opacity: 1; pointer-events: auto; }
+  .gnb-top:focus-visible { outline: 2px solid #3e3a39; outline-offset: 2px; }
+  body:has(.tabbar) .gnb-top { bottom: 76px; }
+  @media (min-width: 1024px) { .gnb-top, body:has(.tabbar) .gnb-top { right: 40px; bottom: 40px; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gnb__shine, .gnb-m__sub { animation: none; }
+    .gnb-sheet__dim, .gnb-sheet__panel, .gnb__family-panel, .gnb-top { transition: none; }
+  }
+  /* ============ /잇올 사이트 GNB ============ */
+
+    /* ── 페이지 타이틀 + 브레드크럼 ── */
+    .page { background: var(--page-bg); }
+
+    .page__inner {
+      max-width: calc(1280px + 64px);
+      margin: 0 auto;
+      padding: 40px 32px 80px;
+    }
+
+    .page__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 50px;
+      margin-bottom: 40px;
+    }
+
+    .page__title { margin: 0; font-size: 36px; font-weight: 800; line-height: 1.4; }
+
+    .breadcrumb ol { display: flex; align-items: center; margin: 0; padding: 0; list-style: none; }
+    .breadcrumb li { display: flex; align-items: center; font-size: 14px; font-weight: 700; line-height: 20px; }
+
+    .breadcrumb li + li::before {
+      content: "";
+      width: 24px;
+      height: 24px;
+      margin: 0 4px;
+      background: url("assets/gnb/ico_breadcrumbs_arrow.svg") center / contain no-repeat;
+    }
+
+    .breadcrumb__home img { display: block; margin-right: 4px; }
+    .breadcrumb li:nth-child(2) a { color: var(--text-sub); }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .event-card { border-radius: 24px; overflow: hidden; }
+
+    .page__back { display: none; }
+
+    @media (max-width: 1023px) {
+      :root { --u: calc(min(100vw, 1280px) / 1280); }
+      .page__inner { padding: 0 0 40px; }
+      .page__head { min-height: 0; margin: 0; padding: 28px 20px; }
+      .page__title { display: flex; align-items: flex-start; gap: 4px; font-size: 22px; }
+      .page__back { display: block; flex-shrink: 0; margin-top: 5px; }
+      .page__back img { display: block; }
+      .breadcrumb { display: none; }
+      .event-card { border-radius: 0; }
+      .ctrl { right: 12px; bottom: 12px; padding: 10px 14px; }
+    }
+
+    /* ── 테스트 컨트롤 (우하단 플로팅) ── */
+    .ctrl {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: rgba(20, 20, 20, .88);
+      color: #fff;
+      font-family: Pretendard, sans-serif;
+      font-size: 13px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+    }
+
+    .ctrl__title { margin: 0 0 4px; font-size: 12px; font-weight: 700; color: #aaa; }
+    summary.ctrl__title { margin: 0; cursor: pointer; }
+    .ctrl[open] summary.ctrl__title { margin-bottom: 4px; }
+    .ctrl__title--sub { margin-top: 8px; }
+    .ctrl label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+    .ctrl input[type="range"] { width: 100px; }
+    .ctrl__row { display: flex; align-items: center; gap: 8px; }
+    .ctrl output { min-width: 32px; font-variant-numeric: tabular-nums; }
+
+    /* ── KV ── */
+    .kv { background: #0d0805; }
+
+    .kv__inner {
+      position: relative;
+      width: 100%;
+      max-width: 1280px;
+      aspect-ratio: 1280 / 747;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .kv__bg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .fx {
+      position: absolute;
+      display: block;
+      max-width: none;
+      mix-blend-mode: screen;
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+
+    /* ── 조명 빔 ── */
+    .beam {
+      z-index: 2;
+      opacity: var(--beam-top-opacity);
+      --speed: var(--beam-top-speed);
+      animation:
+        var(--swing) calc(var(--dur) / var(--speed)) ease-in-out var(--delay, 0s) infinite alternate,
+        beam-flicker calc(var(--dur) * .7 / var(--speed)) ease-in-out var(--delay, 0s) infinite alternate;
+    }
+
+    /* 빔 4개 — 각 모서리에 붙이고, 빔 꼭짓점(모서리 쪽)을 회전 중심으로 스윙
+       크기는 KV 기준 % (2배수 소스 ÷2 ÷1280) */
+    .beam--lt {               /* 454.5×458 */
+      top: 0;
+      left: 0;
+      width: 35.5078%;
+      transform-origin: 1% 1%;
+      --swing: swing-lt; --dur: 3.2s;
+    }
+
+    .beam--rt {               /* 454.5×458 */
+      top: 0;
+      right: 0;
+      width: 35.5078%;
+      transform-origin: 99% 1%;
+      --swing: swing-rt; --dur: 3.6s; --delay: -1.5s;
+    }
+
+    .beam--lb {               /* 374×231.5 */
+      bottom: 0;
+      left: 0;
+      width: 29.2188%;
+      transform-origin: 1% 99%;
+      opacity: var(--beam-bottom-opacity);
+      --speed: var(--beam-bottom-speed);
+      --swing: swing-lb; --dur: 2.8s; --delay: -1s;
+    }
+
+    .beam--rb {               /* 374×231 */
+      bottom: 0;
+      right: 0;
+      width: 29.2188%;
+      transform-origin: 99% 99%;
+      opacity: var(--beam-bottom-opacity);
+      --speed: var(--beam-bottom-speed);
+      --swing: swing-rb; --dur: 3s; --delay: -2.2s;
+    }
+
+    @keyframes swing-lt { from { transform: rotate(-16deg); } to { transform: rotate(14deg); } }
+    @keyframes swing-rt { from { transform: rotate(16deg); }  to { transform: rotate(-14deg); } }
+    @keyframes swing-lb { from { transform: rotate(18deg); }  to { transform: rotate(-16deg); } }
+    @keyframes swing-rb { from { transform: rotate(-18deg); } to { transform: rotate(16deg); } }
+
+    @keyframes beam-flicker {
+      from { filter: brightness(1); }
+      to   { filter: brightness(1.6); }
+    }
+
+    /* ── 반짝이 ── */
+    .sparkle {
+      z-index: 3;
+      animation: twinkle var(--dur) ease-in-out var(--delay, 0s) infinite;
+    }
+
+    /* 반짝이 2장 — KV와 같은 크기(2560×1494)로 제작돼 위치가 이미지에 포함 → KV 전체에 그대로 덮음 */
+    .sparkle--1,
+    .sparkle--2 { inset: 0; width: 100%; height: 100%; }
+    .sparkle--1 { --dur: 3s; }
+    .sparkle--2 { --dur: 3s; --delay: -1.5s; }
+
+    @keyframes twinkle {          /* 크기 변화 없이 투명도만 — 위치 고정 */
+      0%, 100% { opacity: 0; }
+      50%      { opacity: 1; }
+    }
+
+    .kv__inner > picture { display: contents; }   /* picture 래퍼가 배치에 끼어들지 않게 */
+
+    /* ── 767px 이하: 모바일 KV (390×406) — 빔 크기 = MO 소스 ÷ 390 ── */
+    @media (max-width: 767px) {
+      .kv__inner { aspect-ratio: 390 / 406; }
+      .beam--lt, .beam--rt { width: 51.7949%; }   /* 202×204 */
+      .beam--lb, .beam--rb { width: 51.0256%; }   /* 199×105 */
+    }
+
+    /* 컨트롤 토글 */
+    .kv.no-beam .beam,
+    .kv.no-sparkle .sparkle { display: none; }
+
+    .kv.is-paused .fx { animation-play-state: paused; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fx,
+      .gnb__menu .is-shine { animation: none; }
+    }
+/* SECTIONS_CSS:START */
+    /* ===================================================================
+       하단 섹션 — Figma 2027 명예의 전당_v1.0 (6399:91) · PC 6423:2465 / MO 6423:1791
+       카드(1280) 안 콘텐츠 960 (좌우 160) · 1280 미만은 좌우 최소 32 · 1024 미만 MO(좌우 20)
+       =================================================================== */
+    .event-card { overflow: clip; }   /* hidden 대신 clip — 플로팅 탭(sticky)이 화면 기준으로 고정되도록 */
+    .sec, .evbar { font-family: Pretendard, -apple-system, BlinkMacSystemFont, sans-serif; word-break: keep-all; overflow-wrap: break-word; }
+    .sec *, .evbar * { box-sizing: border-box; }
+    :where(.sec) :where(h2, h3, p, ul, ol, dl, dd) { margin: 0; padding: 0; }   /* :where — 아래 컴포넌트 규칙보다 우선순위 낮게 */
+    :where(.sec) :where(ul, ol) { list-style: none; }
+    :where(.sec) img { display: block; max-width: 100%; }
+    .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    .sec {
+      position: relative; display: flex; flex-direction: column; align-items: center; gap: 40px;
+      padding: 80px max(32px, calc((100% - 960px) / 2));
+      background: #fff; color: #0d0f14; scroll-margin-top: calc(var(--head-h, 0px) + var(--bar-h, 60px));
+    }
+    .sec--beige { background: #f4e8d1; }
+    .sec--stage, .sec--notice { background: #1a140d; color: #fff; }
+    .sec--stage { overflow: hidden; }
+    .sec > * { position: relative; width: 100%; }
+    .sec > .btn { width: 320px; }
+
+    /* 헤드 */
+    .sec-head { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+    .kicker { display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0.0912px; color: #9c6a12; }
+    .kicker::before, .kicker::after { content: ""; width: 40px; height: 1px; background: #c8962e; }
+    #event1 .kicker::before, #event1 .kicker::after { background: #9c6a12; }
+    .sec--stage .kicker { color: #e6be6e; }
+    .sec-title { font-size: 48px; font-weight: 800; line-height: 1.16; letter-spacing: -1.3536px; color: inherit; }
+    .sec-lead { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; font-size: 20px; font-weight: 600; line-height: 1.4; letter-spacing: -0.24px; color: #262628; }
+    .sec--stage .sec-lead { color: #fff; }
+    .sec-lead__em { font-size: 24px; font-weight: 800; line-height: 1.45; letter-spacing: -0.552px; color: #e6be6e; }
+
+    /* 버튼 */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; border: 0; border-radius: 8px; font: 600 18px/1.445 Pretendard, sans-serif; letter-spacing: -0.0036px; text-decoration: none; cursor: pointer; }
+    .btn--gold { background: #e6be6e; color: #0d0f14; }
+    .btn--black { background: #0d0f14; color: #f6f7f8; }
+    .btn--share::after { content: ""; width: 24px; height: 24px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230d0f14' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.5 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-3.5M14 4h6v6M20 4l-9 9'/%3E%3C/svg%3E") center / contain no-repeat; }
+    .btn:focus-visible, .evbar__tab:focus-visible, .detail__btn:focus-visible { outline: 2px solid #c8962e; outline-offset: 2px; }
+
+    /* 금액 (금·은 그라디언트 글자) */
+    .money { font-weight: 800; white-space: nowrap; }
+    .money--gold, .money--silver, .money--gold-s { -webkit-background-clip: text; background-clip: text; color: transparent; }
+    /* 금·은 글자 채우기 — 시안 Fill 3겹(위→아래: 50% 단색 Linear Burn / 선형 16단 / 단색). CSS엔 linear-burn이 없어 단색 번 효과를 정지점 색에서 빼서 반영 · 각도·정지점은 Figma 변환 행렬 환산값 */
+    .money--gold { background-image: linear-gradient(120.89deg, #ecc472 10.61%, #d4a23d 17.00%, #ecc472 22.50%, #c27e00 29.58%, #d4a23d 33.64%, #ecc472 40.75%, #c07e01 48.98%, #ecc06d 59.88%, #bc7a00 64.61%, #d4a23d 67.84%, #ecce8e 72.71%, #d4a23d 81.38%, #ba7800 83.08%, #ecc478 85.95%, #ecac48 96.23%, #bc7a00 99.43%), linear-gradient(#9c6a12, #9c6a12); filter: url(#fx-gold); }
+    .money--silver { background-image: linear-gradient(120.89deg, #d2d2d2 10.61%, #aaaaaa 17.00%, #cecece 22.50%, #bebebe 29.58%, #707070 33.64%, #c8c8c8 40.75%, #929292 48.98%, #d2d2d2 59.88%, #707070 64.61%, #9c9c9c 67.84%, #d2d2d2 72.71%, #a4a4a4 81.38%, #7e7e7e 83.08%, #d2d2d2 85.95%, #888888 96.23%, #808080 99.43%), linear-gradient(#cdcdcd, #cdcdcd); filter: url(#fx-silver); }
+    .money--gold-s { background-image: linear-gradient(121.37deg, #d6a064 10.17%, #bd7e2e 16.60%, #d6a064 22.12%, #ab5a00 29.24%, #bd7e2e 33.32%, #d6a064 40.47%, #a95a00 48.74%, #d69c5e 59.70%, #a55600 64.46%, #bd7e2e 67.70%, #d6aa80 72.60%, #bd7e2e 81.32%, #a35400 83.03%, #d6a06a 85.91%, #d6883a 96.24%, #a65600 99.47%), linear-gradient(#0d0f14, #0d0f14); filter: url(#fx-gold-in); }
+    .money--plain { color: #0d0f14; }
+
+    /* ---------- S1 · 수능 만점 장학 ---------- */
+    .stage__ribbon { position: absolute !important; left: 1.8%; top: 313px; width: 96.9% !important; max-width: none !important; pointer-events: none; }
+    .stage__spark { position: absolute !important; width: auto !important; mix-blend-mode: screen; pointer-events: none; animation: hof-twinkle 3s ease-in-out infinite; }
+    .stage__spark--a { left: 57.1%; top: 26px; height: 122px; }
+    .stage__spark--b { left: 31.6%; top: 115px; height: 78px; transform: scaleY(-1) rotate(180deg); animation-delay: -1.5s; }
+    @keyframes hof-twinkle { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+
+    .perfect { display: flex; flex-direction: column; gap: 20px; }
+    .perfect__card { overflow: hidden; border-radius: 24px; background: #fff; }
+    .perfect__head {
+      position: relative; padding: 10px; text-align: center; font-size: 24px; font-weight: 800; line-height: 1.45; letter-spacing: -0.552px; color: #fff;
+      background: linear-gradient(129.84deg, #e6b464 -20.62%, #cc912e -9.01%, #e6b464 0.97%, #ba6e00 13.82%, #cc912e 21.18%, #e6b464 34.08%, #b86e00 49.02%, #e6b05e 68.81%, #b46a00 77.40%, #cc912e 83.25%, #e6be80 92.08%, #cc912e 107.83%, #b26800 110.91%, #e6b36a 116.12%, #e69b3a 134.77%, #b66900 140.59%), #454545;   /* 시안: #CC7D00 50% Linear Burn → 정지점에 반영 / 선형 / #454545 */
+      box-shadow: inset 2px 2px 2px rgba(255, 255, 255, .31), inset -2px -2px 3px rgba(64, 15, 15, .46);
+    }
+    .perfect__body { display: flex; justify-content: center; gap: 16px; padding: 28px 24px 40px; color: #0d0f14; }
+    .perfect__item { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 400px; padding: 0 24px; }
+    .perfect__name { font-size: 24px; font-weight: 800; line-height: 1.45; letter-spacing: -0.552px; }
+    .perfect__item .money { font-size: 36px; line-height: 1.334; letter-spacing: -0.972px; }
+    .perfect__item .money__num { font-size: 56px; line-height: 1.286; letter-spacing: -1.7864px; }
+    .ranks { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .rank { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 24px 8px; border: 1px solid transparent; border-radius: 16px; background: #fff; text-align: center; }
+    .rank--top { border-color: #e6be6e; background: #fff2d7; }
+    .rank__name { font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0.0912px; color: #0d0f14; }
+    .rank .money { font-size: 20px; line-height: 1.4; letter-spacing: -0.24px; }
+    .rank .money__num { font-size: 28px; line-height: 1.358; letter-spacing: -0.6608px; }
+
+    /* 유의 문구 (※) */
+    .notes { display: flex; flex-direction: column; font-size: 14px; line-height: 1.429; letter-spacing: 0.203px; color: #7a7a7c; }
+    .notes li { position: relative; padding-left: 18px; }
+    .notes li::before { content: "※"; position: absolute; left: 0; }
+    .notes--center { align-items: center; text-align: left; }
+    .notes--light { color: #fff; }
+    .notes--grid { flex-direction: row; flex-wrap: wrap; justify-content: center; column-gap: 8px; max-width: 760px; }
+    .notes--body { font-size: 16px; line-height: 1.5; letter-spacing: 0.0912px; color: #262628; }
+    .notes__strong { color: #0d0f14; }
+
+    /* ---------- 경품 쇼케이스 ---------- */
+    .prize { display: flex; align-items: center; gap: 32px; padding: 40px; border: 1px solid #e4d3ae; border-radius: 24px; background: #fff; }
+    .prize--ivory { justify-content: space-between; background: #faf6ee; }
+    .prize__info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 40px; }
+    .prize--ivory .prize__info { gap: 20px; flex: 0 1 486px; }
+    .prize__text { display: flex; flex-direction: column; gap: 24px; }
+    .prize__name { font-size: 28px; font-weight: 800; line-height: 1.358; letter-spacing: -0.6608px; color: #262628; }
+    .prize__desc { font-size: 18px; line-height: 1.445; letter-spacing: -0.0036px; color: #262628; }
+    .prize__desc b { font-weight: 600; }
+    .prize__em { display: block; font-size: 20px; font-weight: 800; line-height: 1.4; letter-spacing: -0.24px; color: #9c6a12; }
+    .chips { display: flex; flex-direction: column; gap: 12px; }
+    .chips > div { display: flex; align-items: center; gap: 20px; }
+    .chips dt { flex: none; width: 94px; padding: 2px 12px; border-radius: 9999px; background: #9c6a12; text-align: center; font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0.0912px; color: #fff; white-space: nowrap; }
+    #event1 .chips dt { width: 84px; }
+    .chips dd { font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0.0912px; color: #0d0f14; }
+    .hl-brown { color: #9c6a12 !important; }
+    .prize__media { position: relative; flex: none; width: 340px; height: 300px; }
+    .prize__media picture { display: contents; }
+    .prize__img { width: 100%; height: 100%; object-fit: contain; }   /* 에셋 시트 pc_0X (배치 포함 340×300) */
+    .badge { position: absolute; right: 0; top: 0; width: 112px; height: 112px; }   /* 에셋 시트 수량 뱃지 */
+    .compare { display: flex; flex-direction: column; gap: 4px; width: 486px; max-width: 100%; overflow: hidden; border-radius: 12px; background: #fff; }   /* 시안의 흰색 2px 안쪽 테두리는 흰 배경과 같아 생략 (높이 112 일치) */
+    .compare__head { padding: 4px 12px; background: #9c6a12; text-align: center; font-size: 16px; font-weight: 600; line-height: 1.5; color: #fff; }
+    .compare__body { display: flex; flex-direction: column; gap: 4px; padding: 0 16px; }
+    .compare__body > div { display: flex; align-items: center; gap: 10px; }
+    .compare__body dt { flex: none; width: 56px; font-size: 15px; font-weight: 600; line-height: 1.625; color: #9c6a12; }
+    .compare__body dd { padding: 6px 0; font-size: 15px; font-weight: 500; line-height: 1.625; letter-spacing: 0.144px; color: #262628; white-space: nowrap; }   /* 시안: 한 줄 고정 */
+    .compare__body dd b { font-weight: 600; color: #9c6a12; }
+    .compare__vs { margin: 0 2px; font-size: 14px; font-weight: 600; color: #0d0f14; }
+
+    /* ---------- 이벤트 상세 정보 (아코디언 · 기본 닫힘) ---------- */
+    .detail { display: flex; flex-direction: column; }
+    .detail__h { font: inherit; }
+    .detail__btn {
+      display: flex; align-items: center; gap: 16px; width: 100%; padding: 24px 20px; border: 0; border-top: 2px solid #0d0f14; border-bottom: 1px solid #0d0f14; background: none;
+      font: 600 20px/1.4 Pretendard, sans-serif; letter-spacing: -0.24px; color: #0d0f14; text-align: left; cursor: pointer;
+    }
+    .detail__btn::after { content: ""; flex: none; margin-left: auto; width: 24px; height: 24px; background: url(assets/sec/chev_k.svg) center / contain no-repeat; transform: rotate(180deg); transition: transform .45s cubic-bezier(.65, 0, .35, 1); }
+    .detail__btn[aria-expanded="true"]::after { transform: none; }
+    .detail__row { display: flex; gap: 24px; padding: 20px; border-bottom: 1px solid #0d0f14; }
+    .detail__row > dt { flex: none; width: 160px; font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0.0912px; color: #7a7a7c; }
+    .detail__row > dd { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    .detail__v { font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0.0912px; color: #0d0f14; }
+    .hl-red { color: #ca0b14; }
+    .hl-gold { font-style: normal; color: #e6be6e; }
+    .detail__flow { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .detail__sub > div { display: flex; gap: 4px; font-size: 14px; line-height: 1.429; letter-spacing: 0.203px; color: #0d0f14; }
+    .detail__sub dt { flex: none; width: 58px; font-weight: 600; color: #262628; }
+    .detail__group { display: flex; flex-direction: column; gap: 14px; }
+    .detail__group > div { display: flex; flex-direction: column; gap: 4px; }
+    .detail__group dt { font-size: 16px; font-weight: 600; line-height: 1.5; color: #0d0f14; }
+    .detail__group dd { font-size: 14px; line-height: 1.429; letter-spacing: 0.203px; color: #7a7a7c; }
+    /* 어두운 배경(S1) */
+    .detail--dark .detail__btn { border-color: #fff; color: #fff; }
+    .detail--dark .detail__btn::after { background-image: url(assets/sec/chev_w.svg); }
+    .detail--dark .detail__row { border-color: #fff; }
+    .detail--dark .detail__row > dt { color: #97989a; }
+    .detail--dark .detail__v, .detail--dark .notes, .detail--dark .notes--body { color: #fff; }
+
+    /* ---------- S5 · 2027 잇올 MVP ---------- */
+    .sec#event4 { gap: 56px; }
+    .mvp { display: flex; flex-direction: column; gap: 32px; padding: 40px; border: 1px solid #e4d3ae; border-radius: 24px; background: #faf6ee; }
+    .podium { position: relative; aspect-ratio: 879 / 398; margin-bottom: -40px; }
+    .podium__img { position: absolute; left: 0; top: 21.27%; width: 99.9%; height: auto; }
+    .podium__label { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 4px; transform: translateX(-50%); white-space: nowrap; }
+    .podium__label b { font-size: 24px; font-weight: 800; line-height: 1.45; letter-spacing: -0.552px; color: #0d0f14; }
+    .podium__label span { display: flex; align-items: center; gap: 4px; font-size: 16px; font-weight: 500; line-height: 1.5; color: #7a7a7c; }
+    .podium__label--1 { left: 50.08%; top: .17%; }
+    .podium__label--1 b { font-size: 28px; line-height: 1.358; letter-spacing: -0.6608px; }
+    .podium__label--2 { left: 16.4%; top: 15.3%; }
+    .podium__label--3 { left: 85.23%; top: 22.03%; }
+    .cnt { padding: 3px 10px; border-radius: 100px; background: #f3e6c8; font-style: normal; font-size: 14px; font-weight: 600; line-height: 1.429; letter-spacing: 0.203px; color: #9c6a12; }
+    .cnt--gold { background: #c8962e; color: #fff; }
+    .mvp__special { position: relative; z-index: 1; display: flex; gap: 16px; }   /* 시상대 이미지(-40 겹침) 위에 노출 */
+    .mvp__special li { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 24px 20px; border-radius: 16px; background: linear-gradient(90deg, rgba(200, 150, 46, .28) 0%, rgba(200, 150, 46, 0) 65%), #0d0f14; }
+    .mvp__name { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 800; line-height: 1.4; letter-spacing: -0.24px; color: #fff; white-space: nowrap; }
+    .mvp__amount { display: flex; align-items: baseline; gap: 8px; white-space: nowrap; }
+    .mvp__amount > span { font-size: 16px; font-weight: 500; line-height: 1.5; color: rgba(243, 230, 200, .75); }
+    .mvp__amount b { font-size: 24px; font-weight: 600; line-height: 1.45; color: #e8c27a; }
+    .mvp__amount .money__num { font-size: 36px; font-weight: 800; line-height: 1.334; letter-spacing: -0.972px; }
+    .mvp__line { width: 100%; height: 1px; margin: 0; border: 0; background: #e4d3ae; }
+    .criteria { display: flex; flex-direction: column; gap: 20px; }
+    .criteria__h { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; font-size: 24px; font-weight: 800; line-height: 1.45; letter-spacing: -0.552px; color: #0d0f14; }
+    .criteria__desc { font-size: 16px; font-weight: 400; line-height: 1.5; letter-spacing: 0.0912px; color: #58595b; }
+    .criteria__desc b { font-weight: 600; color: #0d0f14; }
+    .criteria__list { display: flex; align-items: stretch; gap: 52px; }
+    .criteria__list li { position: relative; flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 16px; border-radius: 16px; background: #fff; text-align: center; }
+    .criteria__list li + li::before {   /* + 기호 (원 28) */
+      content: ""; position: absolute; left: -40px; top: 50%; width: 28px; height: 28px; margin-top: -14px; border-radius: 50%;
+      background: #c8962e url(assets/sec/plus.svg) center / 28px no-repeat;
+    }
+    .criteria__list b { font-size: 18px; font-weight: 600; line-height: 1.445; color: #0d0f14; }
+    .criteria__list span { font-size: 14px; line-height: 1.429; letter-spacing: 0.203px; color: #58595b; }
+    .criteria__note { font-size: 14px; line-height: 1.429; letter-spacing: 0.203px; color: #7a7a7c; }
+
+    /* ---------- S6 · 이벤트 유의사항 ---------- */
+    .sec--notice { gap: 32px; }
+    .notice { display: flex; flex-direction: column; gap: 20px; }
+    .notice__h { padding-bottom: 8px; border-bottom: 1px solid #bebfc1; font-size: 24px; font-weight: 800; line-height: 1.45; letter-spacing: -0.552px; color: #f6f7f8; }
+    .notice .notes--body { color: #f6f7f8; }
+    .toast { position: fixed !important; z-index: 300; left: 50%; bottom: 96px; width: auto !important; transform: translateX(-50%); padding: 10px 20px; border-radius: 9999px; background: #3a3a3e; box-shadow: 0 0 0 1px rgba(255, 255, 255, .16), 0 8px 24px rgba(0, 0, 0, .35); color: #fff; font-size: 14px; line-height: 1.429; opacity: 0; pointer-events: none; transition: opacity .2s; }
+    .toast.is-show { opacity: 1; }
+
+    /* ---------- 플로팅 이벤트 바 (스크롤 시 GNB 아래 고정 · 풀폭) ---------- */
+    .evbar { position: sticky; top: var(--head-h, 0px); z-index: 90; background: #262628; }
+    .evbar__list { display: flex; margin: 0; padding: 0; list-style: none; }
+    .evbar__list li { flex: 1; min-width: 0; }
+    .evbar__list li + li .evbar__tab { border-left: 1px solid #7a7a7c; }
+    .evbar__tab { display: flex; align-items: center; justify-content: center; height: 60px; padding: 16px; font-size: 20px; font-weight: 600; line-height: 1.4; letter-spacing: -0.24px; color: #7a7a7c; text-decoration: none; white-space: nowrap; transition: background-color .3s, color .3s; }
+    .evbar__tab.is-active { background: #fff; color: #0d0f14; }
+
+    .only-mo { display: none; }
+
+    /* ===================================================================
+       1024 미만 — MO 시안(390) 값
+       =================================================================== */
+    @media (max-width: 1023px) {
+      .sec { gap: 32px; padding: 64px 20px; }
+      .sec--stage, .sec#event4 { gap: 40px; }
+      .sec > .btn { width: 100%; }
+      .only-pc { display: none; }
+      .kicker { font-size: 14px; line-height: 1.429; }
+      .sec-title { font-size: 28px; line-height: 1.358; letter-spacing: -0.6608px; }
+      .sec-lead { font-size: 16px; line-height: 1.5; margin-top: 0; }
+      .sec-lead__em { font-size: 20px; line-height: 1.4; }
+      .btn { font-size: 16px; line-height: 1.5; }
+
+      .stage__ribbon { left: -8%; top: 316px; width: 116% !important; }
+      .stage__spark--a { left: 78%; top: 20px; height: 80px; }
+      .stage__spark--b { left: 8%; top: 96px; height: 52px; }
+      .perfect { gap: 12px; }
+      .perfect__head { font-size: 20px; line-height: 1.4; padding: 8px; }
+      .perfect__body { flex-direction: column; gap: 16px; padding: 24px 20px; }
+      .perfect__item { width: auto; padding: 0; }
+      .perfect__item + .perfect__item { padding-top: 16px; border-top: 1px solid #e1e3e5; }
+      .perfect__name { font-size: 20px; line-height: 1.4; }
+      .perfect__item .money { font-size: 24px; }
+      .perfect__item .money__num { font-size: 40px; line-height: 1.3; }
+      .ranks { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .rank { padding: 20px 8px; }
+      .rank__name { font-size: 14px; line-height: 1.429; }
+      .rank .money { font-size: 14px; }
+      .rank .money__num { font-size: 20px; line-height: 1.4; }
+
+      .notes { font-size: 13px; line-height: 1.385; letter-spacing: 0.2522px; }
+      .notes li { padding-left: 16px; }
+      .notes--center { align-items: flex-start; }
+      .notes--grid { flex-direction: column; max-width: none; }
+      .notes--body { font-size: 14px; line-height: 1.429; letter-spacing: 0.203px; }
+
+      .prize { flex-direction: column-reverse; align-items: stretch; gap: 24px; padding: 20px; }
+      .prize__info { gap: 24px; }
+      .prize--ivory .prize__info { flex: none; }
+      .prize__text { gap: 8px; }
+      .prize__name { font-size: 20px; line-height: 1.4; letter-spacing: -0.24px; }
+      .prize__desc { font-size: 14px; line-height: 1.429; letter-spacing: 0.203px; }
+      .prize__em { font-size: 16px; line-height: 1.5; }
+      .chips { gap: 12px; }
+      .chips > div { gap: 12px; }
+      .chips dt, #event1 .chips dt { width: 76px; padding: 2px 8px; font-size: 14px; line-height: 1.429; }
+      .chips dd { font-size: 14px; line-height: 1.429; }
+      .prize__media { width: 308px; max-width: 100%; height: auto; aspect-ratio: 308 / 220; margin: 0 auto; }   /* 에셋 시트 mobile_0X */
+      .badge { left: 0; right: auto; top: 0; width: 88px; height: 88px; }
+      .compare { width: 100%; }
+      .compare { gap: 0; }
+      .compare__body { padding: 12px 16px; gap: 8px; }
+      .compare__body > div { align-items: flex-start; flex-direction: column; gap: 0; }
+      .compare__body dt { font-size: 14px; line-height: 1.429; }
+      .compare__body dd { padding: 0; font-size: 14px; line-height: 1.429; white-space: normal; }
+
+      .detail__btn { padding: 24px 20px; font-size: 18px; line-height: 1.445; }
+      .detail__row { flex-direction: column; gap: 8px; padding: 16px 20px; }
+      .detail__row > dt { width: auto; font-size: 14px; line-height: 1.429; }
+      .detail__v { font-size: 15px; line-height: 1.625; letter-spacing: 0.144px; }
+      .detail__sub > div { font-size: 13px; line-height: 1.385; }
+      .detail__sub dt { width: 58px; }
+      .detail__group dt { font-size: 15px; line-height: 1.625; }
+      .detail__group dd { font-size: 13px; line-height: 1.385; }
+
+      .mvp { gap: 32px; padding: 32px 20px; border-radius: 16px; }
+      .podium { margin-bottom: -12px; }
+      .podium__label { gap: 2px; }
+      .podium__label b, .podium__label--1 b { font-size: 18px; font-weight: 700; line-height: 1.445; }
+      .podium__label span { font-size: 12px; line-height: 1.334; }
+      .podium__label .cnt { padding: 1px 6px; font-size: 12px; line-height: 1.334; }
+      .mvp__special { flex-direction: column; gap: 12px; }
+      .mvp__special li { padding: 12px 16px; border-radius: 12px; }
+      .mvp__name { font-size: 14px; line-height: 1.429; }
+      .mvp__name .cnt { padding: 1px 8px; font-size: 12px; line-height: 1.334; }
+      .mvp__amount > span { font-size: 13px; }
+      .mvp__amount b { font-size: 14px; }
+      .mvp__amount .money__num { font-size: 20px; line-height: 1.4; }
+      .criteria__h { flex-direction: column; align-items: flex-start; gap: 8px; margin-bottom: 4px; font-size: 20px; line-height: 1.4; }
+      .criteria__desc { font-size: 15px; line-height: 1.625; letter-spacing: 0.144px; }
+      .criteria__list { flex-direction: column; gap: 40px; }
+      .criteria__list li { align-items: flex-start; text-align: left; }
+      .criteria__list li + li::before { left: 50%; top: -34px; margin: 0 0 0 -14px; }
+      .criteria__list b { font-size: 15px; line-height: 1.625; }
+      .criteria__list span { font-size: 13px; line-height: 1.385; }
+      .criteria__note { font-size: 13px; line-height: 1.385; }
+
+      .notice__h { font-size: 20px; line-height: 1.4; }
+
+      .evbar__list { flex-wrap: wrap; }
+      .evbar__list li { flex: 1 1 33.333%; }
+      .evbar__list li:nth-child(-n+2) { flex-basis: 50%; }
+      .evbar__list li + li .evbar__tab { border-left: 1px solid #7a7a7c; }
+      .evbar__list li:nth-child(3) .evbar__tab { border-left: 0; }
+      .evbar__list li:nth-child(n+3) .evbar__tab { border-top: 1px solid #7a7a7c; }
+      .evbar__tab { height: 48px; padding: 12px 8px; font-size: 16px; line-height: 1.5; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .stage__spark { animation: none; }
+      .evbar__tab, .detail__btn::after { transition: none; }
+    }
+/* SECTIONS_CSS:END */
+  </style>
+</head>
+<body>
+<!-- ============ 잇올 사이트 GNB (gen_gnb.py 생성 · PC 1024~ / MO ~1023) ============ -->
+<div class="site-head">
+  <div class="site-banner">
+    <div class="site-banner__inner">
+      <a class="site-banner__item" href="https://www.itall.com/recruit/2027_Bansu" target="_blank" rel="noopener"><img src="assets/gnb/new-sparta-white.svg" width="101" height="18" alt="잇올 스파르타"><img src="assets/gnb/new-study-cafe-white.svg" width="84" height="18" alt="잇올 몰입관"><span class="site-banner__red">반수반</span></a>
+      <a class="site-banner__item" href="https://www.itall.com/recruit/2027_winter" target="_blank" rel="noopener"><img src="assets/gnb/new-sparta-white.svg" width="101" height="18" alt="잇올 스파르타"><img src="assets/gnb/new-study-cafe-white.svg" width="84" height="18" alt="잇올 몰입관"><span class="site-banner__yellow">윈터스쿨</span></a>
+      <a class="site-banner__item" href="https://dormitory.itall.com/recruit/2027_winter" target="_blank" rel="noopener"><img src="assets/gnb/new-dormitory-white.svg" width="98" height="18" alt="잇올 기숙학원"><span class="site-banner__green">윈터스쿨</span></a>
+    </div>
+  </div>
+  <header class="gnb" aria-label="사이트 메뉴">
+    <div class="gnb__brand">
+      <a href="https://www.itall.com/" target="_blank" rel="noopener"><img src="assets/gnb/itall_logo.svg" width="134" height="24" alt="잇올 스파르타"></a>
+      <div class="gnb__family">
+        <button class="gnb__family-btn" type="button" aria-label="패밀리 사이트" aria-haspopup="true"><img src="assets/gnb/ico_dropdown.svg" width="20" height="20" alt=""></button>
+        <div class="gnb__family-panel">
+          <div class="gnb-family">
+          <ul class="gnb-family__list">
+            <li><a class="gnb-family__link" href="https://www.itall.com/" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-sparta.svg" width="89" height="16" alt="잇올 스파르타"><span>몰입의 기준을 세우다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+            <li><a class="gnb-family__link" href="https://www.itall.com/immersion-camp" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-study-cafe.svg" width="75" height="16" alt="잇올 몰입관"><span>몰입의 경험을 최적화하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+            <li><a class="gnb-family__link" href="https://dormitory.itall.com" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-dormitory.svg" width="87" height="16" alt="잇올 기숙학원"><span>몰입의 일상을 완성하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+          </ul>
+          <a class="gnb-family__promo" href="https://www.itall.com/contents/mentorings" target="_blank" rel="noopener">
+            <span>명문대 타이틀을 수익과 커리어로 전환하는 선택</span>
+            <b>명문대 멘토(CA) 모집중</b>
+          </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <nav aria-label="주 메뉴">
+      <ul class="gnb__menu">
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/immersion/system" target="_blank" rel="noopener">몰입공부 시스템</a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/immersion/system" target="_blank" rel="noopener">몰입공부 시스템</a></li>
+            <li><a href="https://www.itall.com/immersion/space" target="_blank" rel="noopener">공간/생활</a></li>
+            <li><a href="https://www.itall.com/immersion/study" target="_blank" rel="noopener">학습/입시/콘텐츠</a></li>
+            <li><a href="https://www.itall.com/immersion/billboard" target="_blank" rel="noopener">빌보드/부트캠프</a></li>
+            <li><a href="https://www.itall.com/immersion/ai" target="_blank" rel="noopener">티처스/잇생부</a></li>
+            <li><a href="https://www.itall.com/immersion/admission-2028" target="_blank" rel="noopener">2028 입시정보</a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/direct-center" target="_blank" rel="noopener"><span class="gnb__shine">직영 센터/캠프</span></a>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/recruit" target="_blank" rel="noopener">모집안내</a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/recruit/2027_winter" target="_blank" rel="noopener">스파르타/몰입관 윈터스쿨<span class="gnb__badge">모집중</span></a></li>
+            <li><a href="https://www.itall.com/recruit/2027_Bansu" target="_blank" rel="noopener">스파르타/몰입관 반수반<span class="gnb__badge">마감임박</span></a></li>
+            <li><a href="https://www.itall.com/recruit/highschool-final-exam-pass" target="_blank" rel="noopener">스파르타/몰입관 고등 기말고사패스<span class="gnb__badge">모집중</span></a></li>
+            <li><a href="https://www.itall.com/recruit/high_immersion" target="_blank" rel="noopener">스파르타/몰입관 고등 몰입 관리반<span class="gnb__badge">상시모집</span></a></li>
+            <li><a href="https://dormitory.itall.com/recruit/2027_winter" target="_blank" rel="noopener">기숙 윈터스쿨<span class="gnb__badge gnb__badge--dorm">모집중</span></a></li>
+            <li><a href="https://dormitory.itall.com/recruit/2027-jaesu" target="_blank" rel="noopener">기숙 재수정규반<span class="gnb__badge gnb__badge--dorm">대기접수</span></a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/glory_honor" target="_blank" rel="noopener">입시 결과</a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/glory_honor" target="_blank" rel="noopener">입시 결과</a></li>
+            <li><a href="https://www.itall.com/glory_honor/perfect-story" target="_blank" rel="noopener">수능 만점자 스토리</a></li>
+            <li><a href="https://www.itall.com/glory_honor/passing-story" target="_blank" rel="noopener">합격 수기</a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/scholarship" target="_blank" rel="noopener">장학</a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/scholarship?tab=allkey" target="_blank" rel="noopener">올키 장학</a></li>
+            <li><a href="https://www.itall.com/scholarship?tab=foundation" target="_blank" rel="noopener">백태규백다애 장학회</a></li>
+            <li><a href="https://www.itall.com/scholarship?tab=principal-recommendation" target="_blank" rel="noopener">원장추천 특별장학</a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/customer-service" target="_blank" rel="noopener">고객센터</a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/customer-service?tab=faq" target="_blank" rel="noopener">자주 하는 질문</a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=online-consultant" target="_blank" rel="noopener">온라인 상담</a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=story" target="_blank" rel="noopener">잇올 스토리</a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=bamboo" target="_blank" rel="noopener">잇올 대나무숲</a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=notice" target="_blank" rel="noopener">공지사항</a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/contents" target="_blank" rel="noopener">콘텐츠</a>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/events" target="_blank" rel="noopener">이벤트</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="gnb__util">
+      <span class="gnb__dday">수능 <span class="js-dday">D-43</span></span>
+      <span class="gnb__util-box">의장 직통메일</span>
+    </div>
+  </header>
+
+  <div class="gnb-bar">
+    <div class="gnb-bar__brand">
+      <a href="https://www.itall.com/" target="_blank" rel="noopener"><img src="assets/gnb/itall_logo.svg" width="100" height="18" alt="잇올 스파르타"></a>
+      <button class="gnb-bar__family js-sheet-open" type="button" aria-label="패밀리 사이트" aria-haspopup="dialog" aria-controls="gnb-sheet"><img src="assets/gnb/ico_dropdown.svg" width="16" height="16" alt=""></button>
+    </div>
+    <div class="gnb-bar__util">
+      <span class="gnb-bar__box">의장 직통메일</span>
+      <button class="gnb-bar__menu js-menu-open" type="button" aria-label="전체 메뉴 열기" aria-expanded="false" aria-controls="gnb-m"><img src="assets/gnb/ico_menu.svg" width="24" height="24" alt=""></button>
+    </div>
+  </div>
+</div>
+
+<div class="gnb-m gnb-m--sparta" id="gnb-m" role="dialog" aria-modal="true" aria-label="전체 메뉴" hidden>
+  <div class="gnb-m__top">
+    <a class="gnb-m__home" href="https://www.itall.com/" target="_blank" rel="noopener"><img src="assets/gnb/ico_home.svg" width="28" height="28" alt="홈"></a>
+    <div class="gnb-m__util">
+      <span class="gnb__dday">수능 <span class="js-dday">D-43</span></span>
+      <span class="gnb-bar__box">의장 직통메일</span>
+      <button class="gnb-m__close js-menu-close" type="button" aria-label="전체 메뉴 닫기"><img src="assets/gnb/ico_close_new.svg" width="24" height="24" alt=""></button>
+    </div>
+  </div>
+  <div class="gnb-m__body">
+      <p class="gnb-m__title">꿈이 모두 이루어지는 공간<span>잇올 스파르타</span></p>
+      <div class="gnb-m__pair">
+        <a class="gnb-m__btn gnb-m__btn--dark" href="https://www.itall.com/contents" target="_blank" rel="noopener">콘텐츠</a>
+        <a class="gnb-m__btn gnb-m__btn--dark" href="https://www.itall.com/events" target="_blank" rel="noopener">이벤트/혜택</a>
+      </div>
+      <div class="gnb-m__stack">
+        <a class="gnb-m__btn gnb-m__btn--line" href="https://onlinebooks.co.kr/books/itall_sparta/#p=1" target="_blank" rel="noopener">잇올 한눈에 보기 <em>잇올 매뉴얼 e-Book</em></a>
+        <a class="gnb-m__btn gnb-m__btn--line" href="https://onlinebooks.co.kr/books/csjg/#p=1" target="_blank" rel="noopener">잇올 <em>합격수기 공모전 당선작</em> 확인하기</a>
+      </div>
+    <ul class="gnb-m__list">
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/immersion/system" target="_blank" rel="noopener">몰입공부 시스템</a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-0" aria-label="몰입공부 시스템 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-0" hidden>
+            <li><a href="https://www.itall.com/immersion/system" target="_blank" rel="noopener"><span>몰입공부 시스템</span></a></li>
+            <li><a href="https://www.itall.com/immersion/space" target="_blank" rel="noopener"><span>공간/생활</span></a></li>
+            <li><a href="https://www.itall.com/immersion/study" target="_blank" rel="noopener"><span>학습/입시/콘텐츠</span></a></li>
+            <li><a href="https://www.itall.com/immersion/billboard" target="_blank" rel="noopener"><span>빌보드/부트캠프</span></a></li>
+            <li><a href="https://www.itall.com/immersion/ai" target="_blank" rel="noopener"><span>티처스/잇생부</span></a></li>
+            <li><a href="https://www.itall.com/immersion/admission-2028" target="_blank" rel="noopener"><span>2028 입시정보</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row"><a class="gnb-m__label" href="https://www.itall.com/direct-center" target="_blank" rel="noopener">직영 센터/캠프</a></div>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/recruit" target="_blank" rel="noopener">모집안내</a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-2" aria-label="모집안내 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-2" hidden>
+            <li><a href="https://www.itall.com/recruit/2027_winter" target="_blank" rel="noopener"><span>스파르타/몰입관 윈터스쿨</span><span class="gnb-m__badge">모집중</span></a></li>
+            <li><a href="https://www.itall.com/recruit/2027_Bansu" target="_blank" rel="noopener"><span>스파르타/몰입관 반수반</span><span class="gnb-m__badge">마감임박</span></a></li>
+            <li><a href="https://www.itall.com/recruit/highschool-final-exam-pass" target="_blank" rel="noopener"><span>스파르타/몰입관 고등 기말고사패스</span><span class="gnb-m__badge">모집중</span></a></li>
+            <li><a href="https://www.itall.com/recruit/high_immersion" target="_blank" rel="noopener"><span>스파르타/몰입관 고등 몰입 관리반</span><span class="gnb-m__badge">상시모집</span></a></li>
+            <li><a href="https://dormitory.itall.com/recruit/2027_winter" target="_blank" rel="noopener"><span>기숙 윈터스쿨</span><span class="gnb-m__badge gnb-m__badge--dorm">모집중</span></a></li>
+            <li><a href="https://dormitory.itall.com/recruit/2027-jaesu" target="_blank" rel="noopener"><span>기숙 재수정규반</span><span class="gnb-m__badge gnb-m__badge--dorm">대기접수</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/glory_honor" target="_blank" rel="noopener">입시 결과</a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-3" aria-label="입시 결과 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-3" hidden>
+            <li><a href="https://www.itall.com/glory_honor" target="_blank" rel="noopener"><span>입시 결과</span></a></li>
+            <li><a href="https://www.itall.com/glory_honor/perfect-story" target="_blank" rel="noopener"><span>수능 만점자 스토리</span></a></li>
+            <li><a href="https://www.itall.com/glory_honor/passing-story" target="_blank" rel="noopener"><span>합격 수기</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/scholarship" target="_blank" rel="noopener">장학</a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-4" aria-label="장학 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-4" hidden>
+            <li><a href="https://www.itall.com/scholarship?tab=allkey" target="_blank" rel="noopener"><span>올키 장학</span></a></li>
+            <li><a href="https://www.itall.com/scholarship?tab=foundation" target="_blank" rel="noopener"><span>백태규백다애 장학회</span></a></li>
+            <li><a href="https://www.itall.com/scholarship?tab=principal-recommendation" target="_blank" rel="noopener"><span>원장추천 특별장학</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/customer-service" target="_blank" rel="noopener">고객센터</a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-5" aria-label="고객센터 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-5" hidden>
+            <li><a href="https://www.itall.com/customer-service?tab=faq" target="_blank" rel="noopener"><span>자주 하는 질문</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=online-consultant" target="_blank" rel="noopener"><span>온라인 상담</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=story" target="_blank" rel="noopener"><span>잇올 스토리</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=bamboo" target="_blank" rel="noopener"><span>잇올 대나무숲</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=notice" target="_blank" rel="noopener"><span>공지사항</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row"><a class="gnb-m__label" href="https://www.itall.com/contents" target="_blank" rel="noopener">콘텐츠</a></div>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row"><a class="gnb-m__label" href="https://www.itall.com/events" target="_blank" rel="noopener">이벤트</a></div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="gnb-sheet" id="gnb-sheet" role="dialog" aria-modal="true" aria-labelledby="gnb-sheet-title" hidden>
+  <div class="gnb-sheet__dim js-sheet-close"></div>
+  <div class="gnb-sheet__panel">
+    <p class="gnb-sheet__title" id="gnb-sheet-title">어떤 사이트로 이동할까요?</p>
+    <div class="gnb-family gnb-family--sheet">
+          <ul class="gnb-family__list">
+            <li><a class="gnb-family__link" href="https://www.itall.com/" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-sparta.svg" width="89" height="16" alt="잇올 스파르타"><span>몰입의 기준을 세우다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+            <li><a class="gnb-family__link" href="https://www.itall.com/immersion-camp" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-study-cafe.svg" width="75" height="16" alt="잇올 몰입관"><span>몰입의 경험을 최적화하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+            <li><a class="gnb-family__link" href="https://dormitory.itall.com" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-dormitory.svg" width="87" height="16" alt="잇올 기숙학원"><span>몰입의 일상을 완성하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg></a></li>
+          </ul>
+          <a class="gnb-family__promo" href="https://www.itall.com/contents/mentorings" target="_blank" rel="noopener">
+            <span>명문대 타이틀을 수익과 커리어로 전환하는 선택</span>
+            <b>명문대 멘토(CA) 모집중</b>
+          </a>
+    </div>
+  </div>
+</div>
+
+<!-- 맨 위로 — GNB와 함께 공용 (스크롤 300px 이후 노출) -->
+<button class="gnb-top" type="button" aria-label="맨 위로 이동"><img src="assets/gnb/ic_scroll_up.svg" width="40" height="40" alt=""></button>
+
+<script>
+  /* GNB — 수능 D-day · 모바일 메뉴 · 아코디언 · 패밀리 사이트 바텀시트 */
+  (function () {
+    'use strict';
+    var d = Math.round((new Date(2026, 10, 19) - new Date(new Date().toDateString())) / 864e5);
+    document.querySelectorAll('.js-dday').forEach(function (el) { el.textContent = d > 0 ? 'D-' + d : 'D-DAY'; });
+
+    var root = document.documentElement;
+    var menu = document.getElementById('gnb-m');
+    var sheet = document.getElementById('gnb-sheet');
+    var opener = null;
+    var openedAt = 0;
+
+    /* 레이어 열림/닫힘 알림 — 랜딩 KV 영상은 이 이벤트로 일시정지(모바일에서 영상 위 고정 레이어 깜빡임 방지) */
+    function notify(isOpen) { document.dispatchEvent(new CustomEvent('gnb:toggle', { detail: { open: isOpen } })); }
+
+    function open(layer, trigger) {
+      clearTimeout(layer._closeTimer);   /* 직전 닫기 타이머가 남아 있으면 다시 연 레이어를 숨기므로 취소 */
+      opener = trigger;
+      openedAt = Date.now();
+      layer.hidden = false;
+      root.classList.add('gnb-lock');
+      void layer.offsetWidth;
+      layer.classList.add('is-open');
+      if (trigger.hasAttribute('aria-expanded')) trigger.setAttribute('aria-expanded', 'true');
+      notify(true);
+      var first = layer.querySelector('a, button');
+      if (first) first.focus({ preventScroll: true });
+    }
+    function close(layer) {
+      layer.classList.remove('is-open');
+      root.classList.remove('gnb-lock');
+      var done = function () { layer.hidden = true; };
+      clearTimeout(layer._closeTimer);
+      if (layer === menu || window.matchMedia('(prefers-reduced-motion: reduce)').matches) done();   /* 전체 메뉴는 즉시 (실사이트 동일) */
+      else layer._closeTimer = setTimeout(done, 300);
+      notify(false);
+      if (opener) {
+        if (opener.hasAttribute('aria-expanded')) opener.setAttribute('aria-expanded', 'false');
+        opener.focus({ preventScroll: true });
+      }
+    }
+    /* ☰ 자리에 ✕가 겹쳐 있어 터치 직후 따라오는 탭(더블탭·고스트 클릭)이 바로 닫지 않게 */
+    function guarded(fn) { return function () { if (Date.now() - openedAt < 400) return; fn(); }; }
+
+    document.querySelector('.js-menu-open').addEventListener('click', function (e) { open(menu, e.currentTarget); });
+    menu.querySelector('.js-menu-close').addEventListener('click', guarded(function () { close(menu); }));
+    document.querySelector('.js-sheet-open').addEventListener('click', function (e) { open(sheet, e.currentTarget); });
+    sheet.querySelector('.js-sheet-close').addEventListener('click', guarded(function () { close(sheet); }));
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (!sheet.hidden) close(sheet); else if (!menu.hidden) close(menu);
+    });
+
+    menu.querySelectorAll('.gnb-m__toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var sub = document.getElementById(btn.getAttribute('aria-controls'));
+        var expand = btn.getAttribute('aria-expanded') !== 'true';
+        btn.setAttribute('aria-expanded', String(expand));
+        sub.hidden = !expand;
+      });
+    });
+
+    /* 맨 위로 버튼 — 스크롤 300px 이후 노출 · 클릭 시 맨 위로 */
+    var topBtn = document.querySelector('.gnb-top');
+    if (topBtn) {
+      var onTop = function () { topBtn.classList.toggle('is-show', window.scrollY > 300); };
+      window.addEventListener('scroll', onTop, { passive: true });
+      onTop();
+      topBtn.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      });
+    }
+
+    /* PC로 넓어지면 모바일 레이어 정리 */
+    window.matchMedia('(min-width: 1024px)').addEventListener('change', function (mq) {
+      if (!mq.matches) return;
+      [menu, sheet].forEach(function (layer) { clearTimeout(layer._closeTimer); layer.classList.remove('is-open'); layer.hidden = true; });
+      root.classList.remove('gnb-lock');
+      notify(false);
+    });
+  })();
+</script>
+<!-- ============ /잇올 사이트 GNB ============ -->
+
+  <main class="page">
+    <div class="page__inner">
+      <div class="page__head">
+        <h1 class="page__title"><a class="page__back" href="https://www.itall.com/events" target="_blank" rel="noopener" aria-label="이벤트/혜택 목록으로"><img src="assets/gnb/ico_arrow_back_red.svg" width="20" height="20" alt=""></a>2027 잇올 명예의 전당</h1>
+        <nav class="breadcrumb" aria-label="현재 위치">
+          <ol>
+            <li><a class="breadcrumb__home" href="https://www.itall.com/main" target="_blank" rel="noopener"><img src="assets/gnb/ico_breadcrumbs_home.svg" width="20" height="20" alt="메인"></a></li>
+            <li><a href="https://www.itall.com/events" target="_blank" rel="noopener">이벤트/혜택</a></li>
+            <li><span aria-current="page">2027 잇올 명예의 전당</span></li>
+          </ol>
+        </nav>
+      </div>
+
+      <div class="event-card">
+        <section class="kv" id="kv" aria-label="2027 명예의 전당 키비주얼">
+          <div class="kv__inner">
+            <!-- 767px 이하: 모바일 KV 전용 에셋 (Figma KV 섹션 MO 6399:1659~1671, 390×406) -->
+            <picture>
+              <source media="(max-width: 767px)" srcset="assets/mo/kv_bg_mo.webp" width="390" height="406">
+              <img class="kv__bg" src="assets/kv_bg.webp" width="1280" height="747"
+                   alt="2027 명예의 전당 최대 2억원 규모 장학·합격 축하금. 여러분이 잇올의 자랑입니다. 치열했던 노력의 순간들, 그 끝에서 완성 합격. 잇올은 여러분의 1년을 기억합니다.">
+            </picture>
+
+            <picture><source media="(max-width: 767px)" srcset="assets/mo/spotlight_LT_mo.webp"><img class="fx beam beam--lt" src="assets/spotlight_LT.webp" width="455" height="458" alt="" aria-hidden="true"></picture>
+            <picture><source media="(max-width: 767px)" srcset="assets/mo/spotlight_RT_mo.webp"><img class="fx beam beam--rt" src="assets/spotlight_RT.webp" width="455" height="458" alt="" aria-hidden="true"></picture>
+            <picture><source media="(max-width: 767px)" srcset="assets/mo/spotlight_LB_mo.webp"><img class="fx beam beam--lb" src="assets/spotlight_LB.webp" width="374" height="232" alt="" aria-hidden="true"></picture>
+            <picture><source media="(max-width: 767px)" srcset="assets/mo/spotlight_RB_mo.webp"><img class="fx beam beam--rb" src="assets/spotlight_RB.webp" width="374" height="231" alt="" aria-hidden="true"></picture>
+
+            <picture><source media="(max-width: 767px)" srcset="assets/mo/light_1_mo.webp"><img class="fx sparkle sparkle--1" src="assets/light_1.webp" width="1280" height="747" alt="" aria-hidden="true"></picture>
+            <picture><source media="(max-width: 767px)" srcset="assets/mo/light_2_mo.webp"><img class="fx sparkle sparkle--2" src="assets/light_2.webp" width="1280" height="747" alt="" aria-hidden="true"></picture>
+          </div>
+        </section>
+<!-- SECTIONS_HTML:START -->
+        <!-- 글자 효과 필터 — 시안 Effects 값 (안쪽 그림자 + 바깥 그림자) -->
+        <svg class="sr-only" aria-hidden="true" focusable="false" width="0" height="0"><defs><filter id="fx-gold" x="-10%" y="-20%" width="120%" height="150%" color-interpolation-filters="sRGB"><feOffset in="SourceAlpha" dx="-1" dy="-1" result="io0"/><feGaussianBlur in="io0" stdDeviation="0" result="ib0"/><feComposite in="SourceAlpha" in2="ib0" operator="out" result="ie0"/><feFlood flood-color="#400f0f" flood-opacity="0.46" result="if0"/><feComposite in="if0" in2="ie0" operator="in" result="is0"/><feGaussianBlur in="SourceAlpha" stdDeviation="1" result="db"/><feOffset in="db" dx="0" dy="2" result="do"/><feFlood flood-color="#511f20" flood-opacity="0.4" result="df"/><feComposite in="df" in2="do" operator="in" result="ds"/><feMerge><feMergeNode in="ds"/><feMergeNode in="SourceGraphic"/><feMergeNode in="is0"/></feMerge></filter><filter id="fx-silver" x="-10%" y="-20%" width="120%" height="150%" color-interpolation-filters="sRGB"><feOffset in="SourceAlpha" dx="-1" dy="-1" result="io0"/><feGaussianBlur in="io0" stdDeviation="0" result="ib0"/><feComposite in="SourceAlpha" in2="ib0" operator="out" result="ie0"/><feFlood flood-color="#454545" flood-opacity="0.46" result="if0"/><feComposite in="if0" in2="ie0" operator="in" result="is0"/><feGaussianBlur in="SourceAlpha" stdDeviation="1" result="db"/><feOffset in="db" dx="0" dy="2" result="do"/><feFlood flood-color="#1d2136" flood-opacity="0.4" result="df"/><feComposite in="df" in2="do" operator="in" result="ds"/><feMerge><feMergeNode in="ds"/><feMergeNode in="SourceGraphic"/><feMergeNode in="is0"/></feMerge></filter><filter id="fx-gold-in" x="-10%" y="-20%" width="120%" height="150%" color-interpolation-filters="sRGB"><feOffset in="SourceAlpha" dx="-1" dy="-1" result="io0"/><feGaussianBlur in="io0" stdDeviation="0" result="ib0"/><feComposite in="SourceAlpha" in2="ib0" operator="out" result="ie0"/><feFlood flood-color="#400f0f" flood-opacity="0.46" result="if0"/><feComposite in="if0" in2="ie0" operator="in" result="is0"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="is0"/></feMerge></filter></defs></svg>
+        <!-- ============ 플로팅 이벤트 바 (스크롤 시 상단 고정 · 풀폭) ============ -->
+        <nav class="evbar" id="evbar" aria-label="이벤트 바로가기">
+          <ul class="evbar__list">
+            <li><a class="evbar__tab is-active" href="#stage" aria-current="true">수능 만점 장학</a></li>
+            <li><a class="evbar__tab" href="#event1">합격 축하금</a></li>
+            <li><a class="evbar__tab" href="#event2">성적퀀텀점프</a></li>
+            <li><a class="evbar__tab" href="#event3">합격수기 공모전</a></li>
+            <li><a class="evbar__tab" href="#event4">2027 잇올 MVP</a></li>
+          </ul>
+        </nav>
+
+        <!-- ============ S1 · PERFECT STAGE 수능 만점 장학 ============
+             12/18(금)부터 수능 만점 장학이 랜딩 최하단으로, 합격 축하금 이벤트가 최상단으로 이동 (운영 일정) -->
+        <section class="sec sec--stage" id="stage" aria-labelledby="h-stage">
+          <img class="stage__ribbon" src="assets/sec/ribbon.webp" alt="" width="1240" height="484" aria-hidden="true">
+          <img class="stage__spark stage__spark--a" src="assets/sec/sparkle_a.webp" alt="" width="142" height="122" aria-hidden="true">
+          <img class="stage__spark stage__spark--b" src="assets/sec/sparkle_b.webp" alt="" width="91" height="78" aria-hidden="true">
+          <div class="sec-head">
+            <p class="kicker">2027 PERFECT STAGE</p>
+            <h2 class="sec-title" id="h-stage">수능 만점 장학</h2>
+            <p class="sec-lead"><strong class="sec-lead__em">가채점 성적으로 우선 신청</strong>수능 만점! 수석! 차석! 당신을 기다립니다.</p>
+          </div>
+          <a class="btn btn--gold" href="#none" data-todo="장학금 신청 폼 연결">장학금 신청하기</a>
+
+          <div class="perfect">
+            <div class="perfect__card">
+              <h3 class="perfect__head">만점 장학금</h3>
+              <ul class="perfect__body">
+                <li class="perfect__item"><img src="assets/sec/ornament.svg" alt="" width="168" height="24"><span class="perfect__name">전과목 만점</span><span class="money money--gold"><span class="money__num">5,000,000</span>원</span></li>
+                <li class="perfect__item"><img src="assets/sec/ornament.svg" alt="" width="168" height="24"><span class="perfect__name">백분위 만점</span><span class="money money--silver"><span class="money__num">2,000,000</span>원</span></li>
+              </ul>
+            </div>
+            <ul class="ranks">
+              <li class="rank rank--top"><span class="rank__name">전국 수석</span><span class="money money--gold-s"><span class="money__num">4,000,000</span>원</span></li>
+              <li class="rank"><span class="rank__name">전국 차석</span><span class="money money--plain"><span class="money__num">2,000,000</span>원</span></li>
+              <li class="rank"><span class="rank__name">지역 수석</span><span class="money money--plain"><span class="money__num">500,000</span>원</span></li>
+              <li class="rank"><span class="rank__name">지역 차석</span><span class="money money--plain"><span class="money__num">300,000</span>원</span></li>
+            </ul>
+          </div>
+          <ul class="notes notes--center notes--light">
+            <li>가채점 성적 기준으로 제출하신 경우, 2027학년도 수능 성적표 및 합격증을 반드시 추가 제출해야 합니다.</li>
+            <li>전국/지역 수석 및 차석의 장학 대상은 표준점수 합산 결과를 기준으로 확정됩니다.</li>
+          </ul>
+
+          <div class="detail detail--dark">
+            <h3 class="detail__h"><button class="detail__btn" type="button" aria-expanded="false" aria-controls="detail-stage">이벤트 상세 정보</button></h3>
+            <dl class="detail__body" id="detail-stage">
+              <div class="detail__row"><dt>대상</dt><dd><p class="detail__v">잇올 스파르타 / 잇올 몰입관 / 잇올 기숙학원 재원 이력이 있는 학생 (1일 이상 재원 시 신청 가능)</p></dd></div>
+              <div class="detail__row"><dt>참여 방법</dt><dd><p class="detail__v">상단 ‘장학금 신청하기’ 버튼 클릭 <em class="hl-gold">(가채점 성적으로 우선 신청)</em></p><ul class="notes"><li>잇올 내부 심사 후 장학 대상자 확정</li></ul></dd></div>
+              <div class="detail__row"><dt>참여 기간</dt><dd><p class="detail__v">2026년 11월 18일(수) ~ 2026년 12월 17일(목)</p></dd></div>
+              <div class="detail__row"><dt>결과 발표</dt><dd><p class="detail__v">개별 통보</p></dd></div>
+              <div class="detail__row"><dt>기타 안내</dt><dd><ul class="notes notes--body">
+                <li>가채점 성적 기준으로 신청하신 경우, 2027학년도 수능 성적표 및 합격증 제출이 완료되어야 장학금 수여가 가능합니다.</li>
+                <li>참여조건: ①합격수기 제출 및 인터뷰 영상촬영 조건 ②잇올 명예의 전당 합격증 이벤트 참여</li>
+                <li>참여조건을 불이행할 경우 장학금 지급 대상에서 제외됩니다.</li>
+                <li>각 항목 중 중복 해당자는 가장 높은 금액의 장학금만 지급됩니다.</li>
+                <li>2027 수능 만점 장학과 2027 잇올 MVP 대상·최우수상·우수상 장학금은 중복 적용 불가합니다. (높은 금액의 장학금 지급)</li>
+                <li>장학금 지급은 잇올의 내부 심사 절차를 거쳐 2027년 3월 중 지급 예정입니다.</li>
+                <li>증빙 및 제출 서류는 신청폼 내 안내를 확인해 주세요.</li>
+              </ul></dd></div>
+            </dl>
+          </div>
+        </section>
+
+        <!-- ============ S2 · EVENT1 합격 축하금 ============ -->
+        <section class="sec sec--beige" id="event1" aria-labelledby="h-event1">
+          <div class="sec-head">
+            <p class="kicker">EVENT 01</p>
+            <h2 class="sec-title" id="h-event1">합격 축하금</h2>
+            <p class="sec-lead">27학번이 되신 것을 축하합니다!</p>
+          </div>
+          <a class="btn btn--black" href="#none" data-todo="합격증 제출 폼 연결">합격증 제출하기</a>
+          <div class="prize">
+            <div class="prize__info">
+              <div class="prize__text">
+                <h3 class="prize__name">합격증 1장 = 상품권 1만 원</h3>
+                <p class="prize__desc">2027학년도 대입 합격을 증빙할 수 있는<br class="only-pc"> 합격 인증 자료 (수험번호, 전형, 이름이 포함된 서류, 이미지 등) 제출 시,<strong class="prize__em">합격증 1장 당 1만 원 상품권 100% 제공</strong></p>
+              </div>
+              <dl class="chips">
+                <div><dt>대상</dt><dd class="hl-brown">합격증 제출자 100%</dd></div>
+                <div><dt>혜택</dt><dd>합격증 1장 당 1만 원</dd></div>
+                <div><dt>중복 수혜</dt><dd>가능</dd></div>
+              </dl>
+            </div>
+            <div class="prize__media">
+              <picture><source media="(max-width: 1023px)" srcset="assets/sec/prize_01_mo.webp" width="308" height="220"><img class="prize__img" src="assets/sec/prize_01.webp" alt="합격증과 신세계 상품권" width="340" height="300" loading="lazy"></picture>
+              <img class="badge" src="assets/sec/badge_100.webp" alt="합격증 제출 시 100% 지급" width="112" height="112" loading="lazy">
+            </div>
+          </div>
+          <ul class="notes notes--center notes--grid">
+            <li>합격증 복수 제출 가능</li>
+            <li>입학처 페이지 캡쳐 본 합격증 인증 불가</li>
+            <li>상품권은 검수 후 2027년 1월 8일(금)부터 순차 발송</li>
+            <li>합격증 / 성적표 / 합격수기 제출 시 잇올 MVP 선정 확률 상승!</li>
+          </ul>
+          <div class="detail">
+            <h3 class="detail__h"><button class="detail__btn" type="button" aria-expanded="false" aria-controls="detail-event1">이벤트 상세 정보</button></h3>
+            <dl class="detail__body" id="detail-event1">
+              <div class="detail__row"><dt>대상</dt><dd><p class="detail__v hl-red">2027학년도 대입 합격 잇올러</p><ul class="notes"><li>2027학년도 수능일 이전 잇올 스파르타·잇올 몰입관·잇올 기숙학원·잇올 랩 등 잇올 서비스 이용 이력이 있는 모든 학생</li></ul></dd></div>
+              <div class="detail__row"><dt>참여 방법</dt><dd><p class="detail__v hl-red">2027학년도 대입 합격증 제출</p><ul class="notes"><li>수험번호 / 전형 / 이름이 포함된 합격 인증 가능한 자료 및 이미지 (입학처 페이지 캡쳐본은 인정 불가)</li></ul></dd></div>
+              <div class="detail__row"><dt>참여 기간</dt><dd><p class="detail__v hl-red">2026년 11월 02일(월) ~ 2027년 03월 31일(수)</p></dd></div>
+              <div class="detail__row"><dt>심사 기준</dt><dd><p class="detail__v">합격증 제출자 100% 경품 지급</p><ul class="notes"><li>유효한 합격증에 한함</li></ul></dd></div>
+              <div class="detail__row"><dt>경품 지급</dt><dd><p class="detail__v">2027년 1, 2, 3, 4월 매월 초</p><ul class="notes"><li class="notes__strong">상품권은 합격증 유효성 검수 완료 후 순차 발송됩니다. (상품권 발송 예정일은 2027년 1월 8일(금), 2월 5일(금), 3월 5일(금), 4월 2일(금)이며, 내부 사정에 따라 일정이 변경될 수 있습니다.)</li><li>발송된 상품권이 스팸문자함에 보관되는 경우가 많으니 별도 문의 전 꼭! 확인 부탁드립니다.</li></ul></dd></div>
+              <div class="detail__row"><dt>기타 안내</dt><dd><ul class="notes notes--body">
+                <li>합격증 제출 시 기재하신 휴대폰 번호로 상품권이 발송됩니다.</li>
+                <li>오기입된 번호로 발송된 상품권은 재발송할 수 없으므로, 정확한 휴대폰 번호를 입력해 주시기 바랍니다.</li>
+                <li>상품권이 발송될 전화번호(1588-6474)가 스팸 등록되어 있으면 상품권을 확인 못하실 수 있으니, 반드시 스팸 해제 바랍니다.</li>
+                <li>상품권 유효기간이 지나면 사용이 불가하니 반드시 기한 내 사용 바랍니다.</li>
+                <li>취합된 합격증을 포함한 모든 개인정보는 철저한 보안을 통해 관리되며, 외부 노출 시 개인정보보호법에 저촉되지 않는 선에서 공개됩니다.</li>
+              </ul></dd></div>
+            </dl>
+          </div>
+        </section>
+
+        <!-- ============ S3 · EVENT2 성적퀀텀점프 ============ -->
+        <section class="sec" id="event2" aria-labelledby="h-event2">
+          <div class="sec-head">
+            <p class="kicker">EVENT 02</p>
+            <h2 class="sec-title" id="h-event2">성적퀀텀점프</h2>
+            <p class="sec-lead">꾸준한 노력으로 만들어낸 가장 눈부신 성적 상승!</p>
+          </div>
+          <a class="btn btn--black" href="#none" data-todo="성적표 제출 폼 연결">성적표 제출하기</a>
+          <div class="prize prize--ivory">
+            <div class="prize__info">
+              <div class="prize__text">
+                <h3 class="prize__name">성적 상승 TOP5 = 장학금 50만 원</h3>
+                <p class="prize__desc"><b>성적 상승 폭</b>과 <b>잇올 심사 기준</b>을 종합 평가하여<br> <b>5분께 장학금 50만 원씩</b> 시상합니다.</p>
+              </div>
+              <dl class="chips">
+                <div><dt>혜택</dt><dd>장학금 50만 원</dd></div>
+              </dl>
+              <div class="compare">
+                <p class="compare__head">비교 기준</p>
+                <dl class="compare__body">
+                  <div><dt>N수</dt><dd>2026학년도 수능 성적 <span class="compare__vs">vs</span> <b>2027학년도 수능 성적</b></dd></div>
+                  <div><dt>고등학생</dt><dd>2027학년도 평가원 성적(6평 or 9평) <span class="compare__vs">vs</span> <b>2027학년도 수능 성적</b></dd></div>
+                </dl>
+              </div>
+            </div>
+            <div class="prize__media">
+              <picture><source media="(max-width: 1023px)" srcset="assets/sec/prize_02_mo.webp" width="308" height="220"><img class="prize__img" src="assets/sec/prize_02.webp" alt="잇올 장학금 50만 원 바우처" width="340" height="300" loading="lazy"></picture>
+              <img class="badge" src="assets/sec/badge_5.webp" alt="5명" width="112" height="112" loading="lazy">
+            </div>
+          </div>
+          <div class="detail">
+            <h3 class="detail__h"><button class="detail__btn" type="button" aria-expanded="false" aria-controls="detail-event2">이벤트 상세 정보</button></h3>
+            <dl class="detail__body" id="detail-event2">
+              <div class="detail__row"><dt>대상</dt><dd><p class="detail__v hl-red">2027학년도 수능에 응시한 잇올러</p><ul class="notes"><li>2027학년도 수능일 이전, 잇올 스파르타·잇올 몰입관·잇올 기숙학원·잇올 랩 등 잇올 서비스 이용 이력이 있는 모든 학생</li></ul></dd></div>
+              <div class="detail__row"><dt>참여 방법</dt><dd><p class="detail__v hl-red">2027학년도 수능 성적표 + 비교 성적표 제출</p>
+                <dl class="detail__sub"><div><dt>N수생 :</dt><dd>① 2027학년도 수능 성적표 ② 2026학년도 수능 성적표</dd></div><div><dt>고등학생 :</dt><dd>① 2027학년도 수능 성적표 ② 2027학년도 평가원 시험 성적표(6평·9평 중 1개 이상)</dd></div></dl></dd></div>
+              <div class="detail__row"><dt>참여 기간</dt><dd><p class="detail__v hl-red">2026년 12월 11일(금) ~ 2027년 03월 31일(수)</p></dd></div>
+              <div class="detail__row"><dt>심사 기준</dt><dd><p class="detail__v">성적 상승 폭 및 기존 성적에 따른 유불리를 고려한 잇올 자체 심사 기준 적용</p></dd></div>
+              <div class="detail__row"><dt>결과 발표</dt><dd><p class="detail__v">2027년 04월 15일(목)</p><ul class="notes"><li>잇올 홈페이지 공지사항 발표</li><li>결과 발표일은 당사 사정에 따라 변동될 수 있습니다.</li></ul></dd></div>
+              <div class="detail__row"><dt>기타 안내</dt><dd><ul class="notes notes--body">
+                <li>성적표는 2027학년도 수능 성적표를 필수로 포함하여 총 2개 이상 제출하여야 이벤트 참여가 가능합니다.</li>
+                <li>N수생은 2026학년도 수능 성적표, 고등학생은 2027학년도 평가원 시험 성적표(6평·9평 중 1개 이상)를 비교 기준 성적표로 제출해야 합니다.</li>
+                <li>최종 수상자는 제출한 성적표를 기준으로 확인한 성적 상승 폭과 잇올 자체 심사 기준을 종합하여 선정합니다.</li>
+                <li>잇올 내부 심사 기준은 공개하지 않습니다.</li>
+                <li>성적표가 누락되거나 식별이 어려운 경우, 심사 대상에서 제외될 수 있습니다.</li>
+                <li>제출한 성적표의 정보가 사실과 다르거나 허위로 확인될 경우, 수상 취소 및 장학금 회수 등의 조치가 취해질 수 있습니다.</li>
+                <li>최종 선정된 5분께는 각 50만 원씩 장학금이 지급됩니다.</li>
+                <li>장학금 지급일은 결과 발표 후 개별 안내됩니다.</li>
+                <li>이벤트 참여 및 장학금 지급을 위해 개인정보 수집 및 이용 동의가 필요하며, 동의하지 않을 경우 참여 및 당첨이 제한될 수 있습니다.</li>
+                <li>본 이벤트는 성적 상승 사례 공유 및 홍보, 마케팅 활용을 목적으로 하는 이벤트이므로, 마케팅 활용 및 정보 수신 동의가 필요합니다. 동의하지 않을 경우 이벤트 참여 및 당첨이 제한될 수 있습니다.</li>
+                <li>제출한 성적표는 ㈜잇올 마케팅 소재로 활용될 수 있으며, 성명 / 수험번호 등 개인정보는 비공개 처리하여 활용됩니다.</li>
+              </ul></dd></div>
+            </dl>
+          </div>
+        </section>
+
+        <!-- ============ S4 · EVENT3 합격수기 공모전 ============ -->
+        <section class="sec sec--beige" id="event3" aria-labelledby="h-event3">
+          <div class="sec-head">
+            <p class="kicker">EVENT 03</p>
+            <h2 class="sec-title" id="h-event3">합격수기 공모전</h2>
+            <p class="sec-lead">잇올에서의 노력과 성취를 함께 기록합니다.</p>
+          </div>
+          <a class="btn btn--black" href="#none" data-todo="합격수기 작성 폼 연결">합격수기 작성하기</a>
+          <div class="prize">
+            <div class="prize__info">
+              <div class="prize__text">
+                <h3 class="prize__name">당신의 합격은 잇올의 자랑입니다!</h3>
+                <p class="prize__desc">여러분의 합격 비결을 들려주세요.<br><b>여러분의 이야기가 다음 도전을 준비하는<br class="only-pc"> 누군가에게 소중한 응원이 됩니다.</b></p>
+              </div>
+              <dl class="chips">
+                <div><dt>혜택</dt><dd>신세계 상품권 5만 원</dd></div>
+                <div><dt>참여 조건</dt><dd>2027학년도 대입 합격증 1개 이상 제출</dd></div>
+              </dl>
+            </div>
+            <div class="prize__media">
+              <picture><source media="(max-width: 1023px)" srcset="assets/sec/prize_03_mo.webp" width="308" height="220"><img class="prize__img" src="assets/sec/prize_03.webp" alt="신세계 상품권 5만 원권" width="340" height="300" loading="lazy"></picture>
+              <img class="badge" src="assets/sec/badge_10.webp" alt="10명" width="112" height="112" loading="lazy">
+            </div>
+          </div>
+          <div class="detail">
+            <h3 class="detail__h"><button class="detail__btn" type="button" aria-expanded="false" aria-controls="detail-event3">이벤트 상세 정보</button></h3>
+            <dl class="detail__body" id="detail-event3">
+              <div class="detail__row"><dt>대상</dt><dd><p class="detail__v hl-red">2027학년도 대입 합격증을 제출한 잇올러</p><ul class="notes"><li>2027학년도 수능일 이전 잇올 스파르타·잇올 기숙학원·잇올 몰입관·잇올 랩 등 잇올 서비스 이용 이력이 있는 모든 학생</li></ul></dd></div>
+              <div class="detail__row"><dt>참여 방법</dt><dd><p class="detail__v hl-red detail__flow">2027학년도 대입 합격증 1개 이상 제출 후<img src="assets/sec/chev_right.svg" alt="그다음" width="16" height="16">합격수기 작성</p></dd></div>
+              <div class="detail__row"><dt>참여 기간</dt><dd><p class="detail__v hl-red">2026년 11월 02일(월) ~ 2027년 03월 31일(수)</p></dd></div>
+              <div class="detail__row"><dt>심사 기준</dt><dd><p class="detail__v">합격수기의 진정성 / 구체성 / 공감도 등 종합적으로 평가</p></dd></div>
+              <div class="detail__row"><dt>결과 발표</dt><dd><p class="detail__v">2027년 04월 15일(목)</p><ul class="notes"><li>잇올 홈페이지 공지사항 발표</li><li>결과 발표일은 당사 사정에 따라 변동될 수 있습니다.</li></ul></dd></div>
+              <div class="detail__row"><dt>기타 안내</dt><dd><ul class="notes notes--body">
+                <li>합격증 미제출 시 당첨 대상에서 제외됩니다.</li>
+                <li>영상 인터뷰 촬영에 동의하지 않을 경우, 잇올 MVP 선정 대상에서 제외될 수 있습니다.</li>
+                <li>개인별 당첨 확인 문의와 선정 기준, 점수 조회는 불가하며 내부 심사 기준은 공개하지 않습니다.</li>
+                <li>상품권은 결과 발표 후 4월 말 지급 예정이며, 일정은 당사 사정에 따라 조정될 수 있습니다.</li>
+                <li>상품권이 발송될 전화번호(1588-6474)가 스팸 등록되어 있으면 상품권을 확인 못하실 수 있으니, 반드시 스팸 해제 바랍니다.</li>
+                <li>등록된 합격수기는 ㈜잇올 마케팅 소재로 활용될 수 있습니다.</li>
+                <li>이벤트 참여 확인 및 경품 발송을 위해 개인정보를 수집·이용하며, 관련 동의가 필요합니다.</li>
+                <li>본 이벤트는 합격수기 공유 및 홍보·마케팅 콘텐츠 활용을 목적으로 하는 콘텐츠 참여형 이벤트입니다. 이벤트 참여 시 마케팅 활용 및 정보 수신 동의가 필요하며, 동의하지 않을 경우 이벤트 참여 및 당첨이 제한될 수 있습니다.</li>
+              </ul></dd></div>
+            </dl>
+          </div>
+        </section>
+
+        <!-- ============ S5 · EVENT4 2027 잇올 MVP ============ -->
+        <section class="sec" id="event4" aria-labelledby="h-event4">
+          <div class="sec-head">
+            <p class="kicker">EVENT 04</p>
+            <h2 class="sec-title" id="h-event4">2027 잇올 MVP</h2>
+            <p class="sec-lead">치열했던 몰입의 시간을 보상받을 시간</p>
+          </div>
+          <div class="mvp">
+            <div class="podium">
+              <img class="podium__img" src="assets/sec/podium.webp" alt="시상대 — 대상 장학금 300만 원, 최우수상 장학금 200만 원, 우수상 장학금 100만 원" width="878" height="313" loading="lazy">
+              <ul class="podium__labels">
+                <li class="podium__label podium__label--1"><b>대상</b><span>장학금 <i class="cnt cnt--gold">1명</i></span></li>
+                <li class="podium__label podium__label--2"><b>최우수상</b><span>장학금 <i class="cnt">1명</i></span></li>
+                <li class="podium__label podium__label--3"><b>우수상</b><span>장학금 <i class="cnt">1명</i></span></li>
+              </ul>
+            </div>
+            <ul class="mvp__special">
+              <li><p class="mvp__name">메디컬 MVP <i class="cnt cnt--gold">5명</i></p><p class="mvp__amount"><span>상품권</span><b><span class="money__num">100,000</span>원</b></p></li>
+              <li><p class="mvp__name">고등현역 MVP <i class="cnt cnt--gold">5명</i></p><p class="mvp__amount"><span>상품권</span><b><span class="money__num">100,000</span>원</b></p></li>
+            </ul>
+            <hr class="mvp__line">
+            <div class="criteria">
+              <h3 class="criteria__h">선정 기준 <span class="criteria__desc">2026년 잇올에서의 <b>충실한 수험생활 지표</b>와 <b>입시결과</b>를 반영하여 선정합니다.</span></h3>
+              <ol class="criteria__list">
+                <li><b>생활지표</b><span>누적 상·벌점,<br class="only-pc"> 몰입공부 시간 등</span></li>
+                <li><b>교과지표</b><span>잇올 공식 모의고사 참여 횟수, 잇올 빌보드 성적, 입시컨설팅 참여 횟수 등</span></li>
+                <li><b>입시결과</b><span>합격증&amp;성적표 제출,<br class="only-pc"> 정성스러운 합격수기 등</span></li>
+              </ol>
+              <p class="criteria__note">※ 합격증·합격수기 제출 시 MVP 후보 자동 등록</p>
+            </div>
+          </div>
+          <div class="detail">
+            <h3 class="detail__h"><button class="detail__btn" type="button" aria-expanded="false" aria-controls="detail-event4">이벤트 상세 정보</button></h3>
+            <dl class="detail__body" id="detail-event4">
+              <div class="detail__row"><dt>대상</dt><dd><p class="detail__v hl-red">2027학년도 대입 합격증을 제출한 잇올러</p><ul class="notes"><li>2027학년도 수능일 이전, 잇올 스파르타·잇올 몰입관·잇올 기숙학원·잇올 랩 등 잇올 서비스 이용 이력이 있는 모든 학생</li></ul></dd></div>
+              <div class="detail__row"><dt>참여 방법</dt><dd><p class="detail__v hl-red">합격증 제출 후 합격수기 제출 시 자동 참여</p></dd></div>
+              <div class="detail__row"><dt>참여 기간</dt><dd><p class="detail__v hl-red">2026년 11월 02일(월) ~ 2027년 03월 31일(수)</p></dd></div>
+              <div class="detail__row"><dt>심사 기준</dt><dd><dl class="detail__group">
+                <div><dt>대상·최우수상·우수상</dt><dd>잇올 생활지표·교과지표·입시결과 종합 평가</dd></div>
+                <div><dt>메디컬 MVP</dt><dd>메디컬 합격증 제출 건수 및 잇올 자체 심사 기준 적용</dd></div>
+                <div><dt>고등현역 MVP</dt><dd>2026년 기준 고등학생의 대입 합격증 제출 건수 및 잇올 자체 심사 기준 적용</dd></div>
+              </dl></dd></div>
+              <div class="detail__row"><dt>결과 발표</dt><dd><p class="detail__v">2027년 04월 15일(목)</p><ul class="notes"><li>잇올 홈페이지 공지사항 발표</li><li>결과 발표일은 당사 사정에 따라 변동될 수 있습니다.</li></ul></dd></div>
+              <div class="detail__row"><dt>기타 안내</dt><dd><ul class="notes notes--body">
+                <li>합격증 및 합격수기 제출 시 잇올 MVP 후보로 자동 등록됩니다.</li>
+                <li>수능 성적표 제출 시 잇올 MVP 선정 확률이 높아집니다.</li>
+                <li>잇올 MVP 수상자는 결과 발표 이후 개별 연락드리며, 개별 연락이 어려운 경우 수상이 취소될 수 있습니다.</li>
+                <li>개인별 당첨 여부 및 선정 기준에 대한 문의, 심사 기준 및 점수 확인은 불가하며, 잇올 내부 심사 과정 및 세부 내용은 공개하지 않습니다.</li>
+                <li>잇올 MVP 대상·최우수상·우수상 수상자는 영상 인터뷰 대상자로 선정됩니다. 영상 인터뷰 촬영에 동의하지 않을 경우 해당 부문 선정에서 제외됩니다.</li>
+                <li>잇올 MVP 대상·최우수상·우수상 장학금은 영상 촬영 완료 후 지급되며, 대리 수상은 불가합니다.</li>
+                <li>2027 잇올 MVP 대상·최우수상·우수상 장학금과 2027 수능 만점 장학금은 중복 적용 불가합니다. (높은 금액의 장학금 지급)</li>
+                <li>장학금 지급일은 결과 발표 후 개별 안내됩니다.</li>
+              </ul></dd></div>
+            </dl>
+          </div>
+        </section>
+
+        <!-- ============ S6 · 이벤트 유의사항 ============ -->
+        <section class="sec sec--notice" aria-labelledby="h-notice">
+          <div class="notice">
+            <h2 class="notice__h" id="h-notice">이벤트 유의사항</h2>
+            <ul class="notes notes--body notes--light">
+              <li>장학·합격 축하금은 최대 2억 원 내에서 순차 지급 방식으로 진행되며, 최종 선발 인원 및 예산 상황에 따라 지급 금액이 조정될 수 있습니다.</li>
+              <li>합격 축하금, 성적퀀텀점프, 합격수기 공모전, 잇올 MVP 수상자는 중복 선정될 수 있습니다.</li>
+              <li>이벤트 경품은 당사 사정에 따라 별도의 고지 없이 동등한 가치의 다른 상품으로 변경될 수 있습니다.</li>
+              <li>2027학년도 수능일 이전, 잇올 스파르타·잇올 몰입관·잇올 기숙학원 재원생 및 잇올 랩 컨설팅 이용자 등 잇올 서비스 가입 및 등록자는 모두 참여 가능합니다.</li>
+              <li>합격증은 비공개로 관리되며, 이벤트 관리자만 확인할 수 있습니다. 취합된 합격증을 포함한 모든 개인정보는 철저한 보안을 통해 개인정보 수집 동의, 개인정보 제공 동의, 개인정보 암호화 등 개인정보를 보호하기 위한 여러 가지 요구사항을 준수하여 관리하고 있습니다. 또한 이용자로부터 동의 받은 보관 기간이 지나거나 이용 목적이 완료되면 수집한 개인정보를 지체 없이 파기합니다.</li>
+              <li>이벤트 취지와 무관한 글 및 이미지 등록 시 당첨 대상에서 제외됩니다.</li>
+              <li>당첨자 혜택 제공에 필요한 상시 연락 가능 휴대폰 번호와 주소지를 확인하여 참여 바랍니다.</li>
+              <li>잘못된 휴대폰 번호 기재로 경품 발송이 어려울 시, 당첨이 취소될 수 있습니다.</li>
+              <li>ID 도용 등을 이용한 불법적인 참여는 이벤트 대상에서 제외됩니다.</li>
+              <li>성적퀀텀점프, 합격수기 공모전, 잇올 MVP 심사는 잇올 내부 기준에 따라 진행되며, 심사 기준은 공개되지 않습니다.</li>
+              <li>각 이벤트 중 경품 및 장학금 지급을 위한 영상 인터뷰가 필요한 이벤트(잇올 MVP 등)는 대리 수상이 불가하며, 촬영 불참 시 당첨이 취소될 수 있습니다.</li>
+              <li>영상 촬영 동의 및 개인정보 활용 동의 사항을 반드시 확인해 주세요. 동의하지 않을 경우 당첨이 취소될 수 있습니다.</li>
+              <li>이벤트 참여를 위해 개인정보 수집/이용/위탁에 대한 동의가 필요합니다.</li>
+              <li>기프티콘 지급 형태의 이벤트 당첨 시 개인정보상의 휴대폰 번호로 발송되며, 추가 개인정보 수집 동의를 요구할 수 있습니다.</li>
+              <li>신청자 부주의로 인한 불이익은 책임지지 않으며, 기프티콘의 정상적인 지급 이후의 재발송 및 고객센터 응대는 불가합니다.</li>
+              <li>이벤트 응모자 급증에 따른 내부 심사 지연 등의 사유로 당첨자 발표 일정이 변경될 수 있습니다.</li>
+              <li>당첨자에게 발송되는 기프티콘은 유효기간 내 사용 가능하며, 유효기간이 지난 기프티콘은 재발송이 불가합니다.</li>
+              <li>기타 문의사항은 홈페이지 하단 고객센터로 연락 바랍니다.</li>
+            </ul>
+          </div>
+          <button class="btn btn--gold btn--share" type="button" id="btnShare">이벤트 공유하기</button>
+          <p class="toast" id="toast" role="status" aria-live="polite"></p>
+        </section>
+<!-- SECTIONS_HTML:END -->
+      </div>
+    </div>
+  </main>
+
+  <!-- KV 효과 테스트 컨트롤 — 사용자 요청으로 주석 처리 (2026-10-12)
+  <details class="ctrl" id="ctrl" open>
+    <summary class="ctrl__title">KV 효과 테스트</summary>
+    <label><input type="checkbox" id="tgBeam" aria-label="조명 빔" checked> 조명 빔</label>
+    <label><input type="checkbox" id="tgSparkle" aria-label="반짝이" checked> 반짝이</label>
+    <label><input type="checkbox" id="tgPause" aria-label="일시정지"> 일시정지</label>
+    <p class="ctrl__title ctrl__title—sub">투명도</p>
+    <div class="ctrl__row"><label>상단 빔 <input type="range" class="js-opacity" data-var="—beam-top-opacity" aria-label="상단 빔 투명도" min="0" max="1" step=".05" value="1"></label> <output>1</output></div>
+    <div class="ctrl__row"><label>하단 빔 <input type="range" class="js-opacity" data-var="—beam-bottom-opacity" aria-label="하단 빔 투명도" min="0" max="1" step=".05" value="1"></label> <output>1</output></div>
+    <p class="ctrl__title ctrl__title—sub">움직임 속도 (배)</p>
+    <div class="ctrl__row"><label>상단 빔 <input type="range" class="js-opacity" data-var="—beam-top-speed" aria-label="상단 빔 움직임 속도" min=".25" max="3" step=".25" value="1"></label> <output>1</output></div>
+    <div class="ctrl__row"><label>하단 빔 <input type="range" class="js-opacity" data-var="—beam-bottom-speed" aria-label="하단 빔 움직임 속도" min=".25" max="3" step=".25" value="1"></label> <output>1</output></div>
+  </details>
+  -->
+
+  <script>
+    (function () {
+      'use strict';
+      var kv = document.getElementById('kv');
+      var root = document.documentElement;
+
+      // 모바일은 테스트 컨트롤 접어서 시작
+      var ctrl = document.getElementById('ctrl');
+      if (!ctrl) return;   /* 테스트 컨트롤 주석 처리 상태 */
+      if (window.matchMedia('(max-width: 1023px)').matches) ctrl.open = false;
+
+      function bindToggle(id, cls, invert) {
+        document.getElementById(id).addEventListener('change', function (e) {
+          kv.classList.toggle(cls, invert ? !e.target.checked : e.target.checked);
+        });
+      }
+      bindToggle('tgBeam', 'no-beam', true);
+      bindToggle('tgSparkle', 'no-sparkle', true);
+      bindToggle('tgPause', 'is-paused', false);
+
+      document.querySelectorAll('.js-opacity').forEach(function (range) {
+        var out = range.closest('.ctrl__row').querySelector('output');
+        range.addEventListener('input', function () {
+          root.style.setProperty(range.dataset.var, range.value);
+          out.textContent = range.value;
+        });
+      });
+    })();
+  </script>
+<!-- SECTIONS_JS:START -->
+  <script>
+    /* ===== 하단 섹션 인터랙션 — 아코디언 · 플로팅 탭 · 공유하기 ===== */
+    (function () {
+      'use strict';
+      var root = document.documentElement;
+      var head = document.querySelector('.site-head');
+      var bar = document.getElementById('evbar');
+
+      /* GNB 높이 · 탭 높이 → CSS 변수 (탭 고정 위치 · 섹션 이동 보정에 사용) */
+      function measure() {
+        root.style.setProperty('--head-h', (head ? head.offsetHeight : 0) + 'px');
+        root.style.setProperty('--bar-h', (bar ? bar.offsetHeight : 0) + 'px');
+      }
+      measure();
+      window.addEventListener('resize', measure);
+      if (head && 'ResizeObserver' in window) new ResizeObserver(measure).observe(head);
+
+      /* ---------- 아코디언: 기본 접힘 · 클릭 토글 · 부드럽게 펼침/접힘 · 화살표 반전 ---------- */
+      function slide(body, open) {
+        if (body._anim) body._anim.cancel();
+        if (!body.animate) { body.hidden = !open; return; }
+        body.hidden = false;
+        var h = body.offsetHeight + 'px';
+        body.style.overflow = 'hidden';
+        var a = body._anim = body.animate(open ? [{ height: '0px', opacity: 0 }, { height: h, opacity: 1 }] : [{ height: h, opacity: 1 }, { height: '0px', opacity: 0 }],
+          { duration: 450, easing: 'cubic-bezier(.65, 0, .35, 1)' });
+        a.onfinish = function () { body.style.overflow = ''; body._anim = null; if (!open) body.hidden = true; };
+        a.oncancel = function () { body.style.overflow = ''; };
+      }
+      document.querySelectorAll('.detail__btn').forEach(function (btn) {
+        var body = document.getElementById(btn.getAttribute('aria-controls'));
+        if (!body) return;
+        body.hidden = true;
+        btn.addEventListener('click', function () {
+          var open = btn.getAttribute('aria-expanded') !== 'true';
+          btn.setAttribute('aria-expanded', String(open));
+          slide(body, open);
+        });
+      });
+
+      /* ---------- 플로팅 탭: 클릭 이동(제목이 탭에 가려지지 않게 보정) · 현재 섹션 활성 ---------- */
+      if (bar) {
+        var tabs = Array.prototype.slice.call(bar.querySelectorAll('.evbar__tab'));
+        var secs = tabs.map(function (t) { return document.querySelector(t.getAttribute('href')); });
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        function offset() { return (head ? head.offsetHeight : 0) + bar.offsetHeight; }
+        function setActive(i) {
+          tabs.forEach(function (t, k) {
+            var on = k === i;
+            t.classList.toggle('is-active', on);
+            if (on) t.setAttribute('aria-current', 'true'); else t.removeAttribute('aria-current');
+          });
+          var t = tabs[i];   /* 가로로 넘칠 때 활성 탭이 화면 안에 보이도록 */
+          var list = bar.querySelector('.evbar__list');
+          if (t && list.scrollWidth > list.clientWidth) list.scrollTo({ left: t.offsetLeft - (list.clientWidth - t.offsetWidth) / 2, behavior: reduce ? 'auto' : 'smooth' });
+        }
+        tabs.forEach(function (t, i) {
+          t.addEventListener('click', function (e) {
+            e.preventDefault();
+            var y = secs[i].getBoundingClientRect().top + window.scrollY - offset() + 1;
+            window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
+            setActive(i);
+            if (history.replaceState) history.replaceState(null, '', t.getAttribute('href'));
+          });
+        });
+        var ticking = false;
+        function onScroll() {
+          if (ticking) return; ticking = true;
+          requestAnimationFrame(function () {
+            ticking = false;
+            var line = offset() + 4, cur = 0;
+            secs.forEach(function (s, i) { if (s && s.getBoundingClientRect().top <= line) cur = i; });
+            if (!tabs[cur].classList.contains('is-active')) setActive(cur);
+          });
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+      }
+
+      /* ---------- 이벤트 공유하기: 현재 페이지 URL 복사 ---------- */
+      var share = document.getElementById('btnShare'), toast = document.getElementById('toast'), timer;
+      function notify(msg) {
+        toast.textContent = msg; toast.classList.add('is-show');
+        clearTimeout(timer); timer = setTimeout(function () { toast.classList.remove('is-show'); }, 2000);
+      }
+      if (share) share.addEventListener('click', function () {
+        var url = location.href.split('#')[0];
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(url).then(function () { notify('이벤트 링크가 복사되었습니다.'); }, function () { notify(url); });
+        } else {
+          var ta = document.createElement('textarea'); ta.value = url; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); notify('이벤트 링크가 복사되었습니다.'); } catch (err) { notify(url); }
+          document.body.removeChild(ta);
+        }
+      });
+    })();
+  </script>
+<!-- SECTIONS_JS:END -->
+</body>
+</html>
