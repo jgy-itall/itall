@@ -139,7 +139,10 @@
   .row1.fading,.ls1.fading{opacity:0}
   .c1{position:relative;flex:0 0 240px;height:380px;border-radius:16px;overflow:hidden;background:#fff center/240px 380px no-repeat;display:block;transition:transform .25s var(--ease),box-shadow .25s var(--ease)}
   .c1:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.22)}
-  .c1 .tx{position:absolute;left:16px;right:16px;top:32px;text-align:center}
+  .c1 .tx{position:absolute;left:16px;right:16px;top:36px;text-align:center}
+  /* 1안 라벨: PC는 카드 위 가운데 탭, MO는 오브제 오른쪽 아래 (실제로는 팝업 이미지에 함께 넣음) */
+  .c1 .tab{position:absolute;left:80px;top:0;width:80px;height:24px;border-radius:0 0 10px 10px;font-size:13px;font-weight:700;line-height:24px;text-align:center;color:#F6F7F8}
+  .k1 .pill1{position:absolute;right:16px;bottom:20px;height:20px;padding:0 8px;border-radius:100px;font-size:13px;font-weight:700;line-height:20px;color:#F6F7F8}
   .c1 .lg{font-size:16px;line-height:20px;font-weight:700;color:var(--neutral)}
   .c1 .tt{margin-top:8px;font-size:28px;line-height:32px;font-weight:900;color:#111;white-space:pre-line}
   .c1 .sub{margin-top:8px;font-size:16px;line-height:20px;font-weight:600;color:#333;white-space:pre-line}
@@ -239,21 +242,22 @@
 </div>
 
 <script>
-const SHOW_CHIP = false; // 라벨 기능은 숨김(추후 필요 시 true)
-const CHIP = {'마감 임박':'#FF323C','D-3':'#262628','선착순':'#AD36E3','대기접수':'#AD36E3','신규 오픈':'#266EF4'};
+const SHOW_CHIP = true; // 라벨은 썸네일·팝업 이미지에 함께 넣는 방식 (시안과 같게 마감 임박 · 대기 접수만 노출)
+const CHIP = {'마감 임박':'#FF323C','대기 접수':'#9353E0'};
+const CHIP1 = {'마감 임박':'#FF323C','대기 접수':'#8B32D9'}; // 1안 시안 색 (라벨 색상은 1안·2안 확정 후 가이드로 정리)
 const DATA = [
   {t:'2027 통학 윈터스쿨', s:'윈터패스 <b>최대 15% 할인</b> +<br>윈터스쿨 종료 후 <b>최대 3개월 30%</b> 할인', c:'마감 임박', img:'img/kv-1.png'},
-  {t:'2027 기숙 윈터스쿨', s:'이천캠프 <b>마감 (대기접수 중)</b><br>여주캠프 <b>마감 임박</b>', c:'대기접수', img:'img/kv-2.png'},
-  {t:'2028 통학 재수우선선발반', s:'비기닝패스 <b>50% 할인</b> +<br>비기닝더블패스 <b>최대 15% 할인</b>', c:'선착순', img:'img/kv-3.png'},
-  {t:'2028 기숙 재수우선선발반', s:'얼리버드 <b>260만 원 할인</b>', c:'선착순', img:'img/kv-4.png'},
+  {t:'2027 기숙 윈터스쿨', s:'이천캠프 <b>마감 (대기접수 중)</b><br>여주캠프 <b>마감 임박</b>', c:'대기 접수', img:'img/kv-2.png'},
+  {t:'2028 통학 재수우선선발반', s:'비기닝패스 <b>50% 할인</b> +<br>비기닝더블패스 <b>최대 15% 할인</b>', c:'', img:'img/kv-3.png'},
+  {t:'2028 기숙 재수우선선발반', s:'얼리버드 <b>260만 원 할인</b>', c:'', img:'img/kv-4.png'},
   {t:'기말고사패스', s:'11월 23일(월)~12월 24일(목) 기간 내<br><b>최대 70% 할인</b>', c:'', img:'img/kv-5.png'},
-  {t:'잇올 몰입관 다산캠프 오픈!', s:'최초 등록 시 <b>1+1 적용</b>', c:'신규 오픈', img:'img/kv-6.png'},
+  {t:'잇올 몰입관 다산캠프 오픈!', s:'최초 등록 시 <b>1+1 적용</b>', c:'', img:'img/kv-6.png'},
   {t:'2027학년도 수능 만점 장학', s:'수능 만점! 수석! 차석!<br><b>최대 500만 원 장학금</b>에 도전하세요.', c:'', img:'img/kv-7.png'}
 ];
 /* 1안 데이터 — 흰 카드 · 한 번에 노출(최대 5). 강조색 r 빨강 · g 초록 · b 파랑 */
 const DATA1 = [
-  {lg:'잇올 스파르타 · 잇올 몰입관', t:'2027 통학\n윈터스쿨', s:'윈터패스 최대 <span class="r">15%</span> 할인', ms:'윈터패스 최대 <span class="r">15%</span> 할인', btn:'신청하기'},
-  {lg:'잇올 기숙학원', t:'2027 기숙\n윈터스쿨', s:'이천·여주캠프\n<span class="g">대기접수</span> 진행 중', ms:'이천·여주 <span class="g">대기접수</span> 중', btn:'대기 신청하기'},
+  {lg:'잇올 스파르타 · 잇올 몰입관', t:'2027 통학\n윈터스쿨', s:'윈터패스 최대 <span class="r">15%</span> 할인', ms:'윈터패스 최대 <span class="r">15%</span> 할인', btn:'신청하기', c:'마감 임박'},
+  {lg:'잇올 기숙학원', t:'2027 기숙\n윈터스쿨', s:'이천·여주캠프\n<span class="g">대기접수</span> 진행 중', ms:'이천·여주 <span class="g">대기접수</span> 중', btn:'대기 신청하기', c:'대기 접수'},
   {lg:'잇올 스파르타 · 잇올 몰입관', t:'2028 통학\n재수우선선발반', s:'비기닝패스 <span class="r">50%</span> 할인', ms:'비기닝패스 <span class="r">50%</span> 할인', btn:'자세히 보기'},
   {lg:'잇올 기숙학원', t:'2028 기숙\n재수우선선발반', s:'얼리버드 <span class="g">260만 원</span> 할인', ms:'얼리버드 <span class="g">260만 원</span> 할인', btn:'자세히 보기'},
   {lg:'잇올 스파르타 · 잇올 몰입관', t:'다산캠프\n1+1 혜택', s:'최초 등록 시 <span class="b">1+1</span> 적용', ms:'최초 등록 시 <span class="b">1+1</span> 적용', btn:'자세히 보기'}
@@ -404,9 +408,9 @@ $('#list').addEventListener('wheel', e => { if (!sheet.classList.contains('full'
 
 /* 1안 */
 const card1 = (d,i) => `<li style="--i:${i}"><a class="c1" href="#" target="_blank" rel="noopener" style="background-image:url(img/a1-pc-${i+1}.png)">
-  <span class="tx"><p class="lg">${d.lg}</p><p class="tt">${d.t}</p><p class="sub">${d.s}</p></span><span class="bb">${d.btn}</span></a></li>`;
+  <span class="tx"><p class="lg">${d.lg}</p><p class="tt">${d.t}</p><p class="sub">${d.s}</p></span><span class="bb">${d.btn}</span>${d.c?`<span class="tab" style="background:${CHIP1[d.c]}">${d.c}</span>`:''}</a></li>`;
 const row1 = (d,i) => `<li style="--i:${i}"><a class="k1" href="#" target="_blank" rel="noopener" style="background-image:url(img/a1-mo-${i+1}.png)">
-  <span class="tx"><p class="lg">${d.mlg||d.lg}</p><p class="tt">${d.t}</p><p class="sub">${d.ms}</p></span></a></li>`;
+  <span class="tx"><p class="lg">${d.mlg||d.lg}</p><p class="tt">${d.t}</p><p class="sub">${d.ms}</p></span>${d.c?`<span class="pill1" style="background:${CHIP1[d.c]}">${d.c}</span>`:''}</a></li>`;
 function build1PC(){
   const n = items1().length, cols = Math.max(2, n);
   $('#row1').innerHTML = items1().map(card1).join('');
