@@ -168,6 +168,21 @@
   .k1 .tt{margin-top:6px;font-size:24px;line-height:1.2;letter-spacing:-.01em;font-weight:900;color:#111;white-space:pre-line}
   .k1 .sub{margin-top:6px;font-size:15px;line-height:20px;font-weight:600;color:#333;white-space:pre-line}
 
+  /* ── 기존안 : 지금 홈페이지 팝업 (이미지 500×250 · PC는 2장씩 묶어 열로 · MO는 세로 목록 스크롤) ── */
+  .pc0 .bar{margin:0 0 8px;font-weight:600}
+  .row0{display:flex;gap:40px;list-style:none;transition:opacity .3s var(--ease)}
+  .row0 .col{display:flex;flex-direction:column}
+  .row0.fading,.ls0.fading{opacity:0}
+  .p0{display:block;width:500px;height:250px}
+  .p0 img{display:block;width:100%;height:100%}
+  .dim.on .row0>li,.dim.on .ls0>li{animation:rise .5s var(--ease) both;animation-delay:calc(var(--i,0) * 60ms + 80ms)}
+  .m0{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;padding:70px 20px;scrollbar-width:none;opacity:0;transform:translateY(20px);transition:opacity .35s var(--ease),transform .45s var(--ease)}
+  .m0::-webkit-scrollbar{display:none}
+  .dim.on .m0{opacity:1;transform:none}
+  .m0 .bar{height:20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;color:var(--white-soft);font-size:16px;font-weight:600}
+  .ls0{list-style:none;display:flex;flex-direction:column;gap:16px;transition:opacity .3s var(--ease)}
+  .ls0 .p0{width:100%;height:auto;aspect-ratio:2/1}
+
   /* ── 설정 패널 ── */
   .panel{position:fixed;right:16px;bottom:16px;z-index:20;background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;max-width:calc(100vw - 32px)}
   .seg{display:inline-flex;position:relative;background:#F1F2F4;border-radius:10px;padding:3px}
@@ -209,6 +224,12 @@
       <ul class="row1" id="row1"></ul>
     </div>
   </div>
+  <div class="dim" id="pc0Dim">
+    <div class="pc pc0" id="pc0" role="dialog" aria-modal="true" aria-label="진행 중인 이벤트">
+      <div class="bar"><button data-close>하루동안 보지 않기</button><button class="x" data-close>닫기</button></div>
+      <ul class="row0" id="row0"></ul>
+    </div>
+  </div>
 </section>
 
 <!-- MO -->
@@ -230,11 +251,17 @@
         <ul class="ls1" id="ls1"></ul>
       </div>
     </div>
+    <div class="dim" id="mo0Dim">
+      <div class="m0" id="m0" role="dialog" aria-modal="true" aria-label="진행 중인 이벤트">
+        <div class="bar"><button data-close>하루동안 보지 않기</button><button data-close>닫기</button></div>
+        <ul class="ls0" id="ls0"></ul>
+      </div>
+    </div>
   </div>
 </section>
 
 <div class="panel" id="panel">
-  <div class="seg" id="segVar"><span class="pill"></span><button data-a="1">1안</button><button data-a="2">2안</button></div>
+  <div class="seg" id="segVar"><span class="pill"></span><button data-a="0">기존안</button><button data-a="1">1안</button><button data-a="2">2안</button></div>
   <div class="seg" id="segView"><span class="pill"></span><button data-v="pc">PC</button><button data-v="mo">MO</button></div>
   <select id="cnt" aria-label="등록 개수"></select>
   <select id="spd" aria-label="자동 넘김 간격"><option value="1000">1초</option><option value="2000" selected>2초</option><option value="3000">3초</option><option value="4000">4초</option></select>
@@ -262,20 +289,25 @@ const DATA1 = [
   {lg:'잇올 기숙학원', t:'2028 기숙\n재수우선선발반', s:'얼리버드 <span class="g">260만 원</span> 할인', ms:'얼리버드 <span class="g">260만 원</span> 할인', btn:'자세히 보기'},
   {lg:'잇올 스파르타 · 잇올 몰입관', t:'다산캠프\n1+1 혜택', s:'최초 등록 시 <span class="b">1+1</span> 적용', ms:'최초 등록 시 <span class="b">1+1</span> 적용', btn:'자세히 보기'}
 ];
+/* 기존안 데이터 — 지금 홈페이지 팝업 이미지(2026-11-05 itall.com 캡처에서 잘라냄, 최대 6) */
+const DATA0 = ['2027 통학 윈터스쿨','2027 기숙 윈터스쿨','2028 통학 재수우선선발반','2028 기숙 재수우선선발반','잇올 몰입관 다산캠프 1+1 혜택','기말고사패스']
+  .map((t,i)=>({t, img:`img/cur-${i+1}.png`}));
+const COUNT = {'0':6,'1':5,'2':7};
 const $ = s => document.querySelector(s);
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let variant = '1', count = 5, view = 'pc', idx = 0, timer = null, playing = !reduce, gap = 2000;
 const items = () => DATA.slice(0, count);
 const items1 = () => DATA1.slice(0, count);
+const items0 = () => DATA0.slice(0, count);
 
 /* 설정 패널 */
-function fillCount(){ const max = variant==='1' ? DATA1.length : DATA.length; count = Math.min(count, max);
+function fillCount(){ const max = ({'0':DATA0,'1':DATA1,'2':DATA})[variant].length; count = Math.min(count, max);
   $('#cnt').innerHTML = Array.from({length:max},(_,i)=>`<option value="${i+1}" ${i+1===count?'selected':''}>${i+1}개</option>`).join('');
-  $('#spd').style.display = variant==='1' ? 'none' : ''; }
+  $('#spd').style.display = variant==='2' ? '' : 'none'; }
 function pillTo(seg, b){ const pill = seg.querySelector('.pill'); seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', x===b)); pill.style.left = b.offsetLeft+'px'; pill.style.width = b.offsetWidth+'px'; }
 function setSeg(){ pillTo($('#segView'), $(`#segView [data-v="${view}"]`)); pillTo($('#segVar'), $(`#segVar [data-a="${variant}"]`)); }
 document.querySelectorAll('#segView button').forEach(b=>b.onclick=()=>{ if (view===b.dataset.v) return; view=b.dataset.v; render(); });
-document.querySelectorAll('#segVar button').forEach(b=>b.onclick=async()=>{ if (variant===b.dataset.a) return; variant=b.dataset.a; count = variant==='1' ? 5 : 7; fillCount(); setSeg(); await close(); open(); });
+document.querySelectorAll('#segVar button').forEach(b=>b.onclick=async()=>{ if (variant===b.dataset.a) return; variant=b.dataset.a; count = COUNT[variant]; fillCount(); setSeg(); await close(); open(); });
 fillCount();
 $('#cnt').onchange = e => { count = +e.target.value; refresh(); };
 $('#spd').onchange = e => { gap = +e.target.value; restart(); };
@@ -419,11 +451,25 @@ function build1PC(){
 }
 function build1MO(){ $('#ls1').innerHTML = items1().map(row1).join(''); $('#ls1').scrollTop = 0; }
 
+/* 기존안 — PC는 2장씩 세로로 묶은 열을 가로로(간격 40), MO는 세로 목록(간격 16) */
+const pop0 = d => `<a class="p0" href="#" target="_blank" rel="noopener"><img src="${d.img}" alt="${d.t}" width="500" height="250"></a>`;
+function build0PC(){
+  const list = items0(), cols = [];
+  for (let i = 0; i < list.length; i += 2) cols.push(list.slice(i, i+2));
+  $('#row0').innerHTML = cols.map((c,i)=>`<li class="col" style="--i:${i}">${c.map(pop0).join('')}</li>`).join('');
+  fit0();
+}
+/* 지금 팝업은 1280보다 넓어(최대 1580) 화면에 맞게 축소 */
+function fit0(){ const n = Math.ceil(items0().length/2), w = n*500 + (n-1)*40, el = $('#pc0');
+  el.style.width = w + 'px'; el.style.setProperty('--fit', Math.min(1, (innerWidth-40)/w, (innerHeight-40)/540)); }
+function build0MO(){ $('#ls0').innerHTML = items0().map((d,i)=>`<li style="--i:${i}">${pop0(d)}</li>`).join(''); $('#m0').scrollTop = 0; }
+
 /* 열기 · 닫기 */
-const DIMS = ['#pcDim','#moDim','#pc1Dim','#mo1Dim'];
-const curDim = () => variant==='1' ? (view==='pc' ? '#pc1Dim' : '#mo1Dim') : (view==='pc' ? '#pcDim' : '#moDim');
+const DIMS = ['#pcDim','#moDim','#pc1Dim','#mo1Dim','#pc0Dim','#mo0Dim'];
+const curDim = () => variant==='0' ? (view==='pc' ? '#pc0Dim' : '#mo0Dim') : variant==='1' ? (view==='pc' ? '#pc1Dim' : '#mo1Dim') : (view==='pc' ? '#pcDim' : '#moDim');
 async function open(){
-  if (variant==='1') { view==='pc' ? build1PC() : build1MO(); }
+  if (variant==='0') { view==='pc' ? build0PC() : build0MO(); }
+  else if (variant==='1') { view==='pc' ? build1PC() : build1MO(); }
   else { view==='mo' ? buildMO() : buildPC(); }
   await frame();
   $(curDim()).classList.add('on');
@@ -453,11 +499,12 @@ async function render(){
 /* 등록 개수 · 간격 바꿀 때는 열린 상태에서 부드럽게 교체 */
 async function refresh(){
   if (!isOpen()) return open();
+  if (variant==='0') { const el = view==='pc' ? $('#row0') : $('#ls0'); el.classList.add('fading'); await wait(300); view==='pc' ? build0PC() : build0MO(); await frame(); el.classList.remove('fading'); return; }
   if (variant==='1') { const el = view==='pc' ? $('#row1') : $('#ls1'); el.classList.add('fading'); await wait(300); view==='pc' ? build1PC() : build1MO(); await frame(); el.classList.remove('fading'); return; }
   if (view==='pc') { const tr = $('#track'); tr.classList.add('fading'); await wait(300); buildPC(); await frame(); tr.classList.remove('fading'); }
   else { const ls = $('#list'); ls.style.opacity = 0; await wait(300); buildMO(); await frame(); ls.style.opacity = 1; }
 }
-addEventListener('resize', ()=>{ fit(); });
+addEventListener('resize', ()=>{ fit(); fit0(); });
 render();
 </script>
 </body>
