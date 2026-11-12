@@ -153,6 +153,19 @@
   .dim.on .row1>li,.dim.on .ls1>li{animation:rise .5s var(--ease) both;animation-delay:calc(var(--i,0) * 60ms + 80ms)}
   @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
+  /* ── 3안 PC : 1안 틀 + 문구 크게(메인 32) · 오브제 작게(100, 홈 메인 배너 3D 오브제) · 카드 240×360 ── */
+  .c1.c3{height:360px;background-image:none}
+  .c3 .tx{top:38px}
+  .c3 .tt{margin-top:12px;font-size:32px;line-height:38px}
+  .c3 .sub{margin-top:12px}
+  .c3 .ob{position:absolute;left:50%;transform:translateX(-50%);height:auto}
+  /* ── 3안 MO : 2안 바텀시트 목록 + 썸네일 72(회색 배경 고정 · PC와 같은 오브제) · 5개가 모두 보이게 내용 높이만큼 열림 ── */
+  .sheet.v3,.sheet.v3.full{height:auto;max-height:calc(100% - 56px)}
+  .sheet.v3 .ls{flex:none}
+  .v3 .thumb{width:72px;height:72px}
+  .v3 .thumb img{position:absolute;left:50%;top:50%;width:var(--o,64px);height:var(--o,64px);object-fit:contain;transform:translate(-50%,-50%)}
+  .v3 .thumb.hb img{top:2px;width:48px;height:48px;transform:translateX(-50%)}
+
   /* ── 1안 MO : 모달 안에 세로 목록 (최대 5) ── */
   .m1{position:absolute;inset:56px 0 0;display:flex;flex-direction:column;opacity:0;transform:translateY(20px);transition:opacity .35s var(--ease),transform .45s var(--ease)}
   .dim.on .m1{opacity:1;transform:none}
@@ -271,7 +284,7 @@
 </section>
 
 <div class="panel" id="panel">
-  <div class="seg" id="segVar"><span class="pill"></span><button data-a="0">기존안</button><button data-a="1">1안</button><button data-a="2">2안</button></div>
+  <div class="seg" id="segVar"><span class="pill"></span><button data-a="0">기존안</button><button data-a="1">1안</button><button data-a="2">2안</button><button data-a="3">3안</button></div>
   <div class="seg" id="segView"><span class="pill"></span><button data-v="pc">PC</button><button data-v="mo">MO</button></div>
   <select id="cnt" aria-label="등록 개수"></select>
   <select id="spd" aria-label="자동 넘김 간격"><option value="1000">1초</option><option value="2000" selected>2초</option><option value="3000">3초</option><option value="4000">4초</option></select>
@@ -299,19 +312,29 @@ const DATA1 = [
   {lg:'잇올 기숙학원', t:'2028 기숙\n재수우선선발반', s:'얼리버드 <span class="g">260만 원</span> 할인', ms:'얼리버드 <span class="g">260만 원</span> 할인', btn:'자세히 보기'},
   {lg:'잇올 스파르타 · 잇올 몰입관', t:'다산캠프\n1+1 혜택', s:'최초 등록 시 <span class="b">1+1</span> 적용', ms:'최초 등록 시 <span class="b">1+1</span> 적용', btn:'자세히 보기'}
 ];
+/* 3안 데이터 — PC는 1안 틀(문구 크게 · 오브제 작게), MO는 2안 바텀시트 목록. 오브제는 홈 메인 배너 3D 오브제, 서브 문구는 PC·MO 동일(최대 5)
+   w 오브제 폭 · b 버튼 위 간격(카드 아래 기준) · o MO 썸네일 안 오브제 크기 */
+const DATA3 = [
+  {lg:'잇올 스파르타 · 잇올 몰입관', t:'2027 통학\n윈터스쿨', s:'윈터패스 최대 <span class="r">15%</span> 할인', ms:'윈터패스 최대 <b>15%</b> 할인', c:'마감 임박', w:100, b:32, o:64},
+  {lg:'잇올 기숙학원', t:'2027 기숙\n윈터스쿨', s:'이천·여주캠프\n<span class="g">대기접수</span> 진행 중', ms:'이천·여주캠프 <b>대기접수</b> 진행 중', c:'대기 접수', w:100, b:32, o:64},
+  {lg:'잇올 스파르타 · 잇올 몰입관', t:'2028 통학\n재수우선선발반', s:'비기닝패스 <span class="r">50%</span> 할인', ms:'비기닝패스 <b>50%</b> 할인', w:120, b:36, o:68},
+  {lg:'잇올 기숙학원', t:'2028 기숙\n재수우선선발반', s:'얼리버드 <span class="g">260만 원</span> 할인', ms:'얼리버드 <b>260만 원</b> 할인', w:120, b:36, o:68},
+  {lg:'잇올 스파르타 · 잇올 몰입관', t:'2027 고등\n기말고사패스', s:'11월 23일~12월 24일\n최대 <span class="r">70%</span> 할인', ms:'11월 23일~12월 24일 최대 <b>70%</b> 할인', w:120, b:36, o:68}
+].map((d,i)=>({...d, img:`img/o3-${i+1}.png`}));
 /* 기존안 데이터 — 지금 홈페이지 팝업 이미지(2026-11-05 itall.com 캡처에서 잘라냄, 최대 6) */
 const DATA0 = ['2027 통학 윈터스쿨','2027 기숙 윈터스쿨','2028 통학 재수우선선발반','2028 기숙 재수우선선발반','잇올 몰입관 다산캠프 1+1 혜택','기말고사패스']
   .map((t,i)=>({t, img:`img/cur-${i+1}.png`}));
-const COUNT = {'0':6,'1':5,'2':7};
+const COUNT = {'0':6,'1':5,'2':7,'3':5};
 const $ = s => document.querySelector(s);
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let variant = '0', count = 6, view = 'pc', idx = 0, timer = null, playing = !reduce, gap = 2000;
 const items = () => DATA.slice(0, count);
 const items1 = () => DATA1.slice(0, count);
 const items0 = () => DATA0.slice(0, count);
+const items3 = () => DATA3.slice(0, count);
 
 /* 설정 패널 */
-function fillCount(){ const max = ({'0':DATA0,'1':DATA1,'2':DATA})[variant].length; count = Math.min(count, max);
+function fillCount(){ const max = ({'0':DATA0,'1':DATA1,'2':DATA,'3':DATA3})[variant].length; count = Math.min(count, max);
   $('#cnt').innerHTML = Array.from({length:max},(_,i)=>`<option value="${i+1}" ${i+1===count?'selected':''}>${i+1}개</option>`).join('');
   $('#spd').style.display = variant==='2' ? '' : 'none'; }
 function pillTo(seg, b){ const pill = seg.querySelector('.pill'); seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', x===b)); pill.style.left = b.offsetLeft+'px'; pill.style.width = b.offsetWidth+'px'; }
@@ -425,6 +448,7 @@ function dragMove(e){
     if (Math.abs(dy) < 6) return;
     if (drag.fromList && drag.full && dy < 0) { drag = null; return; }  // 펼친 상태에서 위로 = 목록 스크롤
     if (drag.fromList && !drag.full && dy > 0) { drag = null; return; } // 반쯤 열림에서 아래로 = 무시
+    if (sheet.classList.contains('v3') && dy < 0) { drag = null; return; }  // 3안은 끌어올리기 없음
     drag.moved = true; sheet.classList.add('dragging'); try { sheet.setPointerCapture(e.pointerId); } catch(_) {}
   }
   e.preventDefault();
@@ -440,10 +464,11 @@ function dragEnd(e){
   if (!d.moved) { if (!d.fromList && e.type === 'pointerup') toggleFull(); return; }
   const dy = (e.clientY - d.y) / zoomOf(), fast = Math.abs(d.v) > .5;
   sheet.classList.remove('dragging'); sheet.style.height = '';
+  if (sheet.classList.contains('v3')) { if (dy > 40 || (fast && d.v > 0)) close(); return; }
   if (dy < -40 || (fast && d.v < 0)) sheet.classList.add('full');
   else if (dy > 40 || (fast && d.v > 0)) { if (d.full) { sheet.classList.remove('full'); $('#list').scrollTop = 0; } else close(); }
 }
-function toggleFull(){ if (sheet.classList.contains('full')) { sheet.classList.remove('full'); $('#list').scrollTop = 0; } else sheet.classList.add('full'); }
+function toggleFull(){ if (sheet.classList.contains('v3')) return; if (sheet.classList.contains('full')) { sheet.classList.remove('full'); $('#list').scrollTop = 0; } else sheet.classList.add('full'); }
 $('#handle').addEventListener('pointerdown', e => dragStart(e, false));
 $('#list').addEventListener('pointerdown', e => dragStart(e, true));
 sheet.addEventListener('pointermove', dragMove, {passive:false});
@@ -453,7 +478,7 @@ sheet.addEventListener('pointercancel', dragEnd);
 $('#list').addEventListener('click', e => { if (sheet.dataset.justDragged) { e.preventDefault(); delete sheet.dataset.justDragged; } }, true);
 sheet.addEventListener('pointerup', () => { if (sheet.classList.contains('dragging')) { sheet.dataset.justDragged = 1; setTimeout(()=>delete sheet.dataset.justDragged, 60); } }, true);
 /* 반쯤 열림에서 휠을 위로 굴리면 펼침 */
-$('#list').addEventListener('wheel', e => { if (!sheet.classList.contains('full') && e.deltaY > 0) { e.preventDefault(); sheet.classList.add('full'); } }, {passive:false});
+$('#list').addEventListener('wheel', e => { if (!sheet.classList.contains('v3') && !sheet.classList.contains('full') && e.deltaY > 0) { e.preventDefault(); sheet.classList.add('full'); } }, {passive:false});
 
 /* 1안 */
 const card1 = (d,i) => `<li style="--i:${i}"><a class="c1" href="#" target="_blank" rel="noopener" style="background-image:url(img/a1-pc-${i+1}.png)">
@@ -466,6 +491,24 @@ function build1PC(){
   $('.pc1').style.setProperty('--rowW', (cols*240 + (cols-1)*20) + 'px');
 }
 function build1MO(){ $('#ls1').innerHTML = items1().map(row1).join(''); $('#ls1').scrollTop = 0; }
+
+/* 3안 — PC는 1안과 같은 줄(카드만 3안), MO는 2안 바텀시트(내용 높이만큼 열림 · 끌어올리기 없음) */
+const card3 = (d,i) => `<li style="--i:${i}"><a class="c1 c3" href="#" target="_blank" rel="noopener">
+  <span class="tx"><p class="lg">${d.lg}</p><p class="tt">${d.t}</p><p class="sub">${d.s}</p></span><img class="ob" src="${d.img}" alt="" style="width:${d.w}px;bottom:${d.b}px"><span class="bb">자세히 보기</span>${SHOW_CHIP&&d.c?`<span class="tab" style="background:${CHIP1[d.c]}">${d.c}</span>`:''}</a></li>`;
+const row3 = d => `<li><a class="row" href="#" target="_blank" rel="noopener"><span class="thumb${SHOW_CHIP&&d.c?' hb':''}" style="--o:${d.o}px"><img src="${d.img}" alt="" loading="lazy">${SHOW_CHIP&&d.c?`<span class="band" style="background:${CHIP[d.c]}">${d.c}</span>`:''}</span>
+  <span class="tx"><p class="tt">${d.t.replace('\n',' ')}</p><p class="sub">${d.ms}</p></span>
+  <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M8 5l5 5-5 5" stroke="#B1B2B5" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>`;
+function build3PC(){
+  const n = items3().length, cols = Math.max(2, n);
+  $('#row1').innerHTML = items3().map(card3).join('');
+  $('.pc1').style.setProperty('--rowW', (cols*240 + (cols-1)*20) + 'px');
+}
+function build3MO(){
+  const list = items3(), sh = $('#sheet');
+  $('#list').innerHTML = list.map(row3).join('');
+  $('#moCount').textContent = list.length;
+  sh.classList.add('few'); sh.classList.remove('full'); $('#list').scrollTop = 0;
+}
 
 /* 기존안 — PC는 2장씩 세로로 묶은 열을 가로로(간격 40), MO는 세로 목록(간격 16) */
 const pop0 = d => `<a class="p0" href="#" target="_blank" rel="noopener"><img src="${d.img}" alt="${d.t}" width="500" height="250"></a>`;
@@ -481,11 +524,12 @@ function build0MO(){ $('#ls0').innerHTML = items0().map((d,i)=>`<li style="--i:$
 
 /* 열기 · 닫기 */
 const DIMS = ['#pcDim','#moDim','#pc1Dim','#mo1Dim','#pc0Dim','#mo0Dim'];
-const curDim = () => variant==='0' ? (view==='pc' ? '#pc0Dim' : '#mo0Dim') : variant==='1' ? (view==='pc' ? '#pc1Dim' : '#mo1Dim') : (view==='pc' ? '#pcDim' : '#moDim');
+const curDim = () => variant==='0' ? (view==='pc' ? '#pc0Dim' : '#mo0Dim') : variant==='1' ? (view==='pc' ? '#pc1Dim' : '#mo1Dim') : variant==='3' ? (view==='pc' ? '#pc1Dim' : '#moDim') : (view==='pc' ? '#pcDim' : '#moDim');
 async function open(){
   if (variant==='0') { view==='pc' ? build0PC() : build0MO(); }
   else if (variant==='1') { view==='pc' ? build1PC() : build1MO(); }
-  else { view==='mo' ? buildMO() : buildPC(); }
+  else if (variant==='3') { $('#sheet').classList.add('v3'); view==='pc' ? build3PC() : build3MO(); }
+  else { $('#sheet').classList.remove('v3'); view==='mo' ? buildMO() : buildPC(); }
   await frame();
   $(curDim()).classList.add('on');
   if (view==='pc') setTimeout(()=>{ autoFocus = true; $(curDim()+' .x').focus({preventScroll:true}); autoFocus = false; }, 400);
@@ -516,6 +560,7 @@ async function refresh(){
   if (!isOpen()) return open();
   if (variant==='0') { const el = view==='pc' ? $('#row0') : $('#ls0'); el.classList.add('fading'); await wait(300); view==='pc' ? build0PC() : build0MO(); await frame(); el.classList.remove('fading'); return; }
   if (variant==='1') { const el = view==='pc' ? $('#row1') : $('#ls1'); el.classList.add('fading'); await wait(300); view==='pc' ? build1PC() : build1MO(); await frame(); el.classList.remove('fading'); return; }
+  if (variant==='3') { const el = view==='pc' ? $('#row1') : $('#list'); el.classList.add('fading'); el.style.opacity = 0; await wait(300); view==='pc' ? build3PC() : build3MO(); await frame(); el.classList.remove('fading'); el.style.opacity = ''; return; }
   if (view==='pc') { const tr = $('#track'); tr.classList.add('fading'); await wait(300); buildPC(); await frame(); tr.classList.remove('fading'); }
   else { const ls = $('#list'); ls.style.opacity = 0; await wait(300); buildMO(); await frame(); ls.style.opacity = 1; }
 }
