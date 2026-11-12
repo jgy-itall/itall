@@ -154,6 +154,8 @@
   @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
   /* ── 3안 PC : 1안 틀 + 문구 크게(메인 32) · 오브제 작게(100, 홈 메인 배너 3D 오브제) · 카드 240×360 ── */
+  /* 최종 PC 팝업은 화면 정가운데보다 조금 위 (아래 여백 16vh → 8vh만큼 올라감) */
+  #pc1Dim.up{padding-bottom:16vh}
   .c1.c3{height:360px;background-image:none}
   .c3 .tx{top:38px}
   .c3 .lg{font-size:14px;font-weight:600}
@@ -534,6 +536,7 @@ function build0MO(){ $('#ls0').innerHTML = items0().map((d,i)=>`<li style="--i:$
 const DIMS = ['#pcDim','#moDim','#pc1Dim','#mo1Dim','#pc0Dim','#mo0Dim'];
 const curDim = () => variant==='0' ? (view==='pc' ? '#pc0Dim' : '#mo0Dim') : variant==='1' ? (view==='pc' ? '#pc1Dim' : '#mo1Dim') : variant==='3' ? (view==='pc' ? '#pc1Dim' : '#moDim') : (view==='pc' ? '#pcDim' : '#moDim');
 async function open(){
+  $('#pc1Dim').classList.toggle('up', variant==='3');
   if (variant==='0') { view==='pc' ? build0PC() : build0MO(); }
   else if (variant==='1') { view==='pc' ? build1PC() : build1MO(); }
   else if (variant==='3') { $('#sheet').classList.add('v3'); view==='pc' ? build3PC() : build3MO(); }
