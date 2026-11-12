@@ -166,6 +166,9 @@
   .v3 .thumb{width:72px;height:72px}
   .v3 .thumb img{position:absolute;left:50%;top:50%;width:var(--o,64px);height:var(--o,64px);object-fit:contain;transform:translate(-50%,-50%)}
   .v3 .thumb.hb img{top:2px;width:48px;height:48px;transform:translateX(-50%)}
+  /* MO 행에도 브랜드 라벨 (SemiBold 13 · 회색) — 라벨 · 제목 · 서브 간격 4 */
+  .v3 .row .lg{font-size:13px;line-height:20px;font-weight:600;color:var(--neutral)}
+  .v3 .row .tt{margin-top:4px}
 
   /* ── 1안 MO : 모달 안에 세로 목록 (최대 5) ── */
   .m1{position:absolute;inset:56px 0 0;display:flex;flex-direction:column;opacity:0;transform:translateY(20px);transition:opacity .35s var(--ease),transform .45s var(--ease)}
@@ -497,7 +500,7 @@ function build1MO(){ $('#ls1').innerHTML = items1().map(row1).join(''); $('#ls1'
 const card3 = (d,i) => `<li style="--i:${i}"><a class="c1 c3" href="#" target="_blank" rel="noopener">
   <span class="tx"><p class="lg">${d.lg}</p><p class="tt">${d.t}</p><p class="sub">${d.s}</p></span><img class="ob" src="${d.img}" alt="" style="width:${d.w}px;bottom:${d.b}px"><span class="bb">자세히 보기</span>${SHOW_CHIP&&d.c?`<span class="tab" style="background:${CHIP1[d.c]}">${d.c}</span>`:''}</a></li>`;
 const row3 = d => `<li><a class="row" href="#" target="_blank" rel="noopener"><span class="thumb${SHOW_CHIP&&d.c?' hb':''}" style="--o:${d.o}px"><img src="${d.img}" alt="" loading="lazy">${SHOW_CHIP&&d.c?`<span class="band" style="background:${CHIP[d.c]}">${d.c}</span>`:''}</span>
-  <span class="tx"><p class="tt">${d.t.replace('\n',' ')}</p><p class="sub">${d.ms}</p></span>
+  <span class="tx"><p class="lg">${d.lg}</p><p class="tt">${d.t.replace('\n',' ')}</p><p class="sub">${d.ms}</p></span>
   <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M8 5l5 5-5 5" stroke="#B1B2B5" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>`;
 function build3PC(){
   const n = items3().length, cols = Math.max(2, n);
