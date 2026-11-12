@@ -156,6 +156,7 @@
   /* ── 3안 PC : 1안 틀 + 문구 크게(메인 32) · 오브제 작게(100, 홈 메인 배너 3D 오브제) · 카드 240×360 ── */
   .c1.c3{height:360px;background-image:none}
   .c3 .tx{top:38px}
+  .c3 .lg{font-size:14px}
   .c3 .tt{margin-top:12px;font-size:32px;line-height:38px}
   .c3 .sub{margin-top:12px}
   .c3 .ob{position:absolute;left:50%;transform:translateX(-50%);height:auto}
@@ -284,7 +285,7 @@
 </section>
 
 <div class="panel" id="panel">
-  <div class="seg" id="segVar"><span class="pill"></span><button data-a="0">기존안</button><button data-a="1">1안</button><button data-a="2">2안</button><button data-a="3">3안</button></div>
+  <div class="seg" id="segVar"><span class="pill"></span><button data-a="0">기존안</button><button data-a="3">최종</button><button data-a="1">1안</button><button data-a="2">2안</button></div>
   <div class="seg" id="segView"><span class="pill"></span><button data-v="pc">PC</button><button data-v="mo">MO</button></div>
   <select id="cnt" aria-label="등록 개수"></select>
   <select id="spd" aria-label="자동 넘김 간격"><option value="1000">1초</option><option value="2000" selected>2초</option><option value="3000">3초</option><option value="4000">4초</option></select>
@@ -327,7 +328,7 @@ const DATA0 = ['2027 통학 윈터스쿨','2027 기숙 윈터스쿨','2028 통�
 const COUNT = {'0':6,'1':5,'2':7,'3':5};
 const $ = s => document.querySelector(s);
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-let variant = '0', count = 6, view = 'pc', idx = 0, timer = null, playing = !reduce, gap = 2000;
+let variant = '3', count = 5, view = 'pc', idx = 0, timer = null, playing = !reduce, gap = 2000;
 const items = () => DATA.slice(0, count);
 const items1 = () => DATA1.slice(0, count);
 const items0 = () => DATA0.slice(0, count);
