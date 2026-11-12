@@ -115,7 +115,7 @@
   .sheet.full .ls{overflow-y:auto;overscroll-behavior:contain;padding-bottom:60px;scrollbar-width:none}
   .sheet .ls::-webkit-scrollbar{display:none}
   .row{display:flex;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid var(--line)}
-  .row:last-child{border-bottom:0}
+  .ls>li:last-child .row{border-bottom:0}
   .thumb{position:relative;flex:none;width:80px;height:80px;border-radius:12px;overflow:hidden;background:#f1f2f4}
   .thumb img{width:100%;height:100%;object-fit:cover}
   .thumb .band{position:absolute;left:0;right:0;bottom:0;height:20px;font-size:13px;font-weight:700;line-height:20px;text-align:center;color:#fff}
@@ -169,17 +169,27 @@
   .k1 .sub{margin-top:6px;font-size:15px;line-height:20px;font-weight:600;color:#333;white-space:pre-line}
 
   /* ── 기존안 : 지금 홈페이지 팝업 (이미지 500×250 · PC는 2장씩 묶어 열로 · MO는 세로 목록 스크롤) ── */
-  .pc0 .bar{margin:0 0 8px;font-weight:600}
-  .row0{display:flex;gap:40px;list-style:none;transition:opacity .3s var(--ease)}
-  .row0 .col{display:flex;flex-direction:column}
+  /* itall.com과 같은 반응형: 1024 이상 = 2장씩 묶은 열을 가로로(열 폭은 화면에 맞춰 줄고 높이 250 고정) · 1024 미만 = 320 폭 세로 목록 스크롤 */
+  #pc0Dim .pc0{--fit:1;width:min(var(--w0,1580px),calc(100vw - 40px))}
+  .pc0 .bar{height:20px;margin:0 0 16px;font-size:14px;font-weight:600}
+  .row0{display:flex;justify-content:center;gap:40px;list-style:none;transition:opacity .3s var(--ease)}
+  .row0 .col{flex:1 1 0;min-width:0;max-width:500px;display:flex;flex-direction:column}
   .row0.fading,.ls0.fading{opacity:0}
   .p0{display:block;width:500px;height:250px}
+  .row0 .p0{width:100%}
   .p0 img{display:block;width:100%;height:100%}
+  @media (max-width:1023px){
+    #pc0Dim{overflow-y:auto;overscroll-behavior:contain;align-items:flex-start;padding:70px 0}
+    #pc0Dim .pc0{width:320px}
+    .row0,.row0 .col{flex-direction:column;gap:16px}
+    .row0 .col{flex:none;max-width:none}
+    .row0 .p0{height:180px}
+  }
   .dim.on .row0>li,.dim.on .ls0>li{animation:rise .5s var(--ease) both;animation-delay:calc(var(--i,0) * 60ms + 80ms)}
   .m0{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;padding:70px 20px;scrollbar-width:none;opacity:0;transform:translateY(20px);transition:opacity .35s var(--ease),transform .45s var(--ease)}
   .m0::-webkit-scrollbar{display:none}
   .dim.on .m0{opacity:1;transform:none}
-  .m0 .bar{height:20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;color:var(--white-soft);font-size:16px;font-weight:600}
+  .m0 .bar{height:20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;color:var(--white-soft);font-size:14px;font-weight:600}
   .ls0{list-style:none;display:flex;flex-direction:column;gap:16px;transition:opacity .3s var(--ease)}
   .ls0 .p0{width:100%;height:auto;aspect-ratio:2/1}
 
@@ -191,6 +201,8 @@
   .seg .pill{position:absolute;top:3px;bottom:3px;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.12);transition:left .25s var(--ease),width .25s var(--ease)}
   .panel select,.panel .reopen{height:36px;border-radius:10px;border:1px solid var(--line);padding:0 10px;font:inherit;font-weight:600;background:#fff}
   .panel .reopen{background:var(--black);color:#fff;border-color:var(--black)}
+  /* 기본 화살표는 테두리에 붙어 보여서 직접 그린 화살표 + 오른쪽 여백 */
+  .panel select{-webkit-appearance:none;appearance:none;padding:0 32px 0 12px;cursor:pointer;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%230D0F14' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center/16px 16px}
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -295,7 +307,7 @@ const DATA0 = ['2027 통학 윈터스쿨','2027 기숙 윈터스쿨','2028 통�
 const COUNT = {'0':6,'1':5,'2':7};
 const $ = s => document.querySelector(s);
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-let variant = '1', count = 5, view = 'pc', idx = 0, timer = null, playing = !reduce, gap = 2000;
+let variant = '0', count = 6, view = 'pc', idx = 0, timer = null, playing = !reduce, gap = 2000;
 const items = () => DATA.slice(0, count);
 const items1 = () => DATA1.slice(0, count);
 const items0 = () => DATA0.slice(0, count);
@@ -307,7 +319,13 @@ function fillCount(){ const max = ({'0':DATA0,'1':DATA1,'2':DATA})[variant].leng
 function pillTo(seg, b){ const pill = seg.querySelector('.pill'); seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', x===b)); pill.style.left = b.offsetLeft+'px'; pill.style.width = b.offsetWidth+'px'; }
 function setSeg(){ pillTo($('#segView'), $(`#segView [data-v="${view}"]`)); pillTo($('#segVar'), $(`#segVar [data-a="${variant}"]`)); }
 document.querySelectorAll('#segView button').forEach(b=>b.onclick=()=>{ if (view===b.dataset.v) return; view=b.dataset.v; render(); });
-document.querySelectorAll('#segVar button').forEach(b=>b.onclick=async()=>{ if (variant===b.dataset.a) return; variant=b.dataset.a; count = COUNT[variant]; fillCount(); setSeg(); await close(); open(); });
+/* 안 탭을 누르면 항상 PC로 (MO는 MO 버튼을 눌렀을 때만). 768 미만 화면은 render()에서 MO 유지 */
+document.querySelectorAll('#segVar button').forEach(b=>b.onclick=async()=>{
+  const same = variant===b.dataset.a, toPC = view!=='pc' && innerWidth >= 768;
+  if (same && !toPC) return;
+  if (!same) { variant=b.dataset.a; count = COUNT[variant]; fillCount(); }
+  if (toPC) { view='pc'; return render(); }
+  setSeg(); await close(); open(); });
 fillCount();
 $('#cnt').onchange = e => { count = +e.target.value; refresh(); };
 $('#spd').onchange = e => { gap = +e.target.value; restart(); };
@@ -459,9 +477,8 @@ function build0PC(){
   $('#row0').innerHTML = cols.map((c,i)=>`<li class="col" style="--i:${i}">${c.map(pop0).join('')}</li>`).join('');
   fit0();
 }
-/* 지금 팝업은 1280보다 넓어(최대 1580) 화면에 맞게 축소 */
-function fit0(){ const n = Math.ceil(items0().length/2), w = n*500 + (n-1)*40, el = $('#pc0');
-  el.style.width = w + 'px'; el.style.setProperty('--fit', Math.min(1, (innerWidth-40)/w, (innerHeight-40)/540)); }
+/* 열 수에 맞춘 최대 폭(열 500 · 간격 40) — 화면이 좁으면 CSS에서 열 폭이 줄어듦 */
+function fit0(){ const n = Math.ceil(items0().length/2); $('#pc0').style.setProperty('--w0', (n*500 + (n-1)*40) + 'px'); $('#pc0Dim').scrollTop = 0; }
 function build0MO(){ $('#ls0').innerHTML = items0().map((d,i)=>`<li style="--i:${i}">${pop0(d)}</li>`).join(''); $('#m0').scrollTop = 0; }
 
 /* 열기 · 닫기 */
@@ -504,7 +521,7 @@ async function refresh(){
   if (view==='pc') { const tr = $('#track'); tr.classList.add('fading'); await wait(300); buildPC(); await frame(); tr.classList.remove('fading'); }
   else { const ls = $('#list'); ls.style.opacity = 0; await wait(300); buildMO(); await frame(); ls.style.opacity = 1; }
 }
-addEventListener('resize', ()=>{ fit(); fit0(); });
+addEventListener('resize', ()=>{ fit(); });
 render();
 </script>
 </body>
