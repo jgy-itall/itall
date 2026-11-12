@@ -159,7 +159,8 @@
   .c3 .lg{font-size:14px;font-weight:600}
   .c3 .tt{margin-top:12px;font-size:32px;line-height:38px}
   .c3 .sub{margin-top:12px}
-  .c3 .ob{position:absolute;left:50%;transform:translateX(-50%);height:auto}
+  /* 오브제는 모두 100×100 — 버튼 위 120 영역의 가운데(위아래 10) */
+  .c3 .ob{position:absolute;left:50%;bottom:42px;width:100px;height:100px;object-fit:contain;transform:translateX(-50%)}
   /* ── 3안 MO : 2안 바텀시트 목록 + 썸네일 72(회색 배경 고정 · PC와 같은 오브제) · 5개가 모두 보이게 내용 높이만큼 열림 ── */
   .sheet.v3,.sheet.v3.full{height:auto;max-height:calc(100% - 56px)}
   .sheet.v3 .ls{flex:none}
@@ -319,13 +320,13 @@ const DATA1 = [
   {lg:'잇올 스파르타 · 잇올 몰입관', t:'다산캠프\n1+1 혜택', s:'최초 등록 시 <span class="b">1+1</span> 적용', ms:'최초 등록 시 <span class="b">1+1</span> 적용', btn:'자세히 보기'}
 ];
 /* 3안 데이터 — PC는 1안 틀(문구 크게 · 오브제 작게), MO는 2안 바텀시트 목록. 오브제는 홈 메인 배너 3D 오브제, 서브 문구는 PC·MO 동일(최대 5)
-   w 오브제 폭 · b 버튼 위 간격(카드 아래 기준) · o MO 썸네일 안 오브제 크기 */
+   PC 오브제는 모두 100×100 · o MO 썸네일 안 오브제 크기 */
 const DATA3 = [
-  {lg:'잇올 스파르타 · 잇올 몰입관', t:'2027 통학\n윈터스쿨', s:'윈터패스 최대 <span class="r">15%</span> 할인', ms:'윈터패스 최대 <b>15%</b> 할인', c:'마감 임박', w:100, b:32, o:64},
-  {lg:'잇올 기숙학원', t:'2027 기숙\n윈터스쿨', s:'이천·여주캠프\n<span class="g">대기접수</span> 진행 중', ms:'이천·여주캠프 <b>대기접수</b> 진행 중', c:'대기 접수', w:100, b:32, o:64},
-  {lg:'잇올 스파르타 · 잇올 몰입관', t:'2028 통학\n재수우선선발반', s:'비기닝패스 <span class="r">50%</span> 할인', ms:'비기닝패스 <b>50%</b> 할인', w:120, b:36, o:68},
-  {lg:'잇올 기숙학원', t:'2028 기숙\n재수우선선발반', s:'얼리버드 <span class="g">260만 원</span> 할인', ms:'얼리버드 <b>260만 원</b> 할인', w:120, b:36, o:68},
-  {lg:'잇올 스파르타 · 잇올 몰입관', t:'2027 고등\n기말고사패스', s:'11월 23일~12월 24일\n최대 <span class="r">70%</span> 할인', ms:'11월 23일~12월 24일 최대 <b>70%</b> 할인', w:120, b:36, o:68}
+  {lg:'잇올 스파르타 · 잇올 몰입관', t:'2027 통학\n윈터스쿨', s:'윈터패스 최대 <span class="r">15%</span> 할인', ms:'윈터패스 최대 <b>15%</b> 할인', c:'마감 임박', o:64},
+  {lg:'잇올 기숙학원', t:'2027 기숙\n윈터스쿨', s:'이천·여주캠프\n<span class="g">대기접수</span> 진행 중', ms:'이천·여주캠프 <b>대기접수</b> 진행 중', c:'대기 접수', o:64},
+  {lg:'잇올 스파르타 · 잇올 몰입관', t:'2028 통학\n재수우선선발반', s:'비기닝패스 <span class="r">50%</span> 할인', ms:'비기닝패스 <b>50%</b> 할인', o:68},
+  {lg:'잇올 기숙학원', t:'2028 기숙\n재수우선선발반', s:'얼리버드 <span class="g">260만 원</span> 할인', ms:'얼리버드 <b>260만 원</b> 할인', o:68},
+  {lg:'잇올 스파르타 · 잇올 몰입관', t:'2027 고등\n기말고사패스', s:'11월 23일~12월 24일\n최대 <span class="r">70%</span> 할인', ms:'11월 23일~12월 24일 최대 <b>70%</b> 할인', o:68}
 ].map((d,i)=>({...d, img:`img/o3-${i+1}.png`}));
 /* 기존안 데이터 — 지금 홈페이지 팝업 이미지(2026-11-05 itall.com 캡처에서 잘라냄, 최대 6) */
 const DATA0 = ['2027 통학 윈터스쿨','2027 기숙 윈터스쿨','2028 통학 재수우선선발반','2028 기숙 재수우선선발반','잇올 몰입관 다산캠프 1+1 혜택','기말고사패스']
@@ -500,7 +501,7 @@ function build1MO(){ $('#ls1').innerHTML = items1().map(row1).join(''); $('#ls1'
 
 /* 3안 — PC는 1안과 같은 줄(카드만 3안), MO는 2안 바텀시트(내용 높이만큼 열림 · 끌어올리기 없음) */
 const card3 = (d,i) => `<li style="--i:${i}"><a class="c1 c3" href="#" target="_blank" rel="noopener">
-  <span class="tx"><p class="lg">${d.lg}</p><p class="tt">${d.t}</p><p class="sub">${d.s}</p></span><img class="ob" src="${d.img}" alt="" style="width:${d.w}px;bottom:${d.b}px"><span class="bb">자세히 보기</span>${SHOW_CHIP&&d.c?`<span class="tab" style="background:${CHIP1[d.c]}">${d.c}</span>`:''}</a></li>`;
+  <span class="tx"><p class="lg">${d.lg}</p><p class="tt">${d.t}</p><p class="sub">${d.s}</p></span><img class="ob" src="${d.img}" alt=""><span class="bb">자세히 보기</span>${SHOW_CHIP&&d.c?`<span class="tab" style="background:${CHIP1[d.c]}">${d.c}</span>`:''}</a></li>`;
 const row3 = d => `<li><a class="row" href="#" target="_blank" rel="noopener"><span class="thumb${SHOW_CHIP&&d.c?' hb':''}" style="--o:${d.o}px"><img src="${d.img}" alt="" loading="lazy">${SHOW_CHIP&&d.c?`<span class="band" style="background:${CHIP[d.c]}">${d.c}</span>`:''}</span>
   <span class="tx"><p class="lg">${d.lg}</p><p class="tt">${d.t.replace('\n',' ')}</p><p class="sub">${d.ms}</p></span>
   <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M8 5l5 5-5 5" stroke="#B1B2B5" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>`;
