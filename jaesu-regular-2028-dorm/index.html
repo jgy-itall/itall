@@ -845,7 +845,7 @@
           <div class="hero__cube" aria-hidden="true">
             <img class="hero__cube-poster" src="assets/cube_poster.webp" alt="" width="720" height="720">
             <canvas class="hero__cube-canvas" width="720" height="720"></canvas>
-            <video class="hero__cube-src" src="assets/cube_loop.mp4" width="720" height="1440" muted loop playsinline preload="none"></video>
+            <video class="hero__cube-src" data-src="assets/cube_loop.mp4" width="720" height="1440" muted loop playsinline preload="auto"></video>
           </div>
           <img class="hero__cube-still" src="assets/cube_still.webp" alt="" width="328" height="341" aria-hidden="true">
         </section>
@@ -870,7 +870,8 @@
    mp4 는 투명을 담지 못하고, 투명을 담는 다른 영상 형식은 사파리에서 투명이 안 된다. 그래서 mp4 한 장에
    위쪽 절반 = 큐브 색, 아래쪽 절반 = 투명 정보를 담아 두고, 여기서 둘을 합쳐 canvas 에 그린다.
    (위쪽 절반의 큐브 바깥은 검정이 아니라 큐브 가장자리 색으로 채워져 있다 — 검정이면 합쳤을 때 테두리에 어두운 선이 생김)
-   그릴 수 없는 환경(WebGL 없음 · 자동 재생 막힘)에서는 첫 장면 이미지가 그대로 보인다. */
+   그릴 수 없는 환경(WebGL 없음 · 자동 재생 막힘)에서는 첫 장면 이미지가 그대로 보인다.
+   영상 주소는 video 의 data-src 에 적어 두고, 아래에서 끝까지 받은 뒤에 넣는다. */
 (function () {
   'use strict';
   var box = document.querySelector('.hero__cube');
@@ -925,9 +926,29 @@
   } else {
     (function next() { draw(); requestAnimationFrame(next); })();
   }
-  video.muted = true;
-  var played = video.play();
-  if (played && played.catch) played.catch(function () {});   // 자동 재생이 막히면 첫 장면 이미지 그대로
+  function start() {
+    video.muted = true;
+    var played = video.play();
+    if (played && played.catch) played.catch(function () {});   // 자동 재생이 막히면 첫 장면 이미지 그대로
+  }
+  // 영상을 끝까지 받은 뒤에 재생을 시작한다. 받는 동안에는 첫 장면 이미지가 보인다.
+  // (조금 받자마자 재생하면 느린 통신에서 큐브가 돌다가 멈칫한다 — 2026-11-16 개발자 의견으로 바꿈)
+  var url = video.getAttribute('data-src');
+  if (window.fetch && window.URL && URL.createObjectURL) {
+    fetch(url).then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.blob();
+    }).then(function (blob) {
+      video.src = URL.createObjectURL(new Blob([blob], { type: 'video/mp4' }));
+      start();
+    }).catch(function () {     // 통째로 받지 못하면 예전처럼 받으면서 재생
+      video.src = url;
+      start();
+    });
+  } else {
+    video.src = url;
+    start();
+  }
 })();
 </script>
 
