@@ -441,7 +441,7 @@
   /* 등록 절차 채우기(한 번만): s02-benefit.js 가 .is-ready 를 붙이면 번호·선이 회색에서 시작하고,
      단계가 화면에 들어와 .is-in 이 붙으면 1 → 5 순서로 번호가 청록이 되고 선이 왼쪽부터 차오른다(번호 사이 0.48초).
      스크립트가 없거나 움직임 줄이기 설정이면 시안 그대로 */
-  .s02__steps { --s02-off: #bebfc1; --s02-track-off: #e1e3e5; --s02-track: rgba(17, 151, 166, .3); }   /* line/strong · line/normal · point 30% */
+  .s02__steps { --s02-off: #bebfc1; --s02-track-off: #e1e3e5; --s02-track: var(--point); }   /* line/strong · line/normal · point(채워진 선은 진한 청록) */
   .s02__steps.is-ready .s02__step-no { background: var(--s02-off); transition: background-color .25s ease; }
   .s02__steps.is-ready .s02__step-list::before {
     opacity: 1;

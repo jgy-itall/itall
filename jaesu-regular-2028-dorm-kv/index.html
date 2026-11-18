@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>2028 기숙 재수정규반 KV 테스트</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  /* 제목 폰트: 시안의 Gmarket Sans TTF Bold */
+  @font-face {
+    font-family: "GmarketSans";
+    font-weight: 700;
+    font-display: swap;
+    src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff") format("woff");
+  }
+  /* 띠배너 제목 폰트: 시안의 잇올체 Bold */
+  @font-face {
+    font-family: "Itall";
+    font-weight: 700;
+    font-display: swap;
+    src: url("assets/fonts/Itall-Bold.woff2") format("woff2"), url("assets/fonts/Itall-Bold.woff") format("woff");
+  }
+
+  /* ===== 토큰 — Figma 변수명을 주석으로 ===== */
+  :root {
+    --page-bg: #f1f2f4;
+    --white: #ffffff;
+    --ink: #262628;              /* color/semantic/text/normal */
+    --ink-strong: #0d0f14;       /* color/semantic/text/strong */
+    --ink-alt: #97989a;          /* semantic/text/alternative */
+    --title: #212121;
+    --point: #1197a6;            /* 시안 색 변수 '기숙' */
+    --hero-bg: #e7f5f6;          /* 기숙 히어로 배경 (시안 값) */
+    --dot: #1197a6;              /* 배경 점 장식 색 (시안의 점 색, PC·모바일 같음) */
+    --dorm-strong: #269336;      /* color/semantic/dormitory/strong — 로고 바·예약 버튼 */
+    --card-bg: rgba(255, 255, 255, .4);
+    --card-line: #b4e8ee;
+    --card-shadow: rgba(170, 211, 197, .3);
+    --ink-neutral: #7a7a7c;      /* color/semantic/text/neutral */
+    --fill: #f1f2f4;             /* color/semantic/fill/normal */
+    --cta: var(--dorm-strong);   /* 우측 패널 '선착순 예약하기' 버튼 (시안 값) */
+    --cta-text: #f6f7f8;         /* color/semantic/text/white */
+    --daily: #ff4c6a;            /* 통학 이동 배너 바탕 (시안 색 변수 '통학') */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { word-break: keep-all; overflow-wrap: break-word;
+         font-family: Pretendard, sans-serif; background: var(--page-bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  ul, ol { list-style: none; }
+  img, video { display: block; max-width: 100%; }
+  :focus-visible { outline: 2px solid var(--ink-strong); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+  /* ===== 페이지 타이틀 + 브레드크럼 — 잇올 실사이트 컴포넌트 (기존 재수우선선발반 랜딩과 동일) ===== */
+  .page-head {
+    max-width: 1280px; margin: 0 auto; padding: 40px 32px;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  }
+  .page-head__title { display: flex; align-items: flex-start; gap: 4px; font-family: nanumSquareNeo, Pretendard, sans-serif; font-size: 36px; font-weight: 800; line-height: 1.4; color: #3e3a39; white-space: nowrap; }
+  .page-head__back { display: none; flex-shrink: 0; margin-top: 5px; }
+  .crumb ol { display: flex; align-items: center; }
+  .crumb li { display: flex; align-items: center; font-family: nanumSquareNeo, Pretendard, sans-serif; font-size: 14px; font-weight: 700; line-height: 20px; color: #3e3a39; white-space: nowrap; }
+  .crumb li + li::before { content: ""; width: 24px; height: 24px; margin: 0 4px; background: url("assets/gnb/ico_breadcrumbs_arrow.svg") center / contain no-repeat; }
+  .crumb__home img { margin-right: 4px; }
+  .crumb li:nth-child(2) a { color: var(--ink-alt); }
+  .crumb a:hover { text-decoration: underline; }
+
+  /* ===== 레이아웃 — 실사이트 모집 상세와 동일 =====
+     1024~ 컨테이너 1280(좌우 32) · 본문(최대 847) + 간격 20 + 패널 320 / 1280~ 349, 1024 미만은 패널이 본문 위 */
+  .layout {
+    max-width: 768px; margin: 0 auto; padding: 22px 0 60px;
+    display: flex; flex-direction: column-reverse; gap: 28px;
+  }
+  .layout__main { min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+  @media (min-width: 1024px) {
+    .layout { max-width: 1280px; flex-direction: row; align-items: flex-start; gap: 20px; padding: 0 32px 160px; }
+    .layout__main { flex: 1; min-width: 634px; }
+    .layout__main > * { width: 100%; max-width: 847px; margin-left: auto; margin-right: auto; }
+    .panel { flex: none; width: 320px; }
+  }
+  @media (min-width: 1280px) {
+    .layout__main { min-width: 847px; }
+    .panel { width: 349px; }
+  }
+
+  /* ===== 본문 카드 ===== */
+  .wrap { background: var(--white); border-radius: 24px; overflow: hidden; container: page / inline-size; }
+  /* 로고 바 (기숙 Figma PC 6209:11953 · MO 6168:8987, 높이 48 · 로고 108.333 × 20 가운데) */
+  .logo-bar { height: 48px; background: var(--dorm-strong); display: flex; align-items: center; justify-content: center; }
+  .logo-bar img { width: 108.333px; height: 20px; }
+
+  /* ===== 반응형 단위 — 시안 1px = var(--u), 본문 카드 폭 기준 ===== */
+  .lp { --u: calc(min(100cqw, 847px) / 847); }
+  @supports not (width: 1cqw) {
+    .lp { --u: 1px; }
+  }
+
+  /* ===== S1 · 히어로 (기숙 Figma 6209:11955, 847 × 447) ===== */
+  .hero {
+    position: relative; isolation: isolate; overflow: hidden;
+    min-height: calc(447 * var(--u));
+    padding: calc(57 * var(--u)) 0 calc(56 * var(--u)) calc(54 * var(--u));
+    background: var(--hero-bg);
+  }
+  .hero__copy { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: flex-start; gap: calc(20 * var(--u)); width: max-content; }
+  .hero__heading { display: flex; flex-direction: column; align-items: flex-start; gap: calc(16 * var(--u)); white-space: nowrap; }
+  .hero__lead { font-size: calc(20 * var(--u)); font-weight: 600; line-height: 1.4; letter-spacing: -0.012em; color: var(--ink); }
+  .hero__title { font-family: "GmarketSans", Pretendard, sans-serif; font-size: calc(52 * var(--u)); font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; color: var(--title); }
+  .hero__title-line { display: block; }
+  .hero__point { color: var(--point); }
+
+  /* 모집 정보 카드 */
+  .info {
+    display: flex; flex-direction: column;
+    padding: calc(8 * var(--u)) calc(24 * var(--u));
+    border: 1px solid #ffffff; border-radius: calc(16 * var(--u));
+    background: var(--card-bg);
+    box-shadow: calc(6 * var(--u)) calc(5 * var(--u)) calc(11 * var(--u)) 0 var(--card-shadow);
+    overflow: hidden;
+  }
+  /* 글자는 화면이 좁아져도 13px 아래로 내려가지 않게 막음 (라벨 폭은 글자 크기를 따라감: 80 ÷ 16 = 5em) */
+  .info__row { display: flex; align-items: flex-start; gap: calc(8 * var(--u)); padding: calc(8 * var(--u)) 0; font-size: max(13px, calc(16 * var(--u))); font-weight: 600; line-height: 1.5; letter-spacing: 0.0057em; }
+  .info__row + .info__row { border-top: 1px solid var(--card-line); }
+  .info__label { flex: none; width: 5em; color: var(--point); }
+  .info__value { color: var(--ink-strong); white-space: nowrap; }
+
+  /* 장식 오브제 — 시안 좌표 그대로 */
+  .hero__deco {
+    position: absolute; z-index: 0; max-width: none; pointer-events: none;
+    left: calc(var(--x) * var(--u)); top: calc(var(--y) * var(--u));
+    width: calc(var(--w) * var(--u)); height: calc(var(--h) * var(--u));
+  }
+  /* 점 장식 — 시안의 점 이미지와 같은 좌표로 페이지 안에 직접 그린다.
+     이미지 파일 안에서 깜빡이게 하면 가장자리에 닿은 점이 흐려질 때 잘려서 '점 안의 작은 점'처럼 보여 바꿈.
+     깜빡임(시안에 없는 움직임, 요청으로 추가): 점을 세 묶음으로 나눠 한 묶음(약 1/3)씩 차례로 같이 연해졌다 돌아온다
+     → 어느 순간에나 점의 30~40%가 움직이는 중. 한 바퀴 6초, 가장 연할 때 20%(완전히 사라지지 않게 최소 15% 이상) */
+  .hero__deco--dots { overflow: visible; fill: var(--dot); }
+  .hero__deco--dots circle { animation: dot-twinkle 6s ease-in-out infinite; }
+  .hero__deco--dots circle:nth-child(3n+2) { animation-delay: -4s; }
+  .hero__deco--dots circle:nth-child(3n) { animation-delay: -2s; }
+  @keyframes dot-twinkle { 0%, 38%, 100% { opacity: 1; } 12%, 26% { opacity: .2; } }
+  @media (prefers-reduced-motion: reduce) { .hero__deco--dots circle { animation: none; } }
+  .hero__deco--dots-right { --x: 748; --y: 311; --w: 68.088; --h: 54.981; }
+  .hero__deco--dots-top { --x: 485; --y: 86; --w: 72.088; --h: 55; }
+  .hero__deco--burst-left { --x: 25.723; --y: 354.723; --w: 54.554; --h: 54.554; }
+  .hero__deco--cross { --x: 435; --y: 303; --w: 71; --h: 71; }
+  .hero__deco--flower-bottom { --x: 767; --y: 385; --w: 90; --h: 90; }
+  .hero__deco--flower-topleft { --x: -21.719; --y: 11.281; --w: 71.433; --h: 71.433; }
+  .hero__deco--flower-topright { --x: 767; --y: 10; --w: 61; --h: 61; }
+  .hero__deco--sparkle { --x: 395.728; --y: 76.728; --w: 55.546; --h: 55.544; }
+
+  /* 큐브 — 시안의 큐브 이미지 자리(484, 65, 328 × 341)에 영상 첫 장면의 큐브가 겹치도록 맞춤.
+     영상은 큐브가 돌 때 잘리지 않게 여백을 둔 720 정사각이라 자리보다 크게 놓는다.
+     (영상 첫 장면의 큐브 범위 = 가로 100~618, 세로 97~632 → 배율 0.634) */
+  .hero__cube {
+    position: absolute; z-index: 1; pointer-events: none;
+    left: calc(420.4 * var(--u)); top: calc(4.4 * var(--u));
+    width: calc(456.5 * var(--u)); height: calc(456.5 * var(--u));
+  }
+  /* 큐브는 mp4 를 canvas 에 그려서 보여 준다(아래 스크립트). 그리기 전·그릴 수 없을 때는 첫 장면 이미지가 보인다 */
+  .hero__cube-poster, .hero__cube-canvas { position: absolute; left: 0; top: 0; width: 100%; height: 100%; max-width: none; }
+  .hero__cube-canvas { visibility: hidden; }
+  .hero__cube.is-playing .hero__cube-canvas { visibility: visible; }
+  .hero__cube.is-playing .hero__cube-poster { visibility: hidden; }
+  /* 원본 video 는 canvas 에 장면만 공급한다 (화면에는 안 보임 — display:none 으로 숨기면 아이폰에서 재생이 멈출 수 있어 아주 작게 둠) */
+  .hero__cube-src { position: absolute; left: 50%; top: 50%; width: 2px; height: 2px; max-width: none; opacity: 0; pointer-events: none; }
+  /* 움직임 줄이기 설정: 영상 대신 시안의 정지 이미지를 시안 자리 그대로 */
+  .hero__cube-still {
+    display: none; position: absolute; z-index: 1; max-width: none;
+    left: calc(484 * var(--u)); top: calc(65 * var(--u));
+    width: calc(328 * var(--u)); height: calc(341 * var(--u));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__cube { display: none; }
+    .hero__cube-still { display: block; }
+  }
+
+  /* ===== 반응형 =====
+     본문 카드 폭 600 이상(PC · 태블릿): PC 시안(폭 847)을 폭에 비례해 그대로 줄임
+     본문 카드 폭 600 미만(모바일): 모바일 시안(폭 390) 구성으로 바꿈 — 이 구간에서는 --u 가 390 기준이 된다.
+       아래 히어로와 src/sections 의 각 섹션이 같은 @container 조건 안에 모바일 값을 적는다. */
+  @container page (max-width: 599px) {
+    .lp { --u: calc(100cqw / 390); }
+
+    /* S1 · 히어로 모바일 (기숙 Figma 6168:7295, 390 × 510) */
+    .hero {
+      min-height: calc(510 * var(--u));
+      padding: calc(40 * var(--u)) calc(20 * var(--u));
+    }
+    .hero__copy { width: auto; align-items: stretch; gap: calc(140 * var(--u)); }
+    .hero__heading { gap: calc(12 * var(--u)); }
+    .hero__lead { font-size: calc(18 * var(--u)); line-height: 1.445; letter-spacing: -0.0002em; }
+    /* 기숙 모바일 시안의 제목도 Gmarket Sans Bold (자간 -1.528 ÷ 40) */
+    .hero__title { font-size: calc(40 * var(--u)); line-height: 1.3; letter-spacing: -0.0382em; }
+
+    .info { padding: calc(12 * var(--u)) calc(20 * var(--u)); border-radius: calc(12 * var(--u)); }   /* 시안: 테두리 1 + 안쪽 12, 행 40 × 3 + 구분선 → 148 */
+    /* 15px 행간: 시안 값 1.625(24.375px)를 Figma 가 24px 로 그려 1.6 으로 적음 */
+    .info__row { font-size: calc(15 * var(--u)); line-height: 1.6; letter-spacing: 0.0096em; }
+    .info__label { width: calc(80 * var(--u)); }
+
+    /* 큐브 — 시안의 큐브 이미지 자리(190, 168, 184 × 191). 모집 정보 카드 아래로 깔린다 */
+    .hero__cube {
+      z-index: 0; left: calc(154.3 * var(--u)); top: calc(134 * var(--u));
+      width: calc(256.1 * var(--u)); height: calc(256.1 * var(--u));
+    }
+    .hero__cube-still {
+      z-index: 0; left: calc(190 * var(--u)); top: calc(168 * var(--u));
+      width: calc(184 * var(--u)); height: calc(191 * var(--u));
+    }
+
+    /* 장식 — 모바일 시안 좌표·크기 (2026-11-17 갱신본: 장식이 PC 보다 작아짐) */
+    .hero__deco--dots-right { --x: 162; --y: 280; --w: 45.2; --h: 36.5; }
+    .hero__deco--dots-top { --x: 330; --y: 180; --w: 47.9; --h: 36.5; }
+    .hero__deco--burst-left { --x: 3; --y: 295; --w: 40.6; --h: 40.6; }
+    .hero__deco--cross { --x: 37; --y: 201; --w: 50; --h: 50; }
+    .hero__deco--flower-bottom { --x: 342; --y: 280; --w: 70.2; --h: 70.2; }
+    .hero__deco--flower-topleft { --x: -14; --y: -12; --w: 51.5; --h: 51.5; }
+    .hero__deco--flower-topright { --x: 353; --y: 16; --w: 47.6; --h: 47.6; }
+    .hero__deco--sparkle { --x: 296; --y: 89; --w: 41.4; --h: 41.4; }
+  }
+
+  /* ===== 우측 패널 (기숙 시안 '콘텐츠 하이라이트' 6209:11524) — 재수우선선발반 랜딩의 패널과 같은 구조 ===== */
+  .panel__stack { display: flex; flex-direction: column; gap: 16px; }          /* 실서버: gap-[16px] */
+  .panel__group { display: flex; flex-direction: column; gap: 10px; }          /* 실서버: 프로모션·유의사항 묶음 gap-2.5 */
+  .pcard { background: var(--white); border-radius: 24px; }
+  /* 모집 요약 + 예약 버튼 */
+  .pcard--summary { padding: 40px 0; }
+  .summary__list { display: flex; flex-direction: column; gap: 20px; padding: 0 20px 30px; }
+  .summary__row { display: flex; align-items: center; }
+  .summary__row dt { flex: none; width: 116px; font-size: 18px; font-weight: 600; line-height: 1.445; letter-spacing: -0.0036px; color: var(--ink-alt); }
+  .summary__row dd { font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0.0912px; color: var(--ink-strong); white-space: pre-line; padding-top: 2px; }   /* 실서버와 같은 색·위치 */
+  .summary__cta { padding: 0 20px; }
+  .btn-pill {
+    display: flex; align-items: center; justify-content: center; width: 100%;
+    padding: 12px 16px; border-radius: 42px; background: var(--cta);
+    font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0.0912px; color: var(--cta-text);
+  }
+  /* 패널 아코디언 (특별 프로모션 / 유의사항) — 높이는 grid 0fr → 1fr 로 부드럽게 */
+  .pacc { padding: 20px; }
+  .pacc--promo { padding: 20px 30px; }                                          /* 기숙 시안: 특별 프로모션 카드만 좌우 30 */
+  .pacc__head { display: flex; align-items: center; gap: 10px; width: 100%; height: 40px; text-align: left; }
+  .pacc__icon { flex: none; width: 38px; height: 34.4px; }
+  .pacc__icon--circle { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50px; background: var(--fill); }
+  .pacc__icon--circle img { width: 20px; height: 20px; }
+  .pacc__title { flex: 1; font-size: 20px; font-weight: 600; line-height: 1.4; letter-spacing: -0.24px; color: var(--ink-strong); }
+  .pacc__chev { flex: none; width: 28px; height: 28px; }
+  .pacc__head[aria-expanded="true"] .pacc__chev { transform: rotate(180deg); }
+  .pacc__body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+  .pacc__head[aria-expanded="true"] + .pacc__body { grid-template-rows: 1fr; }
+  .pacc__inner { min-height: 0; overflow: hidden; visibility: hidden; transition: visibility 0s .3s; }
+  .pacc__head[aria-expanded="true"] + .pacc__body .pacc__inner { visibility: visible; transition-delay: 0s; }
+  .pacc__pad { padding-top: 10px; }
+  .pacc--notice .pacc__pad { padding-top: 12px; padding-bottom: 4px; }
+  .promo { display: flex; flex-direction: column; gap: 8px; }
+  .promo li { display: flex; gap: 3px; font-size: 15px; line-height: 1.625; letter-spacing: 0.144px; color: var(--ink); }
+  .promo li::before { content: "•"; flex: none; font-size: 12px; line-height: 20px; padding-top: 2px; }
+  .promo b { font-weight: 600; }
+  .notice__list li { font-size: 13px; line-height: 1.385; letter-spacing: 0.2522px; color: var(--ink-neutral); }
+  .notice__list li::before { content: "※ "; }
+  /* 통학 재수정규반 이동 배너 (기숙 시안 6209:13396 · 원본 6219:14335, 349×103)
+     바탕은 시안의 색 × 무늬 사진(곱하기 합성 + 흰 그라데이션)을 시안 배치대로 합친 그림(2배 크기) */
+  .pbanner {
+    display: flex; flex-direction: column; gap: 12px; padding: 20px; border-radius: 12px; color: var(--white);
+    background: var(--daily) url("assets/ui/banner_daily.webp") center / 100% 100% no-repeat;
+  }
+  .pbanner__title { font-family: "Itall", Pretendard, sans-serif; font-size: 20px; font-weight: 700; line-height: 1.35; letter-spacing: 0.02em; }
+  .pbanner__link { display: flex; align-items: center; gap: 0; font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0.0912px; }
+  .pbanner__link img { width: 24px; height: 24px; }   /* 시안: Arrows/arrow-up-right 24, 글자에 붙음 */
+  @media (prefers-reduced-motion: reduce) {
+    .pacc__body, .pacc__inner { transition: none; }
+  }
+
+  /* 스크롤 시 따라오는 패널 (1024 이상): 펼쳐서 화면보다 길어지면 패널 안에서 스크롤(스크롤바 숨김) */
+  @media (min-width: 1024px) {
+    .panel {
+      --panel-top: 96px;   /* 고정 GNB 76 + 20 */
+      position: sticky; top: var(--panel-top);
+      max-height: calc(100vh - 150px); overflow-y: auto;          /* 실서버와 같은 높이 제한, 감싸는 틀은 모서리 없음 */
+      overscroll-behavior: contain; scrollbar-width: none;
+    }
+    .panel__stack { padding-bottom: 56px; }                       /* 실서버: lg:pb-14 */
+    .panel::-webkit-scrollbar { display: none; }
+  }
+  @media (max-width: 1279px) {
+    .pcard { border-radius: 16px; }
+    .pcard--summary { padding: 20px; }
+    .summary__list { padding: 0 0 20px; gap: 14px; }
+    .summary__row dt { width: 84px; font-size: 15px; line-height: 1.625; }
+    .summary__row dd { font-size: 13px; line-height: 1.385; }
+    .summary__cta { padding: 0; }
+    .btn-pill { padding: 8px 16px; font-size: 15px; line-height: 1.625; }
+    .pacc, .pacc--promo { padding: 8px 20px; }                    /* 실서버: px-5 py-2 (1280 미만) */
+    .pacc__title { font-size: 18px; }
+    .pbanner__title { font-size: 18px; }
+    .pbanner__link { font-size: 14px; }
+    .wrap { border-radius: 0; }
+  }
+  @media (max-width: 1023px) {
+    .panel { padding: 0 20px; }
+    .page-head { max-width: 768px; padding: 28px 20px 0; }
+    .page-head__title { font-size: 22px; white-space: normal; }
+    .page-head__back { display: block; }
+    .crumb { display: none; }
+  }
+  /* 패널이 본문 위로 올라가는 폭(1024 미만)에서는 통학 이동 배너를 패널에서 빼고 페이지 맨 아래에 둔다
+     (태블릿: 본문 카드 아래 띠 s12-strip.after.html / 모바일: 본문 안 마지막 블록 s12-strip.html) */
+  @media (max-width: 1023px) {
+    .pbanner { display: none; }
+  }
+
+
+
+
+
+  /* 아주 좁은 화면(300 미만, 예: 폴드 접은 화면 280) — 상단 바의 로고 + '의장 직통메일' + 메뉴가 288px 를 차지해
+     화면보다 넓어지면서 페이지가 가로로 밀렸다. 이 폭에서는 상단 바의 '의장 직통메일'만 숨긴다(전체 메뉴 안에는 그대로 있음) */
+  @media (max-width: 299px) {
+    .gnb-bar .gnb-bar__box { display: none; }
+  }
+
+  /* ===== KV 테스트 페이지 전용: 히어로만 화면 가운데에 + 영상 내려받기 ===== */
+  .kvt { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px; padding: 40px 16px; background: var(--page-bg, #f1f2f4); }
+  .kvt .wrap { width: 100%; max-width: 847px; margin: 0; }
+  .kvt-dl { width: 100%; max-width: 847px; display: flex; flex-direction: column; gap: 12px; }
+  .kvt-dl__title { margin: 0; font-size: 16px; font-weight: 700; line-height: 1.5; color: #0d0f14; }
+  .kvt-dl__list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .kvt-dl__btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 999px; background: #0d0f14; color: #fff; font-size: 15px; font-weight: 600; line-height: 1.4; text-decoration: none; transition: background-color .2s ease, transform .2s ease; }
+  .kvt-dl__btn:hover { background: #2e3138; }
+  .kvt-dl__btn:active { transform: scale(.97); }
+  .kvt-dl__btn:focus-visible { outline: 2px solid #0d0f14; outline-offset: 3px; }
+  .kvt-dl__btn svg { width: 20px; height: 20px; flex: none; }
+  .kvt-dl__size { font-weight: 400; opacity: .7; }
+  .kvt-dl__note { margin: 0; font-size: 13px; line-height: 1.5; color: #5a5c63; }
+  @media (max-width: 599px) {
+    .kvt { justify-content: flex-start; gap: 24px; padding: 0 0 40px; }
+    .kvt-dl { padding: 0 16px; }
+    .kvt-dl__list { flex-direction: column; }
+    .kvt-dl__btn { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+<main class="kvt" aria-label="2028 기숙 재수정규반 KV 테스트">
+  <div class="wrap">
+    <div class="lp">
+        <section class="hero" aria-labelledby="hero-title">
+          <svg class="hero__deco hero__deco--dots hero__deco--dots-right" viewBox="0 0 68.0874 54.9806" aria-hidden="true" focusable="false">
+            <circle cx="3.47087" cy="3.47087" r="3.47087"/>
+            <circle cx="49.131" cy="3.47087" r="3.47087"/>
+            <circle cx="33.4709" cy="3.47087" r="3.47087"/>
+            <circle cx="18.4709" cy="3.47087" r="3.47087"/>
+            <circle cx="49.131" cy="19.4903" r="3.47087"/>
+            <circle cx="18.4709" cy="19.4903" r="3.47087"/>
+            <circle cx="3.47087" cy="19.4126" r="3.47087"/>
+            <circle cx="64.4709" cy="19.4903" r="3.47087"/>
+            <circle cx="64.4709" cy="35.4709" r="3.47087"/>
+            <circle cx="64.4709" cy="51.4709" r="3.47087"/>
+            <circle cx="3.47087" cy="35.3544" r="3.47087"/>
+            <circle cx="18.4709" cy="51.5097" r="3.47087"/>
+            <circle cx="3.47087" cy="51.2961" r="3.47087"/>
+            <circle cx="64.6165" cy="3.47087" r="3.47087"/>
+          </svg>
+          <svg class="hero__deco hero__deco--dots hero__deco--dots-top" viewBox="0 0 72.0874 55" aria-hidden="true" focusable="false">
+            <circle cx="3.47087" cy="3.47087" r="3.47087"/>
+            <circle cx="53.1311" cy="3.47087" r="3.47087"/>
+            <circle cx="53.1311" cy="19.4903" r="3.47087"/>
+            <circle cx="53.1311" cy="35.5097" r="3.47087"/>
+            <circle cx="3.47087" cy="51.5291" r="3.47087"/>
+            <circle cx="68.6165" cy="3.47087" r="3.47087"/>
+          </svg>
+          <img class="hero__deco hero__deco--burst-left" src="assets/deco_burst_left.svg" alt="" width="55" height="55" aria-hidden="true">
+          <img class="hero__deco hero__deco--cross" src="assets/deco_cross.svg" alt="" width="71" height="71" aria-hidden="true">
+          <img class="hero__deco hero__deco--flower-bottom" src="assets/deco_flower_bottom.svg" alt="" width="90" height="90" aria-hidden="true">
+          <img class="hero__deco hero__deco--flower-topleft" src="assets/deco_flower_topleft.svg" alt="" width="71" height="71" aria-hidden="true">
+          <img class="hero__deco hero__deco--flower-topright" src="assets/deco_flower_topright.svg" alt="" width="61" height="61" aria-hidden="true">
+          <img class="hero__deco hero__deco--sparkle" src="assets/deco_sparkle.svg" alt="" width="56" height="56" aria-hidden="true">
+
+          <div class="hero__copy">
+            <div class="hero__heading">
+              <p class="hero__lead">누적된 몰입공부 시간, 합격으로 <span class="hero__point">BOOM!</span></p>
+              <h2 class="hero__title" id="hero-title">
+                <span class="hero__title-line">2028학년도</span>
+                <span class="hero__title-line hero__point">기숙 재수정규반</span>
+              </h2>
+            </div>
+
+            <dl class="info">
+              <div class="info__row">
+                <dt class="info__label">모집 대상</dt>
+                <dd class="info__value">2028학년도 N수생 / 검정고시생</dd>
+              </div>
+              <div class="info__row">
+                <dt class="info__label">접수 방법</dt>
+                <dd class="info__value">온라인 사전 예약 (추후 방문 결제)</dd>
+              </div>
+              <div class="info__row">
+                <dt class="info__label">입소일</dt>
+                <dd class="info__value">2027.02.14(일) ~</dd>
+              </div>
+            </dl>
+          </div>
+
+          <!-- 큐브 영상: 12초 무한 반복. 재수정규반 → 기숙 → 재수정규반
+               assets/cube_loop.mp4 는 위쪽 절반 = 큐브 색, 아래쪽 절반 = 투명 정보(흰색 = 보이는 곳)인 720 × 1440 영상 -->
+          <div class="hero__cube" aria-hidden="true">
+            <img class="hero__cube-poster" src="assets/cube_poster.webp" alt="" width="720" height="720">
+            <canvas class="hero__cube-canvas" width="720" height="720"></canvas>
+            <video class="hero__cube-src" data-src="assets/cube_loop.mp4" width="720" height="1440" muted loop playsinline preload="auto"></video>
+          </div>
+          <img class="hero__cube-still" src="assets/cube_still.webp" alt="" width="328" height="341" aria-hidden="true">
+        </section>
+    </div>
+  </div>
+  <section class="kvt-dl" aria-labelledby="kvt-dl-title">
+    <h2 class="kvt-dl__title" id="kvt-dl-title">KV 큐브 영상 내려받기</h2>
+    <ul class="kvt-dl__list">
+      <li><a class="kvt-dl__btn" href="assets/download/kv_cube_720.mp4" download="2028_기숙_재수정규반_KV_720.mp4"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9.5M5.5 8.5 10 13l4.5-4.5M4 16h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>mp4 · 720 <span class="kvt-dl__size">3.8MB</span></a></li>
+      <li><a class="kvt-dl__btn" href="assets/download/kv_cube_1440.mp4" download="2028_기숙_재수정규반_KV_1440.mp4"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9.5M5.5 8.5 10 13l4.5-4.5M4 16h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>mp4 · 1440 고화질 <span class="kvt-dl__size">11.2MB</span></a></li>
+      <li><a class="kvt-dl__btn" href="assets/download/kv_cube_720_alpha.webm" download="2028_기숙_재수정규반_KV_720_alpha.webm"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9.5M5.5 8.5 10 13l4.5-4.5M4 16h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>투명 배경 webm · 720 <span class="kvt-dl__size">4.2MB</span></a></li>
+    </ul>
+    <p class="kvt-dl__note">투명 배경 영상(webm)은 편집 프로그램용입니다. 웹에서는 mp4를 씁니다.</p>
+  </section>
+</main>
+
+<script>
+/* 큐브 영상 그리기
+   mp4 는 투명을 담지 못하고, 투명을 담는 다른 영상 형식은 사파리에서 투명이 안 된다. 그래서 mp4 한 장에
+   위쪽 절반 = 큐브 색, 아래쪽 절반 = 투명 정보를 담아 두고, 여기서 둘을 합쳐 canvas 에 그린다.
+   (위쪽 절반의 큐브 바깥은 검정이 아니라 큐브 가장자리 색으로 채워져 있다 — 검정이면 합쳤을 때 테두리에 어두운 선이 생김)
+   그릴 수 없는 환경(WebGL 없음 · 자동 재생 막힘)에서는 첫 장면 이미지가 그대로 보인다.
+   영상 주소는 video 의 data-src 에 적어 두고, 아래에서 끝까지 받은 뒤에 넣는다. */
+(function () {
+  'use strict';
+  var box = document.querySelector('.hero__cube');
+  if (!box || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;   // 움직임 줄이기: CSS 가 정지 이미지를 보여 줌
+  var video = box.querySelector('.hero__cube-src');
+  var canvas = box.querySelector('.hero__cube-canvas');
+  var gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: false });
+  if (!gl) return;
+
+  function shader(type, src) {
+    var s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  var HEAD = '#ifdef GL_FRAGMENT_PRECISION_HIGH\nprecision highp float;\n#else\nprecision mediump float;\n#endif\n';
+  var prog = gl.createProgram();
+  gl.attachShader(prog, shader(gl.VERTEX_SHADER, HEAD +
+    'attribute vec2 p; varying vec2 uv; void main() { uv = p * 0.5 + 0.5; gl_Position = vec4(p, 0.0, 1.0); }'));
+  gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, HEAD +
+    'uniform sampler2D t; uniform float e; varying vec2 uv;' +
+    'void main() {' +
+    '  vec3 c = texture2D(t, vec2(uv.x, mix(0.5 + e, 1.0, uv.y))).rgb;' +        // 위쪽 절반: 색
+    '  float a = texture2D(t, vec2(uv.x, mix(0.0, 0.5 - e, uv.y))).r;' +          // 아래쪽 절반: 투명 정보
+    '  a = clamp((a - 0.02) / 0.96, 0.0, 1.0);' +                                 // 영상 압축으로 생긴 아주 옅은 얼룩 제거
+    '  gl_FragColor = vec4(c * a, a);' +                                         // 색에 투명도를 곱해 내보냄
+    '}'));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+  gl.useProgram(prog);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  var loc = gl.getAttribLocation(prog, 'p');
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+  gl.uniform1f(gl.getUniformLocation(prog, 'e'), 0.5 / 1440);   // 두 절반의 경계가 섞이지 않게 반 픽셀 안쪽만 읽음
+
+  var broken = false;
+  function draw() {
+    if (broken || video.readyState < 2) return;
+    try {
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, video);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    } catch (err) {
+      // 영상을 canvas 에 그릴 수 없는 경우(다른 도메인의 영상에 허용 설정이 없을 때 등): 그리기를 멈추고 첫 장면 이미지로 되돌린다
+      broken = true;
+      box.classList.remove('is-playing');
+      video.pause();
+      return;
+    }
+    box.classList.add('is-playing');   // 첫 장면을 그린 뒤에야 이미지 → canvas 로 바꿈 (첫 장면이 같은 그림이라 티가 나지 않음)
+  }
+  if ('requestVideoFrameCallback' in video) {
+    video.requestVideoFrameCallback(function next() { draw(); video.requestVideoFrameCallback(next); });
+  } else {
+    (function next() { draw(); requestAnimationFrame(next); })();
+  }
+  function start() {
+    video.muted = true;
+    var played = video.play();
+    if (played && played.catch) played.catch(function () {});   // 자동 재생이 막히면 첫 장면 이미지 그대로
+  }
+  // 영상을 끝까지 받은 뒤에 재생을 시작한다. 받는 동안에는 첫 장면 이미지가 보인다.
+  // (조금 받자마자 재생하면 느린 통신에서 큐브가 돌다가 멈칫한다 — 2026-11-16 개발자 의견으로 바꿈)
+  var url = video.getAttribute('data-src');
+  if (window.fetch && window.URL && URL.createObjectURL) {
+    fetch(url).then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.blob();
+    }).then(function (blob) {
+      video.src = URL.createObjectURL(new Blob([blob], { type: 'video/mp4' }));
+      start();
+    }).catch(function () {     // 통째로 받지 못하면 예전처럼 받으면서 재생
+      video.src = url;
+      start();
+    });
+  } else {
+    video.src = url;
+    start();
+  }
+})();
+</script>
+</body>
+</html>
