@@ -132,7 +132,7 @@
     left: calc(var(--x) * var(--u)); top: calc(var(--y) * var(--u));
     width: calc(var(--w) * var(--u)); height: calc(var(--h) * var(--u));
   }
-  /* 점 장식 — 시안의 점 이미지(assets/deco_dots_*.svg)와 같은 좌표로 페이지 안에 직접 그린다.
+  /* 점 장식 — 시안의 점 이미지와 같은 좌표로 페이지 안에 직접 그린다.
      이미지 파일 안에서 깜빡이게 하면 가장자리에 닿은 점이 흐려질 때 잘려서 '점 안의 작은 점'처럼 보여 바꿈.
      깜빡임(시안에 없는 움직임, 요청으로 추가): 점을 세 묶음으로 나눠 한 묶음(약 1/3)씩 차례로 같이 연해졌다 돌아온다
      → 어느 순간에나 점의 30~40%가 움직이는 중. 한 바퀴 6초, 가장 연할 때 20%(완전히 사라지지 않게 최소 15% 이상) */
@@ -765,18 +765,18 @@
   /* 섹션에 들어오면 한 번 채워지기: 스크립트가 .is-ready 를 붙이면 번호·선이 회색에서 시작하고,
      단계 목록이 화면에 들어와 .is-in 이 붙으면 01 → 02 → 03 → 04 순서로 번호가 분홍이 되고 그 아래 선이 위에서부터 차오른다.
      스크립트가 없거나 움직임 줄이기 설정이면 시안 그대로(모두 분홍) */
-  .s06.is-ready .s06__no { background: var(--s06-off); transition: background-color .3s ease; }
+  .s06.is-ready .s06__no { background: var(--s06-off); transition: background-color .25s ease; }
   .s06.is-ready .s06__rail::after {
     background: linear-gradient(var(--s06-rail), var(--s06-rail)) top / 100% 0% no-repeat, var(--s06-line);
-    transition: background-size .45s ease-in-out .15s;
+    transition: background-size .36s ease-in-out .12s;
   }
   .s06.is-in .s06__no { background: var(--point); }
   .s06.is-in .s06__rail::after { background-size: 100% 100%, auto; }
-  .s06.is-in .s06__step:nth-child(2) .s06__no { transition-delay: .6s; }
-  .s06.is-in .s06__step:nth-child(2) .s06__rail::after { transition-delay: .75s; }
-  .s06.is-in .s06__step:nth-child(3) .s06__no { transition-delay: 1.2s; }
-  .s06.is-in .s06__step:nth-child(3) .s06__rail::after { transition-delay: 1.35s; }
-  .s06.is-in .s06__step:nth-child(4) .s06__no { transition-delay: 1.8s; }
+  .s06.is-in .s06__step:nth-child(2) .s06__no { transition-delay: .48s; }
+  .s06.is-in .s06__step:nth-child(2) .s06__rail::after { transition-delay: .6s; }
+  .s06.is-in .s06__step:nth-child(3) .s06__no { transition-delay: .96s; }
+  .s06.is-in .s06__step:nth-child(3) .s06__rail::after { transition-delay: 1.08s; }
+  .s06.is-in .s06__step:nth-child(4) .s06__no { transition-delay: 1.44s; }
 
   /* 카드 — 시안의 테두리 1px 는 카드 크기 바깥에 더해진다(안쪽 여백 20 + 테두리 1) */
   .s06__card {
@@ -1581,8 +1581,8 @@
     --lpm-badge-ink: var(--point);              /* point #ff4c6a (모바일 시안은 color/semantic/primary/normal #e60f19) */
     width: min(calc(var(--lpm-w) * var(--mu)), calc(100% - 40px));
     max-width: none;
-    max-height: calc(100vh - 40px);
-    max-height: calc(100dvh - 40px);
+    max-height: min(600px, calc(100vh - 40px));     /* PC 모달 최대 높이 600 */
+    max-height: min(600px, calc(100dvh - 40px));
     margin: auto; padding: 0; border: 0; overflow: hidden;
     border-radius: calc(16 * var(--mu));
     background: var(--white);                   /* color/semantic/background/normal */
@@ -1647,6 +1647,26 @@
     padding: var(--lpm-gap) var(--lpm-pad) var(--lpm-pad);
   }
   .lpm--bio .lpm__scroll { padding-top: calc(20 * var(--mu)); }
+
+  /* --- 모달 안 스크롤바: 얇은 막대(4) · 둥근 끝 · 바탕 없음. 모달 가장자리·둥근 모서리에 닿지 않게 띄움 --- */
+  .lpm__scroll, .lpm--video, .lpm__day { --lpm-bar: #c4c6c8; --lpm-bar-hover: #a3a5a8; }
+  .lpm__scroll::-webkit-scrollbar, .lpm--video::-webkit-scrollbar { width: 24px; }   /* = 오른쪽 여백(PC 24) */
+  .lpm__day::-webkit-scrollbar { height: 12px; }
+  /* 스크롤바 칸이 오른쪽 여백 자리를 그대로 쓴다: 칸을 늘 확보하고 오른쪽 여백은 0 → 스크롤이 있든 없든 글 오른쪽 끝이 닫기 버튼과 맞음 */
+  .lpm__scroll { scrollbar-gutter: stable; padding-right: 0; }
+  .lpm__scroll::-webkit-scrollbar-track, .lpm--video::-webkit-scrollbar-track { margin: 16px 0; background: transparent; }
+  .lpm__day::-webkit-scrollbar-track { background: transparent; }
+  .lpm__scroll::-webkit-scrollbar-thumb, .lpm--video::-webkit-scrollbar-thumb, .lpm__day::-webkit-scrollbar-thumb {
+    border: 4px solid transparent; border-radius: 9999px; background: var(--lpm-bar) padding-box;
+  }
+  /* 세로 막대는 오른쪽 여백 칸의 가운데: (24 - 4) ÷ 2 = 10 */
+  .lpm__scroll::-webkit-scrollbar-thumb, .lpm--video::-webkit-scrollbar-thumb { border-width: 0 10px; }
+  .lpm__scroll::-webkit-scrollbar-thumb:hover, .lpm--video::-webkit-scrollbar-thumb:hover, .lpm__day::-webkit-scrollbar-thumb:hover { background-color: var(--lpm-bar-hover); }
+  /* 위 방식을 모르는 브라우저(파이어폭스)는 표준 속성으로 얇게 */
+  @supports not selector(::-webkit-scrollbar) {
+    .lpm__scroll, .lpm--video, .lpm__day { scrollbar-width: thin; scrollbar-color: var(--lpm-bar) transparent; }
+    .lpm__scroll { padding-right: calc(var(--lpm-pad) - 8px); }   /* thin 막대 칸은 약 8 */
+  }
   .lpm__panels.is-sizing { overflow: hidden; }  /* 탭을 바꿀 때 높이가 부드럽게 변하는 동안만 */
   .lpm__panel { display: flex; flex-direction: column; gap: var(--lpm-gap); }
   .lpm__panel[hidden] { display: none; }
@@ -1716,8 +1736,8 @@
   .lpm--video {
     --lpm-w: 900;
     --lpm-chrome: calc(100 * var(--mu));        /* 영상 말고 위아래로 쓰는 높이: 여백 24 + 머리 32 + 간격 20 + 여백 24 */
-    width: min(calc(var(--lpm-w) * var(--mu)), calc(100% - 40px), calc((100vh - 40px - var(--lpm-chrome)) * 16 / 9 + var(--lpm-pad) * 2));
-    width: min(calc(var(--lpm-w) * var(--mu)), calc(100% - 40px), calc((100dvh - 40px - var(--lpm-chrome)) * 16 / 9 + var(--lpm-pad) * 2));
+    width: min(calc(var(--lpm-w) * var(--mu)), calc(100% - 40px), calc((min(600px, 100vh - 40px) - var(--lpm-chrome)) * 16 / 9 + var(--lpm-pad) * 2));
+    width: min(calc(var(--lpm-w) * var(--mu)), calc(100% - 40px), calc((min(600px, 100dvh - 40px) - var(--lpm-chrome)) * 16 / 9 + var(--lpm-pad) * 2));
     overflow-y: auto;
   }
   .lpm__video { flex: none; margin: calc(20 * var(--mu)) var(--lpm-pad) var(--lpm-pad); aspect-ratio: 16 / 9; background: var(--ink-strong); }
@@ -1753,14 +1773,23 @@
 
   /* ===== 모바일 (화면 폭 599px 이하) — 모바일 시안(모달 폭 350) 값 ===== */
   @media (max-width: 599px) {
+    /* 모바일 오른쪽 여백 20 → 스크롤바 칸 20, 막대는 가운데 ((20 - 4) ÷ 2 = 8) */
+    .lpm__scroll::-webkit-scrollbar, .lpm--video::-webkit-scrollbar { width: 20px; }
+    .lpm__scroll::-webkit-scrollbar-thumb, .lpm--video::-webkit-scrollbar-thumb { border-width: 0 8px; }
     .lpm {
+      max-height: min(500px, calc(100vh - 40px));   /* 모바일 모달 최대 높이 500 */
+      max-height: min(500px, calc(100dvh - 40px));
       --mu: min(1px, calc((100vw - 40px) / 350));
       --lpm-w: 350;
       --lpm-pad: calc(20 * var(--mu));
       --lpm-gap: calc(24 * var(--mu));
     }
     .lpm--bio { --lpm-badge-ink: #e60f19; }    /* 모바일 시안의 배지 글자색: color/semantic/primary/normal */
-    .lpm--video { --lpm-chrome: calc(92 * var(--mu)); }
+    .lpm--video {
+      --lpm-chrome: calc(92 * var(--mu));
+      width: min(calc(var(--lpm-w) * var(--mu)), calc(100% - 40px), calc((min(500px, 100vh - 40px) - var(--lpm-chrome)) * 16 / 9 + var(--lpm-pad) * 2));
+      width: min(calc(var(--lpm-w) * var(--mu)), calc(100% - 40px), calc((min(500px, 100dvh - 40px) - var(--lpm-chrome)) * 16 / 9 + var(--lpm-pad) * 2));
+    }
     .lpm--centers .lpm__panel { gap: calc(20 * var(--mu)); }
     .lpm__promo { flex-direction: column; gap: calc(8 * var(--mu)); padding: calc(12 * var(--mu)) calc(14 * var(--mu)); font-size: calc(14 * var(--mu)); line-height: 1.429; letter-spacing: 0.0145em; }
     .lpm__promo-label { font-size: calc(13 * var(--mu)); line-height: 1.385; letter-spacing: 0.0194em; }
@@ -1799,27 +1828,6 @@
   .site-head button, .gnb-m button { padding: 0; border: 0; background: none; cursor: pointer; }
   .site-head { position: sticky; top: 0; z-index: 100; background: #fff; }
   .gnb-lock, .gnb-lock body { overflow: hidden; }
-
-  /* 상단 띠배너 — PC 54 / MO 60 */
-  .site-banner { background: #0f0f14; }
-  .site-banner__inner { display: grid; grid-template-columns: repeat(3, 1fr); height: 60px; }
-  .site-banner__item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; padding-top: 2px; }
-  .site-banner__item img { width: auto; height: 15px; }
-  .site-banner__item span { font-size: 14px; font-weight: 800; line-height: 1.5; }
-  .site-banner__red { color: #f93026; }
-  .site-banner__yellow { color: #fcc800; }
-  .site-banner__green { color: #00b450; }
-  @media (min-width: 660px) {
-    .site-banner__item { flex-direction: row; gap: 8px; }
-  }
-  @media (min-width: 1024px) {
-    .site-banner__inner { max-width: 1100px; height: 54px; margin: 0 auto; padding: 0 32px; }
-    .site-banner__item { padding-top: 0; }
-    .site-banner__item:first-child { justify-content: flex-start; }
-    .site-banner__item:last-child { justify-content: flex-end; }
-    .site-banner__item img { height: 18px; }
-    .site-banner__item span { font-size: 16px; }
-  }
 
   /* 공용 — 수능 D-day · 패밀리 사이트 목록 */
   .gnb__dday { padding: 4px 12px; border-radius: 8px; background: #0d0f14; color: #fff; font-family: Pretendard, sans-serif; font-size: 13px; line-height: 1.5; white-space: nowrap; }
@@ -1930,7 +1938,6 @@
   .gnb-m__btn--dark { border: 1px solid #3e3a39; background: #000; color: #fff !important; }
   .gnb-m__btn--line { border: 1px solid #e6e6e6; background: #fff; color: #000 !important; }
   .gnb-m__btn--line em { margin: 0 .25em; color: #c40f06; font-style: normal; }
-  .gnb-m__btn--green { min-height: 36px; background: #00b450; color: #fff !important; }
   .gnb-m__list { margin-top: 32px !important; }
   .gnb-m__row { display: flex; align-items: center; justify-content: space-between; height: 60px; border-bottom: 1px solid #e6e6e6; }
   .gnb-m__label { flex: 1; color: #000 !important; font-size: 16px; font-weight: 800; line-height: 1.8; }
@@ -1947,15 +1954,6 @@
   .gnb-m__badge--dorm { background: #00b450; }
   @keyframes gnb-unfold { from { opacity: 0; transform: scaleY(.6); } to { opacity: 1; transform: scaleY(1); } }
 
-  /* 기숙 메뉴 — 로고 + 테두리 #CCC 버튼 + 녹색 버튼, 행 높이 60·구분선 #CCC */
-  .gnb-m--dorm .gnb-m__top { height: 65px; }
-  .gnb-m--dorm .gnb-m__body { display: flex; flex-direction: column; gap: 20px; padding-top: 20px; }
-  .gnb-m--dorm .gnb-m__stack { margin-top: 0; gap: 8px; }
-  .gnb-m--dorm .gnb-m__btn--line { border-color: #ccc; color: #3e3a39 !important; }
-  .gnb-m--dorm .gnb-m__list { margin-top: 0 !important; }
-  .gnb-m--dorm .gnb-m__row { border-color: #ccc; }
-  .gnb-m--dorm .gnb-m__label { color: #3e3a39 !important; }
-
   /* 패밀리 사이트 바텀시트 */
   .gnb-sheet { position: fixed; inset: 0; z-index: 1002; display: flex; align-items: flex-end; }
   .gnb-sheet[hidden] { display: none; }
@@ -1968,7 +1966,7 @@
   .gnb-sheet.is-open .gnb-sheet__panel { transform: translateY(0); }
   .gnb-sheet__title { margin: 0 0 8px; color: #222; font-size: 18px; font-weight: 800; line-height: 1.4; }
 
-  /* 맨 위로 버튼 (GNB 공용) — MO 우하단 20 / 모바일 하단 바 있으면 그 위 / PC 우하단 40 */
+  /* 맨 위로 버튼 (GNB 공용) — MO 우하단 20 / PC 우하단 40 */
   .gnb-top {
     position: fixed; z-index: 50; right: 20px; bottom: 20px; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%;
     background: none; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .3s;
@@ -1976,8 +1974,7 @@
   .gnb-top img { display: block; width: 40px; height: 40px; }
   .gnb-top.is-show { opacity: 1; pointer-events: auto; }
   .gnb-top:focus-visible { outline: 2px solid #3e3a39; outline-offset: 2px; }
-  body:has(.tabbar) .gnb-top { bottom: 76px; }
-  @media (min-width: 1024px) { .gnb-top, body:has(.tabbar) .gnb-top { right: 40px; bottom: 40px; } }
+  @media (min-width: 1024px) { .gnb-top { right: 40px; bottom: 40px; } }
 
   @media (prefers-reduced-motion: reduce) {
     .gnb__shine, .gnb-m__sub { animation: none; }
@@ -3593,7 +3590,8 @@
      시안: 잇올패스 PC 6134:5·6134:49·6134:87 / MO 6160:101·6161:134·6161:207
            인강패스 PC 6134:148·6134:190 / MO 6155:8744·6155:8789
            실전바이오리듬 PC 6134:226 / MO 6164:99 · 영상 PC 6210:6535 / MO 6210:6617
-     <br class="lpm__br-mo"> 는 모바일 시안의 줄바꿈 자리(PC 에서는 숨김) -->
+           해당 센터/캠프 리스트 PC 6297:4009 / MO 6297:4148
+     클래스 lpm__br-mo 줄바꿈은 모바일 시안의 줄바꿈 자리(PC 에서는 숨김) -->
 
 <!-- ===== 1. 잇올패스 (탭 3개) ===== -->
 <dialog class="lpm" id="lpm-itallpass" role="dialog" aria-modal="true" aria-labelledby="lpm-itallpass-title" tabindex="-1">
@@ -4600,7 +4598,6 @@
     var frame = document.createElement('iframe');
     frame.title = name;
     frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
-    frame.setAttribute('allowfullscreen', '');
     frame.referrerPolicy = 'strict-origin-when-cross-origin';
     frame.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&playsinline=1';
     box.appendChild(frame);
