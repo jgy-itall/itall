@@ -313,24 +313,6 @@
   }
 
 
-  /* ===== KV 테스트 페이지 전용: 영상 내려받기 ===== */
-  .kvt-dl { display: flex; flex-direction: column; gap: calc(12 * var(--u)); padding: calc(40 * var(--u)) calc(40 * var(--u)) calc(48 * var(--u)); border-top: 1px solid #e1e3e5; }
-  .kvt-dl__title { margin: 0; font-size: calc(18 * var(--u)); font-weight: 700; line-height: 1.45; color: #0d0f14; }
-  .kvt-dl__list { display: flex; flex-wrap: wrap; gap: calc(8 * var(--u)); margin: 0; padding: 0; list-style: none; }
-  .kvt-dl__btn { display: inline-flex; align-items: center; gap: calc(8 * var(--u)); min-height: 44px; padding: 0 calc(20 * var(--u)); border-radius: 999px; background: #0d0f14; color: #fff; font-size: calc(15 * var(--u)); font-weight: 600; line-height: 1.4; text-decoration: none; transition: background-color .2s ease, transform .2s ease; }
-  .kvt-dl__btn:hover { background: #2e3138; }
-  .kvt-dl__btn:active { transform: scale(.97); }
-  .kvt-dl__btn:focus-visible { outline: 2px solid #0d0f14; outline-offset: 3px; }
-  .kvt-dl__btn svg { width: calc(20 * var(--u)); height: calc(20 * var(--u)); flex: none; }
-  .kvt-dl__size { font-weight: 400; opacity: .7; }
-  .kvt-dl__note { margin: 0; font-size: calc(13 * var(--u)); line-height: 1.5; color: #5a5c63; }
-  @container page (max-width: 599px) {
-    .kvt-dl { padding: calc(32 * var(--u)) calc(20 * var(--u)) calc(40 * var(--u)); }
-    .kvt-dl__title { font-size: calc(16 * var(--u)); }
-    .kvt-dl__list { flex-direction: column; }
-    .kvt-dl__btn { justify-content: center; font-size: calc(14 * var(--u)); }
-  }
-
 
   /* ============ 잇올 사이트 GNB (gen_gnb.py 생성 · 실측 www/dormitory.itall.com) ============ */
   @font-face { font-family: "nanumSquareNeo"; font-weight: 400; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-bRg.woff") format("woff"); }
@@ -921,15 +903,7 @@
           <img class="hero__cube-still" src="assets/cube_still.webp" alt="" width="328" height="341" aria-hidden="true">
         </section>
 
-        <section class="kvt-dl" aria-labelledby="kvt-dl-title">
-          <h2 class="kvt-dl__title" id="kvt-dl-title">KV 큐브 영상 내려받기</h2>
-          <ul class="kvt-dl__list">
-            <li><a class="kvt-dl__btn" href="assets/download/kv_cube_720.mp4" download="2028_기숙_재수정규반_KV_720.mp4"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9.5M5.5 8.5 10 13l4.5-4.5M4 16h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>mp4 · 720 <span class="kvt-dl__size">3.8MB</span></a></li>
-            <li><a class="kvt-dl__btn" href="assets/download/kv_cube_1440.mp4" download="2028_기숙_재수정규반_KV_1440.mp4"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9.5M5.5 8.5 10 13l4.5-4.5M4 16h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>mp4 · 1440 고화질 <span class="kvt-dl__size">11.2MB</span></a></li>
-            <li><a class="kvt-dl__btn" href="assets/download/kv_cube_720_alpha.webm" download="2028_기숙_재수정규반_KV_720_alpha.webm"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9.5M5.5 8.5 10 13l4.5-4.5M4 16h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>투명 배경 webm · 720 <span class="kvt-dl__size">4.2MB</span></a></li>
-          </ul>
-          <p class="kvt-dl__note">투명 배경 영상(webm)은 편집 프로그램용입니다. 웹에서는 mp4를 씁니다.</p>
-        </section>
+
       </div>
     </div>
 
