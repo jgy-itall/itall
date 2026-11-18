@@ -2136,15 +2136,14 @@
   .lpm__hscroll::-webkit-scrollbar-thumb:hover { background-color: var(--lpm-bar-hover); }
   @supports (-moz-appearance: none) { .lpm__hscroll { scrollbar-width: thin; scrollbar-color: var(--lpm-bar) transparent; } }
 
-  /* --- 하루 일과표 (탭 2개 · 표 한 개씩) ---
-     시안 행 높이 PC 40 · 모바일 38. 화면이 낮으면 표가 모달 안에 다 보이도록 행 높이를 줄인다(최소 PC 28 · 모바일 26).
-     식의 261 · 283 은 표 말고 모달이 쓰는 높이(여백·머리·탭·안내 문구), 20 은 행 수(머리 행 포함, 월~토 기준) */
+  /* --- 하루 일과표 (월~토 · 일요일 표를 위아래로) ---
+     시안 행 높이 PC 40 · 모바일 38. 모달 최대 높이를 넘으면 모달 안에서 스크롤 */
   .lpm--daily {
     --lpm-w: 900;
-    --lpm-row: clamp(calc(28 * var(--mu)), calc((min(600px, 100vh - 40px) - 261 * var(--mu)) / 20), calc(40 * var(--mu)));
-    --lpm-row: clamp(calc(28 * var(--mu)), calc((min(600px, 100dvh - 40px) - 261 * var(--mu)) / 20), calc(40 * var(--mu)));
+    --lpm-row: calc(40 * var(--mu));   /* 시안 행 높이 */
   }
-  .lpm--daily .lpm__scroll { display: flex; flex-direction: column; gap: var(--lpm-gap); padding-top: calc(24 * var(--mu)); }
+  .lpm--daily .lpm__scroll { display: flex; flex-direction: column; gap: var(--lpm-gap); padding-top: calc(20 * var(--mu)); }
+  .lpm__days { display: flex; flex-direction: column; gap: calc(32 * var(--mu)); }   /* 월~토 표 · 일요일 표 사이 */
   .lpm__day { display: flex; overflow-x: auto; }
   .lpm__day-label {
     flex: none; width: calc(40 * var(--mu)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(10 * var(--mu));
@@ -2277,10 +2276,10 @@
 
     /* 하루 일과표: 표는 시안처럼 폭 780 그대로 두고 옆으로 밀어서 봄(시안의 아래 막대 = 가로 스크롤바) */
     .lpm--daily {
-      --lpm-row: clamp(calc(26 * var(--mu)), calc((min(500px, 100vh - 40px) - 283 * var(--mu)) / 20), calc(38 * var(--mu)));
-      --lpm-row: clamp(calc(26 * var(--mu)), calc((min(500px, 100dvh - 40px) - 283 * var(--mu)) / 20), calc(38 * var(--mu)));
+      --lpm-row: calc(38 * var(--mu));
     }
-    .lpm--daily .lpm__scroll { gap: calc(16 * var(--mu)); padding-top: calc(16 * var(--mu)); }
+    .lpm--daily .lpm__scroll { gap: calc(20 * var(--mu)); padding-top: calc(20 * var(--mu)); }
+    .lpm__days { gap: calc(20 * var(--mu)); }
     .lpm__day { padding-bottom: calc(12 * var(--mu)); }
     .lpm__day-label { gap: calc(10 * var(--mu)); font-size: calc(13 * var(--mu)); line-height: 1.385; letter-spacing: 0.0194em; }
     .lpm__daytable { flex: none; width: calc(780 * var(--mu)); min-width: 0; }
@@ -3477,7 +3476,7 @@
                   <h4 class="s06__flow-title">하루 일과표</h4>
                   <p class="s06__flow-desc">기상부터 취침까지, 몰입에 최적화된 하루 일과</p>
                 </div>
-                <button type="button" class="s06__btn s06__btn--fill" data-modal-open="lpm-daily" data-modal-tab="weekday" aria-haspopup="dialog">
+                <button type="button" class="s06__btn s06__btn--fill" data-modal-open="lpm-daily" aria-haspopup="dialog">
                   <span class="sr-only">하루 일과표 </span>자세히 보기
                   <img class="s06__icon-pc" src="assets/s06-ready02/ic_chevron_right_white.svg" alt="" width="24" height="24" loading="lazy" aria-hidden="true">
                   <img class="s06__icon-mo" src="assets/s06-ready02/ic_chevron_right_white_16.svg" alt="" width="16" height="16" loading="lazy" aria-hidden="true">
@@ -4558,9 +4557,7 @@
   </div>
 </dialog>
 
-<!-- ===== 3. 하루 일과표 (월~토 / 일 탭) =====
-     시안은 두 표를 위아래로 이어 붙였지만, 기획안 요청대로 탭으로 나눠 한 번에 한 표만 보여 준다(스크롤 없이 한눈에).
-     화면이 낮으면 행 높이를 시안 값(PC 40 · 모바일 38)에서 조금씩 줄여 표 전체가 모달 안에 들어오게 한다(CSS --lpm-row). -->
+<!-- ===== 3. 하루 일과표 — 시안 PC 6196:5079 · MO 6196:5535: 월~토 · 일요일 표를 위아래로 이어 붙이고 모달 안에서 스크롤 ===== -->
 <dialog class="lpm lpm--daily" id="lpm-daily" role="dialog" aria-modal="true" aria-labelledby="lpm-daily-title" aria-describedby="lpm-daily-desc" tabindex="-1">
   <div class="lpm__top">
   <div class="lpm__head">
@@ -4570,16 +4567,11 @@
     <button class="lpm__close" type="button" data-modal-close aria-label="닫기"><img src="assets/s00-modal/ic_close.svg" alt="" aria-hidden="true" width="24" height="24"></button>
     <p class="lpm__desc" id="lpm-daily-desc">몰입에 최적화된 일과표로 <br class="lpm__br-mo">최대의 학습 효과를 이끌어냅니다.</p>
   </div>
-  <div class="lpm__tabs lpm__tabs--2" role="tablist" aria-label="요일 구분" data-active="0">
-    <button class="lpm__tab" type="button" role="tab" id="lpm-daily-tab-weekday" aria-controls="lpm-daily-panel-weekday" aria-selected="true" data-tab="weekday">월~토요일</button>
-    <button class="lpm__tab" type="button" role="tab" id="lpm-daily-tab-sunday" aria-controls="lpm-daily-panel-sunday" aria-selected="false" tabindex="-1" data-tab="sunday">일요일</button>
-    <span class="lpm__tab-ink" aria-hidden="true"></span>
-  </div>
   </div>
   <div class="lpm__scroll">
-    <div class="lpm__panels">
+    <div class="lpm__days">
       <!-- 월~토요일 -->
-      <div class="lpm__panel" role="tabpanel" id="lpm-daily-panel-weekday" aria-labelledby="lpm-daily-tab-weekday" tabindex="0">
+      <div class="lpm__daygroup" role="group" aria-label="월~토요일">
         <div class="lpm__day">
           <p class="lpm__day-label" aria-hidden="true"><span>월</span><span class="lpm__day-tilde">~</span><span>토<br>요<br>일</span></p>
           <table class="lpm__daytable">
@@ -4615,7 +4607,7 @@
         </div>
       </div>
       <!-- 일요일 -->
-      <div class="lpm__panel" role="tabpanel" id="lpm-daily-panel-sunday" aria-labelledby="lpm-daily-tab-sunday" tabindex="0" hidden>
+      <div class="lpm__daygroup" role="group" aria-label="일요일">
         <div class="lpm__day lpm__day--sunday">
           <p class="lpm__day-label" aria-hidden="true"><span>일<br>요<br>일</span></p>
           <table class="lpm__daytable">
