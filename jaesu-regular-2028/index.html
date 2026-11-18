@@ -1662,8 +1662,9 @@
   /* 세로 막대는 오른쪽 여백 칸의 가운데: (24 - 4) ÷ 2 = 10 */
   .lpm__scroll::-webkit-scrollbar-thumb, .lpm--video::-webkit-scrollbar-thumb { border-width: 0 10px; }
   .lpm__scroll::-webkit-scrollbar-thumb:hover, .lpm--video::-webkit-scrollbar-thumb:hover, .lpm__day::-webkit-scrollbar-thumb:hover { background-color: var(--lpm-bar-hover); }
-  /* 위 방식을 모르는 브라우저(파이어폭스)는 표준 속성으로 얇게 */
-  @supports not selector(::-webkit-scrollbar) {
+  .lpm__scroll::-webkit-scrollbar-button, .lpm--video::-webkit-scrollbar-button, .lpm__day::-webkit-scrollbar-button { display: none; }   /* 위아래 화살표 없음 */
+  /* 파이어폭스만 표준 속성으로 얇게 — 크롬은 이 속성을 받으면 위의 둥근 막대 대신 기본 막대(화살표·뾰족한 끝)를 그려서 크롬에는 주지 않음 */
+  @supports (-moz-appearance: none) {
     .lpm__scroll, .lpm--video, .lpm__day { scrollbar-width: thin; scrollbar-color: var(--lpm-bar) transparent; }
     .lpm__scroll { padding-right: calc(var(--lpm-pad) - 8px); }   /* thin 막대 칸은 약 8 */
   }
