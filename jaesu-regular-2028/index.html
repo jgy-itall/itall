@@ -1723,19 +1723,25 @@
   .lpm__video { flex: none; margin: calc(20 * var(--mu)) var(--lpm-pad) var(--lpm-pad); aspect-ratio: 16 / 9; background: var(--ink-strong); }
   .lpm__video iframe { display: block; width: 100%; height: 100%; border: 0; }
 
-  /* --- 해당 센터/캠프 리스트 (실서버 재수우선선발반 랜딩의 같은 모달 값) --- */
-  .lpm--centers { --lpm-w: 900; --lpm-pad: calc(40 * var(--mu)); max-height: min(600px, calc(100vh - 40px)); max-height: min(600px, calc(100dvh - 40px)); border-radius: calc(24 * var(--mu)); }
-  .lpm--centers .lpm__title { font-size: calc(24 * var(--mu)); line-height: 1.45; letter-spacing: -0.023em; }
-  .lpm--centers .lpm__scroll { padding-top: calc(24 * var(--mu)); }
+  /* --- 해당 센터/캠프 리스트 (시안 PC 6297:4009 · MO 6297:4148) --- */
+  .lpm--centers .lpm__scroll { padding-top: calc(20 * var(--mu)); }
   .lpm--centers .lpm__panel { gap: calc(24 * var(--mu)); }
   .lpm__promo {
     display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: calc(16 * var(--mu));
-    padding: calc(16 * var(--mu)); border-radius: calc(8 * var(--mu)); background: var(--lpm-fill);
-    font-size: calc(16 * var(--mu)); font-weight: 600; line-height: 1.5; color: #000; text-align: center;
+    padding: calc(16 * var(--mu)) calc(16 * var(--mu)); border: 1px solid var(--lpm-line); border-radius: calc(8 * var(--mu)); background: var(--lpm-fill);
+    font-size: calc(16 * var(--mu)); font-weight: 600; line-height: 1.5; letter-spacing: 0.0057em; color: #000; text-align: center;
   }
-  .lpm__promo em { font-style: normal; color: #ca0b14; }
-  .lpm__promo-label { padding: calc(4 * var(--mu)) calc(16 * var(--mu)); border-radius: 9999px; background: #f54741; font-size: calc(15 * var(--mu)); line-height: 1.625; color: var(--white); }
-  .lpm__centers { display: flex; flex-direction: column; gap: calc(16 * var(--mu)); font-size: calc(14 * var(--mu)); line-height: 1.571; color: #3e3a39; }
+  .lpm__promo em { font-style: normal; color: #e60f19; }      /* color/semantic/primary/normal */
+  .lpm__promo-label {
+    padding: calc(4 * var(--mu)) calc(16 * var(--mu)); border-radius: 9999px; background: var(--ink-strong);
+    font-size: calc(15 * var(--mu)); line-height: 1.625; letter-spacing: 0.0096em; color: var(--white);
+  }
+  .lpm__tier { display: flex; flex-direction: column; gap: calc(8 * var(--mu)); }
+  .lpm__tier-title {
+    padding: calc(5 * var(--mu)) 0; border-radius: calc(8 * var(--mu)); background: var(--ink);
+    font-size: calc(18 * var(--mu)); font-weight: 600; line-height: 1.445; letter-spacing: -0.0011em; color: var(--white); text-align: center;
+  }
+  .lpm__centers { display: flex; flex-direction: column; gap: calc(16 * var(--mu)); font-size: calc(14 * var(--mu)); line-height: 1.571; letter-spacing: 0.0145em; color: var(--ink); }
   .lpm__brand-name { font-size: inherit; font-weight: 600; line-height: inherit; }
   .lpm__brand-name--sparta { color: #d0121b; }
   .lpm__brand-name--molip { color: #f2a400; }
@@ -1755,12 +1761,10 @@
     }
     .lpm--bio { --lpm-badge-ink: #e60f19; }    /* 모바일 시안의 배지 글자색: color/semantic/primary/normal */
     .lpm--video { --lpm-chrome: calc(92 * var(--mu)); }
-    .lpm--centers { --lpm-pad: calc(20 * var(--mu)); max-height: min(500px, calc(100vh - 40px)); max-height: min(500px, calc(100dvh - 40px)); border-radius: calc(16 * var(--mu)); }
-    .lpm--centers .lpm__title { font-size: calc(20 * var(--mu)); line-height: 1.4; }
-    .lpm--centers .lpm__head { padding-top: calc(24 * var(--mu)); }
-    .lpm--centers .lpm__scroll { padding-top: calc(16 * var(--mu)); padding-bottom: calc(24 * var(--mu)); }
-    .lpm--centers .lpm__panel { gap: calc(16 * var(--mu)); }
-    .lpm__promo { flex-direction: column; gap: calc(8 * var(--mu)); font-size: calc(14 * var(--mu)); line-height: 1.429; }
+    .lpm--centers .lpm__panel { gap: calc(20 * var(--mu)); }
+    .lpm__promo { flex-direction: column; gap: calc(8 * var(--mu)); padding: calc(12 * var(--mu)) calc(14 * var(--mu)); font-size: calc(14 * var(--mu)); line-height: 1.429; letter-spacing: 0.0145em; }
+    .lpm__promo-label { font-size: calc(13 * var(--mu)); line-height: 1.385; letter-spacing: 0.0194em; }
+    .lpm__tier-title { font-size: calc(16 * var(--mu)); line-height: 1.5; letter-spacing: 0.0057em; }
     .lpm__heading { gap: calc(8 * var(--mu)); }
     .lpm__title { font-size: calc(18 * var(--mu)); line-height: 1.445; letter-spacing: -0.0002em; }
 
@@ -3812,8 +3816,7 @@
 </dialog>
 
 <!-- ===== 5. 해당 센터/캠프 리스트 (BENEFIT 혜택 1 '대상 센터/캠프 자세히 보기') =====
-     모양은 실서버 재수우선선발반 랜딩의 같은 모달과 같게. 시안 없음.
-     센터 목록은 실서버 재수우선선발반(비기닝패스) 목록을 예시로 넣은 것 — 정규패스 대상 목록(영기팀 구글시트)으로 교체 필요 -->
+     시안 PC 6297:4009 (800) · MO 6297:4148 (350). 할인율별(15% · 10% · 5%) 묶음 -->
 <dialog class="lpm lpm--centers" id="lpm-centers" role="dialog" aria-modal="true" aria-labelledby="lpm-centers-title" tabindex="-1">
   <div class="lpm__head">
     <div class="lpm__heading">
@@ -3823,27 +3826,71 @@
   </div>
   <div class="lpm__scroll">
     <div class="lpm__panel">
-      <p class="lpm__promo"><span class="lpm__promo-label">#정규패스</span><span>2027.02.15(월) ~ 2027.04.13(화) 기간 내 2개월 결제 및 등원 완료 시 <em>최대 15% 할인</em></span></p>
-      <div class="lpm__centers">
-        <section class="lpm__brand">
-          <h3 class="lpm__brand-name lpm__brand-name--sparta">잇올 스파르타</h3>
-          <ul>
-            <li>[서울] 강남센터/강동센터 1관/강동센터 2관/강서센터/노량진센터 1관/노량진센터 2관/노원 중계센터 1관/노원 중계센터 2관/대치센터/마포신촌센터/목동센터 1관/목동센터 2관/목동센터 3관/서울대센터/성동센터/성북센터/송파센터/은평서대문센터/잠실센터</li>
-            <li>[경기/인천] 광명센터/구리 수택센터/구리남양주센터/김포센터/동탄센터/부천센터 1관/부천센터 2관/분당 수내센터/분당 이매센터/분당 정자센터/산본센터/수원 영통센터 1관/수원 영통센터 2관/수원 정자센터/안산센터/안양 평촌센터/용인 수지센터 1관/용인 수지센터 2관/의정부센터/인천 논현센터/인천 부평센터/인천 연수송도센터 1관/인천 연수송도센터 2관/인천 청라센터/일산 백마센터/일산 주엽센터/일산 화정센터/파주센터/평택센터/하남미사센터</li>
-            <li>[충청] 대전 둔산센터/대전 유성센터/세종센터/천안센터 1관/천안센터 2관/청주 동남센터/청주센터</li>
-            <li>[경상] 김해센터/대구 동성로센터/대구 상인센터/대구 수성구센터 1관/대구 수성구센터 2관/대구 시지센터/대구 월성센터/마산센터/부산 경성대센터/부산 사직센터/부산 서면센터/부산 센텀센터 1관/부산 센텀센터 2관/부산 화명센터/부산대센터/양산센터/울산 옥동센터 1관/울산 옥동센터 2관/진주센터/창원 상남센터 1관/창원 상남센터 2관/포항센터</li>
-            <li>[강원/전라/제주] 광주 봉선센터/광주 수완센터/광주 충장로센터/원주센터/전주 송천센터/전주 전북대센터/전주 중화산센터/제주센터/춘천센터</li>
-          </ul>
-        </section>
-        <section class="lpm__brand">
-          <h3 class="lpm__brand-name lpm__brand-name--molip">잇올 몰입관</h3>
-          <ul>
-            <li>[서울] 강남캠프</li>
-            <li>[경기/인천] 김포 장기캠프/동탄1캠프/동탄2캠프/수원 광교캠프/인천 검단캠프/다산캠프</li>
-            <li>[경상] 대구 지산범물캠프/부산 동래사직캠프</li>
-          </ul>
-        </section>
-      </div>
+      <p class="lpm__promo"><span class="lpm__promo-label">정규패스</span><span>2027.02.15(월) ~ 2027.04.13(화)<br class="lpm__br-mo"> 기간 내 2개월 결제 및 등원 완료 시 <em>최대 15% 할인</em></span></p>
+      <!-- 할인율별 묶음 3개. 목록은 시안 예시 문구 그대로 — 실제 대상 목록(영기팀 구글시트)으로 교체 필요 -->
+      <section class="lpm__tier" aria-labelledby="lpm-centers-15">
+        <h3 class="lpm__tier-title" id="lpm-centers-15">15% 할인 센터/캠프</h3>
+        <div class="lpm__centers">
+          <section class="lpm__brand">
+            <h4 class="lpm__brand-name lpm__brand-name--sparta">잇올 스파르타</h4>
+            <ul>
+              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 1관/대치센터/서울대센터</li>
+              <li>[경기/인천] 광명센터/김포센터/동탄센터/부천센터 2관/수원 영통센터 1관/수원 영통센터 2관/안산센터/인천 연수송도센터 1관 (연수동)/인천 연수송도센터 2관 (송도동)/일산 백마센터</li>
+              <li>[충청] 세종센터/천안센터 1관/천안센터 2관/청주 동남센터/청주센터</li>
+              <li>[경상] 김해센터/대구 상인센터/대구 수성구센터 2관/부산 센텀센터 1관/부산 센텀센터 2관/부산 화명센터/부산대센터/울산 옥동센터 2관/창원 상남센터 1관/창원 상남센터 2관</li>
+              <li>[강원/전라/제주] 광주 봉선센터/광주 수완센터/광주 충장로센터/원주센터/전주 송천센터/전주 전북대센터/춘천센터</li>
+            </ul>
+          </section>
+          <section class="lpm__brand">
+            <h4 class="lpm__brand-name lpm__brand-name--molip">잇올 몰입관</h4>
+            <ul>
+              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 1관/대치센터/서울대센터</li>
+            </ul>
+          </section>
+        </div>
+      </section>
+      <section class="lpm__tier" aria-labelledby="lpm-centers-10">
+        <h3 class="lpm__tier-title" id="lpm-centers-10">10% 할인 센터/캠프</h3>
+        <div class="lpm__centers">
+          <section class="lpm__brand">
+            <h4 class="lpm__brand-name lpm__brand-name--sparta">잇올 스파르타</h4>
+            <ul>
+              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 1관/대치센터/서울대센터</li>
+              <li>[경기/인천] 광명센터/김포센터/동탄센터/부천센터 2관/수원 영통센터 1관/수원 영통센터 2관/안산센터/인천 연수송도센터 1관 (연수동)/인천 연수송도센터 2관 (송도동)/일산 백마센터</li>
+              <li>[충청] 세종센터/천안센터 1관/천안센터 2관/청주 동남센터/청주센터</li>
+              <li>[경상] 김해센터/대구 상인센터/대구 수성구센터 2관/부산 센텀센터 1관/부산 센텀센터 2관/부산 화명센터/부산대센터/울산 옥동센터 2관/창원 상남센터 1관/창원 상남센터 2관</li>
+              <li>[강원/전라/제주] 광주 봉선센터/광주 수완센터/광주 충장로센터/원주센터/전주 송천센터/전주 전북대센터/춘천센터</li>
+            </ul>
+          </section>
+          <section class="lpm__brand">
+            <h4 class="lpm__brand-name lpm__brand-name--molip">잇올 몰입관</h4>
+            <ul>
+              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 1관/대치센터/서울대센터</li>
+            </ul>
+          </section>
+        </div>
+      </section>
+      <section class="lpm__tier" aria-labelledby="lpm-centers-5">
+        <h3 class="lpm__tier-title" id="lpm-centers-5">5% 할인 센터/캠프</h3>
+        <div class="lpm__centers">
+          <section class="lpm__brand">
+            <h4 class="lpm__brand-name lpm__brand-name--sparta">잇올 스파르타</h4>
+            <ul>
+              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 1관/대치센터/서울대센터</li>
+              <li>[경기/인천] 광명센터/김포센터/동탄센터/부천센터 2관/수원 영통센터 1관/수원 영통센터 2관/안산센터/인천 연수송도센터 1관 (연수동)/인천 연수송도센터 2관 (송도동)/일산 백마센터</li>
+              <li>[충청] 세종센터/천안센터 1관/천안센터 2관/청주 동남센터/청주센터</li>
+              <li>[경상] 김해센터/대구 상인센터/대구 수성구센터 2관/부산 센텀센터 1관/부산 센텀센터 2관/부산 화명센터/부산대센터/울산 옥동센터 2관/창원 상남센터 1관/창원 상남센터 2관</li>
+              <li>[강원/전라/제주] 광주 봉선센터/광주 수완센터/광주 충장로센터/원주센터/전주 송천센터/전주 전북대센터/춘천센터</li>
+            </ul>
+          </section>
+          <section class="lpm__brand">
+            <h4 class="lpm__brand-name lpm__brand-name--molip">잇올 몰입관</h4>
+            <ul>
+              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 1관/대치센터/서울대센터</li>
+            </ul>
+          </section>
+        </div>
+      </section>
     </div>
   </div>
 </dialog>
