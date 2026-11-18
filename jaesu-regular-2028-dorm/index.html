@@ -438,6 +438,23 @@
   .s02__step--last .s02__step-text { font-size: calc(18 * var(--u)); font-weight: 600; line-height: 1.445; letter-spacing: -0.0002em; color: var(--point); }
   .s02__steps-foot { font-size: calc(13 * var(--u)); font-weight: 400; line-height: 1.385; letter-spacing: 0.0194em; color: var(--ink-alt); white-space: nowrap; }
 
+  /* 등록 절차 채우기(한 번만): s02-benefit.js 가 .is-ready 를 붙이면 번호·선이 회색에서 시작하고,
+     단계가 화면에 들어와 .is-in 이 붙으면 1 → 5 순서로 번호가 청록이 되고 선이 왼쪽부터 차오른다(번호 사이 0.48초).
+     스크립트가 없거나 움직임 줄이기 설정이면 시안 그대로 */
+  .s02__steps { --s02-off: #bebfc1; --s02-track-off: #e1e3e5; --s02-track: rgba(17, 151, 166, .3); }   /* line/strong · line/normal · point 30% */
+  .s02__steps.is-ready .s02__step-no { background: var(--s02-off); transition: background-color .25s ease; }
+  .s02__steps.is-ready .s02__step-list::before {
+    opacity: 1;
+    background: linear-gradient(var(--s02-track), var(--s02-track)) left / 0% 100% no-repeat, var(--s02-track-off);
+    transition: background-size 1.92s linear;
+  }
+  .s02__steps.is-in .s02__step-no { background: var(--point); }
+  .s02__steps.is-in .s02__step-list::before { background-size: 100% 100%, auto; }
+  .s02__steps.is-in .s02__step:nth-child(2) .s02__step-no { transition-delay: .48s; }
+  .s02__steps.is-in .s02__step:nth-child(3) .s02__step-no { transition-delay: .96s; }
+  .s02__steps.is-in .s02__step:nth-child(4) .s02__step-no { transition-delay: 1.44s; }
+  .s02__steps.is-in .s02__step:nth-child(5) .s02__step-no { transition-delay: 1.92s; }
+
   /* 줄바꿈: PC 전용 · 모바일 전용 */
   .s02__br-mo { display: none; }
 
@@ -496,6 +513,23 @@
     .s02__progress { display: flex; align-items: center; overflow: hidden; }
     .s02__progress-no { display: flex; align-items: center; justify-content: center; flex: none; width: calc(32 * var(--u)); height: calc(32 * var(--u)); border-radius: 50%; background: var(--point); font-size: calc(14 * var(--u)); font-weight: 600; line-height: 1.429; letter-spacing: 0.0145em; color: var(--white); }
     .s02__progress-line { flex: 1; min-width: 1px; height: calc(2 * var(--u)); background: var(--point); opacity: .3; }
+    /* 채우기(모바일): 위쪽 진행 바만 움직이고, 아래 목록 번호는 바탕 없는 글자 그대로 */
+    .s02__steps.is-ready .s02__step-no, .s02__steps.is-in .s02__step-no { background: none; }
+    .s02__steps.is-ready .s02__progress-no { background: var(--s02-off); transition: background-color .25s ease; }
+    .s02__steps.is-ready .s02__progress-line {
+      opacity: 1;
+      background: linear-gradient(var(--s02-track), var(--s02-track)) left / 0% 100% no-repeat, var(--s02-track-off);
+      transition: background-size .36s ease-in-out .12s;
+    }
+    .s02__steps.is-in .s02__progress-no { background: var(--point); }
+    .s02__steps.is-in .s02__progress-line { background-size: 100% 100%, auto; }
+    .s02__steps.is-in .s02__progress > :nth-child(3) { transition-delay: .48s; }
+    .s02__steps.is-in .s02__progress > :nth-child(4) { transition-delay: .6s; }
+    .s02__steps.is-in .s02__progress > :nth-child(5) { transition-delay: .96s; }
+    .s02__steps.is-in .s02__progress > :nth-child(6) { transition-delay: 1.08s; }
+    .s02__steps.is-in .s02__progress > :nth-child(7) { transition-delay: 1.44s; }
+    .s02__steps.is-in .s02__progress > :nth-child(8) { transition-delay: 1.56s; }
+    .s02__steps.is-in .s02__progress > :nth-child(9) { transition-delay: 1.92s; }
     .s02__step-list { flex-direction: column; align-items: stretch; gap: 0; }
     .s02__step-list::before { display: none; }
     .s02__step { flex-direction: row; align-items: center; gap: calc(12 * var(--u)); padding: calc(8 * var(--u)) 0; border-bottom: 1px solid var(--s02-line); }
@@ -1966,8 +2000,8 @@
   .lpm__scroll::-webkit-scrollbar-thumb, .lpm--video::-webkit-scrollbar-thumb, .lpm__day::-webkit-scrollbar-thumb {
     border: 4px solid transparent; border-radius: 9999px; background: var(--lpm-bar) padding-box;
   }
-  /* 세로 막대는 오른쪽 여백 칸의 가운데: (24 - 4) ÷ 2 = 10 */
-  .lpm__scroll::-webkit-scrollbar-thumb, .lpm--video::-webkit-scrollbar-thumb { border-width: 0 10px; }
+  /* 세로 막대는 오른쪽 여백 칸의 가운데: (24 - 4) ÷ 2 = 10. 테두리를 네 방향 모두 같게 줘야 위아래 끝이 둥글게 그려짐 */
+  .lpm__scroll::-webkit-scrollbar-thumb, .lpm--video::-webkit-scrollbar-thumb { border-width: 10px; }
   .lpm__scroll::-webkit-scrollbar-thumb:hover, .lpm--video::-webkit-scrollbar-thumb:hover, .lpm__day::-webkit-scrollbar-thumb:hover { background-color: var(--lpm-bar-hover); }
   .lpm__scroll::-webkit-scrollbar-button, .lpm--video::-webkit-scrollbar-button, .lpm__day::-webkit-scrollbar-button { display: none; }   /* 위아래 화살표 없음 */
   /* 파이어폭스만 표준 속성으로 얇게 — 크롬은 이 속성을 받으면 위의 둥근 막대 대신 기본 막대(화살표·뾰족한 끝)를 그려서 크롬에는 주지 않음 */
@@ -2150,7 +2184,7 @@
   @media (max-width: 599px) {
     /* 모바일 오른쪽 여백 20 → 스크롤바 칸 20, 막대는 가운데 ((20 - 4) ÷ 2 = 8) */
     .lpm__scroll::-webkit-scrollbar, .lpm--video::-webkit-scrollbar { width: 20px; }
-    .lpm__scroll::-webkit-scrollbar-thumb, .lpm--video::-webkit-scrollbar-thumb { border-width: 0 8px; }
+    .lpm__scroll::-webkit-scrollbar-thumb, .lpm--video::-webkit-scrollbar-thumb { border-width: 8px; }
     .lpm {
       max-height: min(500px, calc(100vh - 40px));   /* 모바일 모달 최대 높이 500 */
       max-height: min(500px, calc(100dvh - 40px));
@@ -4631,17 +4665,35 @@
   <div class="lpm__video" data-modal-video></div>
 </dialog>
 <script>
-/* S2 · BENEFIT — 유의사항 펼침/접힘 (처음에는 접힘. 모양은 CSS 가 aria-expanded 값을 보고 바꾼다) */
+/* S2 · BENEFIT
+   1) 유의사항 펼침/접힘 (처음에는 접힘. 모양은 CSS 가 aria-expanded 값을 보고 바꾼다)
+   2) 등록 절차: 화면에 들어오면 번호·선이 회색에서 청록으로 차례로 채워진다(한 번만).
+      순서·시간은 CSS 가 맡고, 여기서는 .is-ready(회색으로 시작) 와 .is-in(채우기 시작) 만 붙인다.
+      움직임 줄이기 설정이거나 화면 진입을 알 수 없는 브라우저면 아무것도 하지 않는다 → 시안 그대로 */
 (function () {
   'use strict';
   var root = document.querySelector('.s02');
   if (!root) return;
+
   var toggle = root.querySelector('.s02__note-toggle');
-  if (!toggle) return;
-  toggle.addEventListener('click', function () {
-    var open = toggle.getAttribute('aria-expanded') === 'true';
-    toggle.setAttribute('aria-expanded', open ? 'false' : 'true');
-  });
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      var open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', open ? 'false' : 'true');
+    });
+  }
+
+  var steps = root.querySelector('.s02__steps');
+  if (!steps || !('IntersectionObserver' in window)) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  steps.classList.add('is-ready');
+  var io = new IntersectionObserver(function (entries) {
+    if (entries.some(function (en) { return en.isIntersecting; })) {
+      io.disconnect();
+      steps.classList.add('is-in');
+    }
+  }, { threshold: 0.5 });
+  io.observe(steps);
 })();
 
 /* S4 · READY — "자세히 보기"를 누르면 해당 READY 섹션으로 부드럽게 이동한다.
