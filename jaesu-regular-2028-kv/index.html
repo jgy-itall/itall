@@ -312,7 +312,190 @@
   }
 
 
+  /* ===== KV 테스트 페이지 전용: 영상 내려받기 ===== */
+  .kvt-dl { display: flex; flex-direction: column; gap: calc(12 * var(--u)); padding: calc(40 * var(--u)) calc(40 * var(--u)) calc(48 * var(--u)); border-top: 1px solid #e1e3e5; }
+  .kvt-dl__title { margin: 0; font-size: calc(18 * var(--u)); font-weight: 700; line-height: 1.45; color: #0d0f14; }
+  .kvt-dl__list { display: flex; flex-wrap: wrap; gap: calc(8 * var(--u)); margin: 0; padding: 0; list-style: none; }
+  .kvt-dl__btn { display: inline-flex; align-items: center; gap: calc(8 * var(--u)); min-height: 44px; padding: 0 calc(20 * var(--u)); border-radius: 999px; background: #0d0f14; color: #fff; font-size: calc(15 * var(--u)); font-weight: 600; line-height: 1.4; text-decoration: none; transition: background-color .2s ease, transform .2s ease; }
+  .kvt-dl__btn:hover { background: #2e3138; }
+  .kvt-dl__btn:active { transform: scale(.97); }
+  .kvt-dl__btn:focus-visible { outline: 2px solid #0d0f14; outline-offset: 3px; }
+  .kvt-dl__btn svg { width: calc(20 * var(--u)); height: calc(20 * var(--u)); flex: none; }
+  .kvt-dl__size { font-weight: 400; opacity: .7; }
+  .kvt-dl__note { margin: 0; font-size: calc(13 * var(--u)); line-height: 1.5; color: #5a5c63; }
+  @container page (max-width: 599px) {
+    .kvt-dl { padding: calc(32 * var(--u)) calc(20 * var(--u)) calc(40 * var(--u)); }
+    .kvt-dl__title { font-size: calc(16 * var(--u)); }
+    .kvt-dl__list { flex-direction: column; }
+    .kvt-dl__btn { justify-content: center; font-size: calc(14 * var(--u)); }
+  }
 
+
+  /* ============ 잇올 사이트 GNB (gen_gnb.py 생성 · 실측 www/dormitory.itall.com) ============ */
+  @font-face { font-family: "nanumSquareNeo"; font-weight: 400; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-bRg.woff") format("woff"); }
+  @font-face { font-family: "nanumSquareNeo"; font-weight: 700; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-cBd.woff") format("woff"); }
+  @font-face { font-family: "nanumSquareNeo"; font-weight: 800; font-display: swap; src: url("https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-dEb.woff") format("woff"); }
+
+  .site-head, .gnb-m, .gnb-sheet { color: #3e3a39; font-family: nanumSquareNeo, Pretendard, sans-serif; word-break: keep-all; }
+  .site-head a, .gnb-m a, .gnb-sheet a { color: inherit; text-decoration: none; }
+  .site-head ul, .gnb-m ul, .gnb-sheet ul { margin: 0; padding: 0; list-style: none; }
+  .site-head img, .gnb-m img, .gnb-sheet img { display: block; max-width: none; }
+  .site-head button, .gnb-m button { padding: 0; border: 0; background: none; cursor: pointer; }
+  .site-head { position: sticky; top: 0; z-index: 100; background: #fff; }
+  .gnb-lock, .gnb-lock body { overflow: hidden; }
+
+  /* 공용 — 수능 D-day · 패밀리 사이트 목록 */
+  .gnb__dday { padding: 4px 12px; border-radius: 8px; background: #0d0f14; color: #fff; font-family: Pretendard, sans-serif; font-size: 13px; line-height: 1.5; white-space: nowrap; }
+  .gnb-family__link { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid #e6e6e6; }
+  .gnb-family__list li:last-child .gnb-family__link { border-bottom: 0; }
+  .gnb-family__brand { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .gnb-family__brand img { width: auto; height: 16px; }
+  .gnb-family__brand span { color: #7f7f7f; font-size: 13px; line-height: 1.5; }
+  .gnb-family__promo { display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: 16px; background: #f8f8f8; font-size: 13px; line-height: 1.4; }
+  .gnb-family__promo span { color: #4d4847; }
+  .gnb-family__promo b { color: #7f7f7f; font-weight: 800; }
+
+  /* ── PC (1024~) ── */
+  .gnb { display: none; }
+
+  @media (min-width: 1024px) {
+    .gnb { display: flex; align-items: center; justify-content: space-between; height: 76px; padding: 16px 60px; }
+    .gnb__brand { display: flex; flex-shrink: 0; align-items: center; }
+    .gnb__family { position: relative; }
+    .gnb__family-btn { display: grid; place-items: center; width: 44px; height: 44px; }
+
+    /* 1차 메뉴 — 1024~1279: 14px·간격 12 / 1280~: 16px·30 / 1536~: 48 */
+    .gnb__menu { display: flex; gap: 12px; white-space: nowrap; }
+    .gnb__menu > li { position: relative; }
+    .gnb__link { display: block; font-size: 14px; font-weight: 700; line-height: 1.5; }
+
+    .gnb__shine {
+      background: linear-gradient(90deg, #e6433b, #ff6b63, #fca5a5, #e6433b) 0 center / 200% 100%;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: gnb-shine 2s linear infinite;
+    }
+
+    /* 2차 메뉴 (1차 메뉴 가운데 정렬, GNB 행 기준 top 39) */
+    .gnb__sub { position: absolute; top: 13px; left: 50%; display: none; padding-top: 16px; transform: translateX(-50%); }
+    .gnb__menu > li:hover .gnb__sub,
+    .gnb__menu > li:focus-within .gnb__sub { display: block; }
+    .gnb__sub ul {
+      display: flex; flex-direction: column; min-width: 224px; padding: 16px 0;
+      border-radius: 24px; background: #fff; filter: drop-shadow(0 8px 12px rgba(148, 148, 165, .36));
+    }
+    .gnb__sub a {
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      padding: 6px 32px; color: #4d4847; font-size: 16px; font-weight: 700; line-height: 1.5; white-space: nowrap;
+    }
+    .gnb__sub a:hover, .gnb__sub a:focus-visible { background: #f3f3f3; }
+    .gnb__badge {
+      display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center;
+      width: 50px; padding: 2px 6px; border-radius: 999px; background: #c40f06;
+      color: #fff; font-size: 10px; font-weight: 700; line-height: 1.4;
+    }
+    .gnb__badge--dorm { background: #00b450; }
+
+    /* 패밀리 사이트 (⊙ 버튼 호버) */
+    .gnb__family-panel {
+      position: absolute; top: 37px; right: -60px; z-index: 10; padding-top: 10px;
+      opacity: 0; visibility: hidden; transform: translateY(-8px);
+      transition: opacity .3s cubic-bezier(.4, 0, .2, 1), transform .3s cubic-bezier(.4, 0, .2, 1), visibility .3s;
+    }
+    .gnb__family:hover .gnb__family-panel,
+    .gnb__family:focus-within .gnb__family-panel { opacity: 1; visibility: visible; transform: translateY(0); }
+    .gnb__family-panel .gnb-family { width: 250px; padding: 12px 16px 41px; border-radius: 16px; background: #fff; box-shadow: 0 0 12px rgba(9, 13, 18, .16); }
+
+    .gnb__util { display: flex; flex-shrink: 0; align-items: center; gap: 8px; }
+    .gnb__util .gnb__dday { padding: 4px 16px; }
+    .gnb__util-box {
+      display: flex; align-items: center; justify-content: center; min-width: 118px; height: 28px; padding: 4px 18px;
+      border: 1px solid #e6e6e6; border-radius: 6px; background: #fff; font-size: 13px; font-weight: 800; line-height: 1.5;
+    }
+
+    .gnb-bar, .gnb-m, .gnb-sheet { display: none !important; }
+  }
+  @media (min-width: 1280px) {
+    .gnb__menu { gap: 30px; }
+    .gnb__link { font-size: 16px; }
+    .gnb__util { gap: 16px; }
+  }
+  @media (min-width: 1536px) {
+    .gnb__menu { gap: 48px; }
+  }
+  @keyframes gnb-shine { to { background-position: 200% center; } }
+
+  /* ── MO (~1023) — 헤더 행 69 ── */
+  .gnb-bar { display: flex; align-items: center; justify-content: space-between; height: 69px; padding: 0 20px; background: #fff; }
+  .gnb-bar__brand { display: flex; align-items: center; gap: 4px; }
+  .gnb-bar__family { padding: 4px !important; }
+  .gnb-bar__util { display: flex; align-items: center; }
+  .gnb-bar__box {
+    display: flex; align-items: center; justify-content: center; min-width: 100px; height: 29px; padding: 4px 12px;
+    border: 1px solid #e6e6e6; border-radius: 6px; background: #fff; font-size: 12px; font-weight: 800; line-height: 1.5; white-space: nowrap;
+  }
+  .gnb-bar__menu { margin-left: 16px; }
+
+  /* 전체 메뉴 */
+  .gnb-m { position: fixed; inset: 0; z-index: 1001; overflow-y: auto; overscroll-behavior: contain; padding-bottom: 20px; background: #fff; transform: translateZ(0); }
+  .gnb-m__top { display: flex; align-items: center; justify-content: space-between; height: 68px; padding: 0 20px; }
+  .gnb-m__util { display: flex; align-items: center; gap: 12px; }
+  .gnb-m__close { margin-left: 4px; }
+  .gnb-m__body { padding: 0 20px; }
+  .gnb-m__title { margin: 0; color: #000; font-size: 24px; font-weight: 700; line-height: 1.4; }
+  .gnb-m__title span { display: block; color: #c40f06; }
+  .gnb-m__pair { display: flex; gap: 8px; }
+  .gnb-m__stack { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+  .gnb-m--sparta .gnb-m__pair { margin-top: 24px; }
+  .gnb-m__btn {
+    display: flex; flex: 1; align-items: center; justify-content: center; min-height: 38px; padding: 8px 18px;
+    border-radius: 6px; font-size: 13px; font-weight: 800; line-height: 1.5; text-align: center;
+  }
+  .gnb-m__btn--dark { border: 1px solid #3e3a39; background: #000; color: #fff !important; }
+  .gnb-m__btn--line { border: 1px solid #e6e6e6; background: #fff; color: #000 !important; }
+  .gnb-m__btn--line em { margin: 0 .25em; color: #c40f06; font-style: normal; }
+  .gnb-m__list { margin-top: 32px !important; }
+  .gnb-m__row { display: flex; align-items: center; justify-content: space-between; height: 60px; border-bottom: 1px solid #e6e6e6; }
+  .gnb-m__label { flex: 1; color: #000 !important; font-size: 16px; font-weight: 800; line-height: 1.8; }
+  .gnb-m__toggle { display: flex; align-items: center; height: 100%; padding-left: 32px !important; }
+  .gnb-m__toggle img { transition: transform .2s cubic-bezier(.4, 0, .2, 1); }
+  .gnb-m__toggle[aria-expanded="true"] img { transform: rotate(180deg); }
+  .gnb-m__sub { display: flex; flex-direction: column; gap: 20px; padding: 20px 0 !important; animation: gnb-unfold .3s cubic-bezier(.34, 1.4, .64, 1); transform-origin: top; }
+  .gnb-m__sub[hidden] { display: none; }
+  .gnb-m__sub a { display: flex; align-items: center; justify-content: space-between; color: #000 !important; font-size: 14px; line-height: 1.5; white-space: nowrap; }
+  .gnb-m__badge {
+    display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; width: 50px; height: 18px;
+    border-radius: 20px; background: #c40f06; color: #fff; font-size: 10px; font-weight: 700; line-height: 1;
+  }
+  .gnb-m__badge--dorm { background: #00b450; }
+  @keyframes gnb-unfold { from { opacity: 0; transform: scaleY(.6); } to { opacity: 1; transform: scaleY(1); } }
+
+  /* 패밀리 사이트 바텀시트 */
+  .gnb-sheet { position: fixed; inset: 0; z-index: 1002; display: flex; align-items: flex-end; }
+  .gnb-sheet[hidden] { display: none; }
+  .gnb-sheet__dim { position: absolute; inset: 0; background: rgba(0, 0, 0, .5); opacity: 0; transition: opacity .3s ease; }
+  .gnb-sheet__panel {
+    position: relative; width: 100%; max-height: 90dvh; overflow-y: auto; padding: 40px 20px 60px;
+    border-radius: 8px 8px 0 0; background: #fff; transform: translateY(100%); transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+  }
+  .gnb-sheet.is-open .gnb-sheet__dim { opacity: 1; }
+  .gnb-sheet.is-open .gnb-sheet__panel { transform: translateY(0); }
+  .gnb-sheet__title { margin: 0 0 8px; color: #222; font-size: 18px; font-weight: 800; line-height: 1.4; }
+
+  /* 맨 위로 버튼 (GNB 공용) — MO 우하단 20 / PC 우하단 40 */
+  .gnb-top {
+    position: fixed; z-index: 50; right: 20px; bottom: 20px; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%;
+    background: none; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .3s;
+  }
+  .gnb-top img { display: block; width: 40px; height: 40px; }
+  .gnb-top.is-show { opacity: 1; pointer-events: auto; }
+  .gnb-top:focus-visible { outline: 2px solid #3e3a39; outline-offset: 2px; }
+  @media (min-width: 1024px) { .gnb-top { right: 40px; bottom: 40px; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gnb__shine, .gnb-m__sub { animation: none; }
+    .gnb-sheet__dim, .gnb-sheet__panel, .gnb__family-panel, .gnb-top { transition: none; }
+  }
+  /* ============ /잇올 사이트 GNB ============ */
 
 
   /* 아주 좁은 화면(300 미만, 예: 폴드 접은 화면 280) — 상단 바의 로고 + '의장 직통메일' + 메뉴가 288px 를 차지해
@@ -320,32 +503,346 @@
   @media (max-width: 299px) {
     .gnb-bar .gnb-bar__box { display: none; }
   }
-
-  /* ===== KV 테스트 페이지 전용: 히어로만 화면 가운데에 + 영상 내려받기 ===== */
-  .kvt { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px; padding: 40px 16px; background: var(--page-bg, #f1f2f4); }
-  .kvt .wrap { width: 100%; max-width: 847px; margin: 0; }
-  .kvt-dl { width: 100%; max-width: 847px; display: flex; flex-direction: column; gap: 12px; }
-  .kvt-dl__title { margin: 0; font-size: 16px; font-weight: 700; line-height: 1.5; color: #0d0f14; }
-  .kvt-dl__list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
-  .kvt-dl__btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 999px; background: #0d0f14; color: #fff; font-size: 15px; font-weight: 600; line-height: 1.4; text-decoration: none; transition: background-color .2s ease, transform .2s ease; }
-  .kvt-dl__btn:hover { background: #2e3138; }
-  .kvt-dl__btn:active { transform: scale(.97); }
-  .kvt-dl__btn:focus-visible { outline: 2px solid #0d0f14; outline-offset: 3px; }
-  .kvt-dl__btn svg { width: 20px; height: 20px; flex: none; }
-  .kvt-dl__size { font-weight: 400; opacity: .7; }
-  .kvt-dl__note { margin: 0; font-size: 13px; line-height: 1.5; color: #5a5c63; }
-  @media (max-width: 599px) {
-    .kvt { justify-content: flex-start; gap: 24px; padding: 0 0 40px; }
-    .kvt-dl { padding: 0 16px; }
-    .kvt-dl__list { flex-direction: column; }
-    .kvt-dl__btn { width: 100%; justify-content: center; }
-  }
 </style>
 </head>
 <body>
-<main class="kvt" aria-label="2028 통학 재수정규반 KV 테스트">
-  <div class="wrap">
-    <div class="lp">
+
+<!-- ============ 잇올 사이트 GNB (gen_gnb.py 생성 · PC 1024~ / MO ~1023) ============ -->
+<div class="site-head">
+  <header class="gnb" aria-label="사이트 메뉴">
+    <div class="gnb__brand">
+      <a href="https://www.itall.com/" target="_blank" rel="noopener"><img src="assets/gnb/itall_logo.svg" width="134" height="24" alt="잇올 스파르타"><span class="sr-only"> (새 창)</span></a>
+      <div class="gnb__family">
+        <button class="gnb__family-btn" type="button" aria-label="패밀리 사이트" aria-haspopup="true"><img src="assets/gnb/ico_dropdown.svg" width="20" height="20" alt=""></button>
+        <div class="gnb__family-panel">
+          <div class="gnb-family">
+          <ul class="gnb-family__list">
+            <li><a class="gnb-family__link" href="https://www.itall.com/" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-sparta.svg" width="89" height="16" alt="잇올 스파르타"><span>몰입의 기준을 세우다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg><span class="sr-only"> (새 창)</span></a></li>
+            <li><a class="gnb-family__link" href="https://www.itall.com/immersion-camp" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-study-cafe.svg" width="75" height="16" alt="잇올 몰입관"><span>몰입의 경험을 최적화하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg><span class="sr-only"> (새 창)</span></a></li>
+            <li><a class="gnb-family__link" href="https://dormitory.itall.com" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-dormitory.svg" width="87" height="16" alt="잇올 기숙학원"><span>몰입의 일상을 완성하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg><span class="sr-only"> (새 창)</span></a></li>
+          </ul>
+          <a class="gnb-family__promo" href="https://www.itall.com/contents/mentorings" target="_blank" rel="noopener">
+            <span>명문대 타이틀을 수익과 커리어로 전환하는 선택</span>
+            <b>명문대 멘토(CA) 모집중</b>
+          <span class="sr-only"> (새 창)</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <nav aria-label="주 메뉴">
+      <ul class="gnb__menu">
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/immersion/system" target="_blank" rel="noopener">몰입공부 시스템<span class="sr-only"> (새 창)</span></a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/immersion/system" target="_blank" rel="noopener">몰입공부 시스템<span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/immersion/space" target="_blank" rel="noopener">공간/생활<span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/immersion/study" target="_blank" rel="noopener">학습/입시/콘텐츠<span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/immersion/billboard" target="_blank" rel="noopener">빌보드/부트캠프<span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/immersion/ai" target="_blank" rel="noopener">티처스/잇생부<span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/immersion/admission-2028" target="_blank" rel="noopener">2028 입시정보<span class="sr-only"> (새 창)</span></a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/direct-center" target="_blank" rel="noopener"><span class="gnb__shine">직영 센터/캠프</span><span class="sr-only"> (새 창)</span></a>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/recruit" target="_blank" rel="noopener">모집안내<span class="sr-only"> (새 창)</span></a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/recruit/2027_winter" target="_blank" rel="noopener">스파르타/몰입관 윈터스쿨<span class="gnb__badge">모집중</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/recruit/2027_Bansu" target="_blank" rel="noopener">스파르타/몰입관 반수반<span class="gnb__badge">마감임박</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/recruit/highschool-final-exam-pass" target="_blank" rel="noopener">스파르타/몰입관 고등 기말고사패스<span class="gnb__badge">모집중</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/recruit/high_immersion" target="_blank" rel="noopener">스파르타/몰입관 고등 몰입 관리반<span class="gnb__badge">상시모집</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://dormitory.itall.com/recruit/2027_winter" target="_blank" rel="noopener">기숙 윈터스쿨<span class="gnb__badge gnb__badge--dorm">모집중</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://dormitory.itall.com/recruit/2027-jaesu" target="_blank" rel="noopener">기숙 재수정규반<span class="gnb__badge gnb__badge--dorm">대기접수</span><span class="sr-only"> (새 창)</span></a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/glory_honor" target="_blank" rel="noopener">입시 결과<span class="sr-only"> (새 창)</span></a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/glory_honor" target="_blank" rel="noopener">입시 결과<span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/glory_honor/perfect-story" target="_blank" rel="noopener">수능 만점자 스토리<span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/glory_honor/passing-story" target="_blank" rel="noopener">합격 수기<span class="sr-only"> (새 창)</span></a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/scholarship" target="_blank" rel="noopener">장학<span class="sr-only"> (새 창)</span></a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/scholarship?tab=allkey" target="_blank" rel="noopener">올키 장학<span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/scholarship?tab=foundation" target="_blank" rel="noopener">백태규백다애 장학회<span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/scholarship?tab=principal-recommendation" target="_blank" rel="noopener">원장추천 특별장학<span class="sr-only"> (새 창)</span></a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/customer-service" target="_blank" rel="noopener">고객센터<span class="sr-only"> (새 창)</span></a>
+          <div class="gnb__sub">
+            <ul>
+            <li><a href="https://www.itall.com/customer-service?tab=faq" target="_blank" rel="noopener">자주 하는 질문<span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=online-consultant" target="_blank" rel="noopener">온라인 상담<span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=story" target="_blank" rel="noopener">잇올 스토리<span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=bamboo" target="_blank" rel="noopener">잇올 대나무숲<span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=notice" target="_blank" rel="noopener">공지사항<span class="sr-only"> (새 창)</span></a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/contents" target="_blank" rel="noopener">콘텐츠<span class="sr-only"> (새 창)</span></a>
+        </li>
+        <li>
+          <a class="gnb__link" href="https://www.itall.com/events" target="_blank" rel="noopener">이벤트<span class="sr-only"> (새 창)</span></a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="gnb__util">
+      <span class="gnb__dday">수능 <span class="js-dday">D-43</span></span>
+      <span class="gnb__util-box">의장 직통메일</span>
+    </div>
+  </header>
+
+  <div class="gnb-bar">
+    <div class="gnb-bar__brand">
+      <a href="https://www.itall.com/" target="_blank" rel="noopener"><img src="assets/gnb/itall_logo.svg" width="100" height="18" alt="잇올 스파르타"><span class="sr-only"> (새 창)</span></a>
+      <button class="gnb-bar__family js-sheet-open" type="button" aria-label="패밀리 사이트" aria-haspopup="dialog" aria-controls="gnb-sheet"><img src="assets/gnb/ico_dropdown.svg" width="16" height="16" alt=""></button>
+    </div>
+    <div class="gnb-bar__util">
+      <span class="gnb-bar__box">의장 직통메일</span>
+      <button class="gnb-bar__menu js-menu-open" type="button" aria-label="전체 메뉴 열기" aria-expanded="false" aria-controls="gnb-m"><img src="assets/gnb/ico_menu.svg" width="24" height="24" alt=""></button>
+    </div>
+  </div>
+</div>
+
+<div class="gnb-m gnb-m--sparta" id="gnb-m" role="dialog" aria-modal="true" aria-label="전체 메뉴" hidden>
+  <div class="gnb-m__top">
+    <a class="gnb-m__home" href="https://www.itall.com/" target="_blank" rel="noopener"><img src="assets/gnb/ico_home.svg" width="28" height="28" alt="홈"><span class="sr-only"> (새 창)</span></a>
+    <div class="gnb-m__util">
+      <span class="gnb__dday">수능 <span class="js-dday">D-43</span></span>
+      <span class="gnb-bar__box">의장 직통메일</span>
+      <button class="gnb-m__close js-menu-close" type="button" aria-label="전체 메뉴 닫기"><img src="assets/gnb/ico_close_new.svg" width="24" height="24" alt=""></button>
+    </div>
+  </div>
+  <div class="gnb-m__body">
+      <p class="gnb-m__title">꿈이 모두 이루어지는 공간<span>잇올 스파르타</span></p>
+      <div class="gnb-m__pair">
+        <a class="gnb-m__btn gnb-m__btn--dark" href="https://www.itall.com/contents" target="_blank" rel="noopener">콘텐츠<span class="sr-only"> (새 창)</span></a>
+        <a class="gnb-m__btn gnb-m__btn--dark" href="https://www.itall.com/events" target="_blank" rel="noopener">이벤트/혜택<span class="sr-only"> (새 창)</span></a>
+      </div>
+      <div class="gnb-m__stack">
+        <a class="gnb-m__btn gnb-m__btn--line" href="https://onlinebooks.co.kr/books/itall_sparta/#p=1" target="_blank" rel="noopener">잇올 한눈에 보기 <em>잇올 매뉴얼 e-Book</em><span class="sr-only"> (새 창)</span></a>
+        <a class="gnb-m__btn gnb-m__btn--line" href="https://onlinebooks.co.kr/books/csjg/#p=1" target="_blank" rel="noopener">잇올 <em>합격수기 공모전 당선작</em> 확인하기<span class="sr-only"> (새 창)</span></a>
+      </div>
+    <ul class="gnb-m__list">
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/immersion/system" target="_blank" rel="noopener">몰입공부 시스템<span class="sr-only"> (새 창)</span></a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-0" aria-label="몰입공부 시스템 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-0" hidden>
+            <li><a href="https://www.itall.com/immersion/system" target="_blank" rel="noopener"><span>몰입공부 시스템</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/immersion/space" target="_blank" rel="noopener"><span>공간/생활</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/immersion/study" target="_blank" rel="noopener"><span>학습/입시/콘텐츠</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/immersion/billboard" target="_blank" rel="noopener"><span>빌보드/부트캠프</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/immersion/ai" target="_blank" rel="noopener"><span>티처스/잇생부</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/immersion/admission-2028" target="_blank" rel="noopener"><span>2028 입시정보</span><span class="sr-only"> (새 창)</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row"><a class="gnb-m__label" href="https://www.itall.com/direct-center" target="_blank" rel="noopener">직영 센터/캠프<span class="sr-only"> (새 창)</span></a></div>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/recruit" target="_blank" rel="noopener">모집안내<span class="sr-only"> (새 창)</span></a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-2" aria-label="모집안내 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-2" hidden>
+            <li><a href="https://www.itall.com/recruit/2027_winter" target="_blank" rel="noopener"><span>스파르타/몰입관 윈터스쿨</span><span class="gnb-m__badge">모집중</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/recruit/2027_Bansu" target="_blank" rel="noopener"><span>스파르타/몰입관 반수반</span><span class="gnb-m__badge">마감임박</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/recruit/highschool-final-exam-pass" target="_blank" rel="noopener"><span>스파르타/몰입관 고등 기말고사패스</span><span class="gnb-m__badge">모집중</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/recruit/high_immersion" target="_blank" rel="noopener"><span>스파르타/몰입관 고등 몰입 관리반</span><span class="gnb-m__badge">상시모집</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://dormitory.itall.com/recruit/2027_winter" target="_blank" rel="noopener"><span>기숙 윈터스쿨</span><span class="gnb-m__badge gnb-m__badge--dorm">모집중</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://dormitory.itall.com/recruit/2027-jaesu" target="_blank" rel="noopener"><span>기숙 재수정규반</span><span class="gnb-m__badge gnb-m__badge--dorm">대기접수</span><span class="sr-only"> (새 창)</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/glory_honor" target="_blank" rel="noopener">입시 결과<span class="sr-only"> (새 창)</span></a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-3" aria-label="입시 결과 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-3" hidden>
+            <li><a href="https://www.itall.com/glory_honor" target="_blank" rel="noopener"><span>입시 결과</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/glory_honor/perfect-story" target="_blank" rel="noopener"><span>수능 만점자 스토리</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/glory_honor/passing-story" target="_blank" rel="noopener"><span>합격 수기</span><span class="sr-only"> (새 창)</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/scholarship" target="_blank" rel="noopener">장학<span class="sr-only"> (새 창)</span></a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-4" aria-label="장학 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-4" hidden>
+            <li><a href="https://www.itall.com/scholarship?tab=allkey" target="_blank" rel="noopener"><span>올키 장학</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/scholarship?tab=foundation" target="_blank" rel="noopener"><span>백태규백다애 장학회</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/scholarship?tab=principal-recommendation" target="_blank" rel="noopener"><span>원장추천 특별장학</span><span class="sr-only"> (새 창)</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row">
+          <a class="gnb-m__label" href="https://www.itall.com/customer-service" target="_blank" rel="noopener">고객센터<span class="sr-only"> (새 창)</span></a>
+          <button class="gnb-m__toggle" type="button" aria-expanded="false" aria-controls="gnb-m-sub-5" aria-label="고객센터 하위 메뉴"><img src="assets/gnb/ico_arrow_down_new.svg" width="24" height="24" alt=""></button>
+        </div>
+        <ul class="gnb-m__sub" id="gnb-m-sub-5" hidden>
+            <li><a href="https://www.itall.com/customer-service?tab=faq" target="_blank" rel="noopener"><span>자주 하는 질문</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=online-consultant" target="_blank" rel="noopener"><span>온라인 상담</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=story" target="_blank" rel="noopener"><span>잇올 스토리</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=bamboo" target="_blank" rel="noopener"><span>잇올 대나무숲</span><span class="sr-only"> (새 창)</span></a></li>
+            <li><a href="https://www.itall.com/customer-service?tab=notice" target="_blank" rel="noopener"><span>공지사항</span><span class="sr-only"> (새 창)</span></a></li>
+        </ul>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row"><a class="gnb-m__label" href="https://www.itall.com/contents" target="_blank" rel="noopener">콘텐츠<span class="sr-only"> (새 창)</span></a></div>
+      </li>
+      <li class="gnb-m__item">
+        <div class="gnb-m__row"><a class="gnb-m__label" href="https://www.itall.com/events" target="_blank" rel="noopener">이벤트<span class="sr-only"> (새 창)</span></a></div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="gnb-sheet" id="gnb-sheet" role="dialog" aria-modal="true" aria-labelledby="gnb-sheet-title" hidden>
+  <div class="gnb-sheet__dim js-sheet-close"></div>
+  <div class="gnb-sheet__panel">
+    <p class="gnb-sheet__title" id="gnb-sheet-title">어떤 사이트로 이동할까요?</p>
+    <div class="gnb-family gnb-family--sheet">
+          <ul class="gnb-family__list">
+            <li><a class="gnb-family__link" href="https://www.itall.com/" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-sparta.svg" width="89" height="16" alt="잇올 스파르타"><span>몰입의 기준을 세우다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg><span class="sr-only"> (새 창)</span></a></li>
+            <li><a class="gnb-family__link" href="https://www.itall.com/immersion-camp" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-study-cafe.svg" width="75" height="16" alt="잇올 몰입관"><span>몰입의 경험을 최적화하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg><span class="sr-only"> (새 창)</span></a></li>
+            <li><a class="gnb-family__link" href="https://dormitory.itall.com" target="_blank" rel="noopener"><span class="gnb-family__brand"><img src="assets/gnb/family-dormitory.svg" width="87" height="16" alt="잇올 기숙학원"><span>몰입의 일상을 완성하다</span></span><svg width="6" height="12" viewBox="0 0 8 14" fill="none" stroke="#222" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m.75 12.75 6-6-6-6"/></svg><span class="sr-only"> (새 창)</span></a></li>
+          </ul>
+          <a class="gnb-family__promo" href="https://www.itall.com/contents/mentorings" target="_blank" rel="noopener">
+            <span>명문대 타이틀을 수익과 커리어로 전환하는 선택</span>
+            <b>명문대 멘토(CA) 모집중</b>
+          <span class="sr-only"> (새 창)</span></a>
+    </div>
+  </div>
+</div>
+
+<!-- 맨 위로 — GNB와 함께 공용 (스크롤 300px 이후 노출) -->
+<button class="gnb-top" type="button" aria-label="맨 위로 이동"><img src="assets/gnb/ic_scroll_up.svg" width="40" height="40" alt=""></button>
+
+<script>
+  /* GNB — 수능 D-day · 모바일 메뉴 · 아코디언 · 패밀리 사이트 바텀시트 */
+  (function () {
+    'use strict';
+    var d = Math.round((new Date(2026, 10, 19) - new Date(new Date().toDateString())) / 864e5);
+    document.querySelectorAll('.js-dday').forEach(function (el) { el.textContent = d > 0 ? 'D-' + d : 'D-DAY'; });
+
+    var root = document.documentElement;
+    var menu = document.getElementById('gnb-m');
+    var sheet = document.getElementById('gnb-sheet');
+    var opener = null;
+    var openedAt = 0;
+
+    /* 레이어 열림/닫힘 알림 — 랜딩 KV 영상은 이 이벤트로 일시정지(모바일에서 영상 위 고정 레이어 깜빡임 방지) */
+    function notify(isOpen) { document.dispatchEvent(new CustomEvent('gnb:toggle', { detail: { open: isOpen } })); }
+
+    function open(layer, trigger) {
+      clearTimeout(layer._closeTimer);   /* 직전 닫기 타이머가 남아 있으면 다시 연 레이어를 숨기므로 취소 */
+      opener = trigger;
+      openedAt = Date.now();
+      layer.hidden = false;
+      root.classList.add('gnb-lock');
+      void layer.offsetWidth;
+      layer.classList.add('is-open');
+      if (trigger.hasAttribute('aria-expanded')) trigger.setAttribute('aria-expanded', 'true');
+      notify(true);
+      var first = layer.querySelector('a, button');
+      if (first) first.focus({ preventScroll: true });
+    }
+    function close(layer) {
+      layer.classList.remove('is-open');
+      root.classList.remove('gnb-lock');
+      var done = function () { layer.hidden = true; };
+      clearTimeout(layer._closeTimer);
+      if (layer === menu || window.matchMedia('(prefers-reduced-motion: reduce)').matches) done();   /* 전체 메뉴는 즉시 (실사이트 동일) */
+      else layer._closeTimer = setTimeout(done, 300);
+      notify(false);
+      if (opener) {
+        if (opener.hasAttribute('aria-expanded')) opener.setAttribute('aria-expanded', 'false');
+        opener.focus({ preventScroll: true });
+      }
+    }
+    /* ☰ 자리에 ✕가 겹쳐 있어 터치 직후 따라오는 탭(더블탭·고스트 클릭)이 바로 닫지 않게 */
+    function guarded(fn) { return function () { if (Date.now() - openedAt < 400) return; fn(); }; }
+
+    document.querySelector('.js-menu-open').addEventListener('click', function (e) { open(menu, e.currentTarget); });
+    menu.querySelector('.js-menu-close').addEventListener('click', guarded(function () { close(menu); }));
+    document.querySelector('.js-sheet-open').addEventListener('click', function (e) { open(sheet, e.currentTarget); });
+    sheet.querySelector('.js-sheet-close').addEventListener('click', guarded(function () { close(sheet); }));
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (!sheet.hidden) close(sheet); else if (!menu.hidden) close(menu);
+    });
+
+    menu.querySelectorAll('.gnb-m__toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var sub = document.getElementById(btn.getAttribute('aria-controls'));
+        var expand = btn.getAttribute('aria-expanded') !== 'true';
+        btn.setAttribute('aria-expanded', String(expand));
+        sub.hidden = !expand;
+      });
+    });
+
+    /* 맨 위로 버튼 — 스크롤 300px 이후 노출 · 클릭 시 맨 위로 */
+    var topBtn = document.querySelector('.gnb-top');
+    if (topBtn) {
+      var onTop = function () { topBtn.classList.toggle('is-show', window.scrollY > 300); };
+      window.addEventListener('scroll', onTop, { passive: true });
+      onTop();
+      topBtn.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      });
+    }
+
+    /* PC로 넓어지면 모바일 레이어 정리 */
+    window.matchMedia('(min-width: 1024px)').addEventListener('change', function (mq) {
+      if (!mq.matches) return;
+      [menu, sheet].forEach(function (layer) { clearTimeout(layer._closeTimer); layer.classList.remove('is-open'); layer.hidden = true; });
+      root.classList.remove('gnb-lock');
+      notify(false);
+    });
+  })();
+</script>
+<!-- ============ /잇올 사이트 GNB ============ -->
+
+
+<header class="page-head" id="top" aria-label="페이지 제목">
+  <h1 class="page-head__title"><a class="page-head__back" href="https://www.itall.com/recruit?tab=all" aria-label="모집안내로 돌아가기" target="_blank" rel="noopener"><img src="assets/gnb/ico_arrow_back_red.svg" width="20" height="20" alt=""><span class="sr-only"> (새 창)</span></a>2028학년도 통학 재수정규반</h1>
+  <nav class="crumb" aria-label="현재 위치">
+    <ol>
+      <li><a class="crumb__home" href="https://www.itall.com/main" target="_blank" rel="noopener"><img src="assets/gnb/ico_breadcrumbs_home.svg" width="20" height="20" alt="메인"><span class="sr-only"> (새 창)</span></a></li>
+      <li><a href="https://www.itall.com/recruit?tab=all" target="_blank" rel="noopener">모집안내<span class="sr-only"> (새 창)</span></a></li>
+      <li><span aria-current="page">2028학년도 통학 재수정규반</span></li>
+    </ol>
+  </nav>
+</header>
+
+<div class="layout">
+  <main class="layout__main">
+    <div class="wrap">
+      <div class="logo-bar">
+        <img src="assets/ui/logo_sparta.svg" width="112" height="20" alt="잇올 스파르타">
+        <img src="assets/ui/logo_molip.svg" width="93" height="20" alt="잇올 몰입관">
+      </div>
+
+      <div class="lp">
         <section class="hero" aria-labelledby="hero-title">
           <svg class="hero__deco hero__deco--dots hero__deco--dots-right" viewBox="0 0 68.0874 54.9806" aria-hidden="true" focusable="false">
             <circle cx="3.47087" cy="3.47087" r="3.47087"/>
@@ -412,18 +909,75 @@
           </div>
           <img class="hero__cube-still" src="assets/cube_still.webp" alt="" width="328" height="341" aria-hidden="true">
         </section>
+
+        <section class="kvt-dl" aria-labelledby="kvt-dl-title">
+          <h2 class="kvt-dl__title" id="kvt-dl-title">KV 큐브 영상 내려받기</h2>
+          <ul class="kvt-dl__list">
+            <li><a class="kvt-dl__btn" href="assets/download/kv_cube_720.mp4" download="2028_통학_재수정규반_KV_720.mp4"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9.5M5.5 8.5 10 13l4.5-4.5M4 16h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>mp4 · 720 <span class="kvt-dl__size">3.9MB</span></a></li>
+            <li><a class="kvt-dl__btn" href="assets/download/kv_cube_1440.mp4" download="2028_통학_재수정규반_KV_1440.mp4"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9.5M5.5 8.5 10 13l4.5-4.5M4 16h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>mp4 · 1440 고화질 <span class="kvt-dl__size">11.5MB</span></a></li>
+            <li><a class="kvt-dl__btn" href="assets/download/kv_cube_720_alpha.webm" download="2028_통학_재수정규반_KV_720_alpha.webm"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9.5M5.5 8.5 10 13l4.5-4.5M4 16h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>투명 배경 webm · 720 <span class="kvt-dl__size">4.1MB</span></a></li>
+          </ul>
+          <p class="kvt-dl__note">투명 배경 영상(webm)은 편집 프로그램용입니다. 웹에서는 mp4를 씁니다.</p>
+        </section>
+      </div>
     </div>
-  </div>
-  <section class="kvt-dl" aria-labelledby="kvt-dl-title">
-    <h2 class="kvt-dl__title" id="kvt-dl-title">KV 큐브 영상 내려받기</h2>
-    <ul class="kvt-dl__list">
-      <li><a class="kvt-dl__btn" href="assets/download/kv_cube_720.mp4" download="2028_통학_재수정규반_KV_720.mp4"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9.5M5.5 8.5 10 13l4.5-4.5M4 16h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>mp4 · 720 <span class="kvt-dl__size">3.9MB</span></a></li>
-      <li><a class="kvt-dl__btn" href="assets/download/kv_cube_1440.mp4" download="2028_통학_재수정규반_KV_1440.mp4"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9.5M5.5 8.5 10 13l4.5-4.5M4 16h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>mp4 · 1440 고화질 <span class="kvt-dl__size">11.5MB</span></a></li>
-      <li><a class="kvt-dl__btn" href="assets/download/kv_cube_720_alpha.webm" download="2028_통학_재수정규반_KV_720_alpha.webm"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9.5M5.5 8.5 10 13l4.5-4.5M4 16h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>투명 배경 webm · 720 <span class="kvt-dl__size">4.1MB</span></a></li>
-    </ul>
-    <p class="kvt-dl__note">투명 배경 영상(webm)은 편집 프로그램용입니다. 웹에서는 mp4를 씁니다.</p>
-  </section>
-</main>
+
+  </main>
+
+  <!-- 우측 패널: 시안 '콘텐츠 하이라이트'(6167:4914). 아코디언은 실사이트처럼 처음에는 접혀 있다 -->
+  <aside class="panel" aria-label="모집 요약">
+    <div class="panel__stack">
+      <div class="pcard pcard--summary">
+        <dl class="summary__list">
+          <div class="summary__row"><dt>모집 기간</dt><dd>~ 선착순 마감</dd></div>
+          <div class="summary__row"><dt>입학일</dt><dd>2027.02.15(월) ~</dd></div>
+          <div class="summary__row summary__row--top"><dt>대상 센터/캠프</dt><dd>전국 잇올 스파르타,
+잇올 몰입관</dd></div>
+        </dl>
+        <!-- 상담 프로그램 "2028학년도 통학 재수정규반" 이 선택된 상태로 들어가야 함 (기획안 8p) -->
+        <div class="summary__cta"><a class="btn-pill" href="https://www.itall.com/recruit/reservation" target="_blank" rel="noopener">선착순 예약하기<span class="sr-only"> (새 창)</span></a></div>
+      </div>
+
+      <div class="panel__group">
+      <div class="pcard pacc">
+        <button class="pacc__head" type="button" aria-expanded="false" aria-controls="pacc-promo">
+          <img class="pacc__icon" src="assets/ui/ic_promotion.svg" alt="" width="38" height="34" aria-hidden="true">
+          <span class="pacc__title">특별 프로모션</span>
+          <img class="pacc__chev" src="assets/ui/ic_chevron_down_lg.svg" alt="" width="28" height="28" aria-hidden="true">
+        </button>
+        <div class="pacc__body" id="pacc-promo"><div class="pacc__inner"><div class="pacc__pad">
+          <ul class="promo">
+            <li><span><b>프로모션</b> 정규패스<br>- 2027.02.15(월) ~ 2027.04.13(화) 기간 내 2개월 결제 및 등원 완료 시 최대 15% 할인</span></li>
+          </ul>
+        </div></div></div>
+      </div>
+
+      <div class="pcard pacc pacc--notice">
+        <button class="pacc__head" type="button" aria-expanded="false" aria-controls="pacc-notice">
+          <span class="pacc__icon pacc__icon--circle"><img src="assets/ui/ic_info.svg" alt="" width="20" height="20" aria-hidden="true"></span>
+          <span class="pacc__title">유의사항</span>
+          <img class="pacc__chev" src="assets/ui/ic_chevron_down_lg.svg" alt="" width="28" height="28" aria-hidden="true">
+        </button>
+        <div class="pacc__body" id="pacc-notice"><div class="pacc__inner"><div class="pacc__pad">
+          <p class="notice__lead">※ 대상 센터/캠프가 상시 업데이트될 예정이니 꼭 대상 센터/캠프를 확인 후 신청 바랍니다.</p>
+          <ul class="notice__list">
+            <li>정규패스는 2027년 2월 15일부터 4월 13일까지 2개월분을 일괄 결제 후 이용하는 경우에 한해 적용됩니다.</li>
+            <li>정규패스의 할인율은 센터/캠프별로 상이하므로, 대상 센터/캠프 목록을 확인 바랍니다.</li>
+            <li>정규패스는 타 프로모션, 장학 및 잇올패스 혜택과 중복 적용되지 않습니다. 단, 기존 재수우선선발반 재원생이 재수정규반으로 연장 등록하는 경우 정규패스 혜택을 받을 수 있습니다.</li>
+            <li>상담 예약 순서대로 대기자 등록이 진행되며, 좌석·프로모션 모두 센터/캠프 운영 상황에 따라 조기 마감될 수 있습니다.</li>
+          </ul>
+        </div></div></div>
+      </div>
+      </div>
+
+      <!-- 기숙 재수정규반으로 가는 배너 (주소는 기숙 페이지가 열리면 바꿔야 함) -->
+      <a class="pbanner" href="https://dormitory.itall.com/recruit" target="_blank" rel="noopener">
+        <span class="pbanner__title">2월까지 기다리지 말고 지금 시작!</span>
+        <span class="pbanner__link">기숙 재수정규반 <img src="assets/ui/ic_arrow_up_right_banner.svg" alt="" width="24" height="24" aria-hidden="true"></span>
+      <span class="sr-only"> (새 창)</span></a>
+    </div>
+  </aside>
+</div>
 
 <script>
 /* 큐브 영상 그리기
@@ -519,6 +1073,23 @@
     start();
   }
 })();
+</script>
+
+<script>
+/* 우측 패널 아코디언(특별 프로모션 · 유의사항): 누르면 펼치고 접는다. 모양은 CSS 가 aria-expanded 값을 보고 바꾼다. */
+(function () {
+  'use strict';
+  document.querySelectorAll('.panel .pacc__head').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      btn.setAttribute('aria-expanded', String(btn.getAttribute('aria-expanded') !== 'true'));
+    });
+  });
+})();
+</script>
+
+
+<script>
+
 </script>
 </body>
 </html>
