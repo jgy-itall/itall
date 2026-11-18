@@ -268,8 +268,8 @@
     background: var(--daily) url("assets/ui/banner_daily.webp") center / 100% 100% no-repeat;
   }
   .pbanner__title { font-family: "Itall", Pretendard, sans-serif; font-size: 20px; font-weight: 700; line-height: 1.35; letter-spacing: 0.02em; }
-  .pbanner__link { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0.0912px; }
-  .pbanner__link img { width: 16px; height: 16px; }
+  .pbanner__link { display: flex; align-items: center; gap: 0; font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0.0912px; }
+  .pbanner__link img { width: 24px; height: 24px; }   /* 시안: Arrows/arrow-up-right 24, 글자에 붙음 */
   @media (prefers-reduced-motion: reduce) {
     .pacc__body, .pacc__inner { transition: none; }
   }
@@ -1867,8 +1867,8 @@
   }
   /* 잇올체는 글자가 줄 위쪽에 붙어 보여 시안처럼 위에 4 를 더해 가운데로 맞춤 */
   .s12-bar__title { padding-top: calc(4 * var(--u)); font-family: "Itall", Pretendard, sans-serif; font-size: calc(24 * var(--u)); font-weight: 700; line-height: 1.35; letter-spacing: 0.02em; white-space: nowrap; }
-  .s12-bar__more { flex: none; display: flex; align-items: center; gap: calc(8 * var(--u)); font-size: calc(18 * var(--u)); font-weight: 600; line-height: 1.445; letter-spacing: -0.0002em; white-space: nowrap; }
-  .s12-bar__chev { flex: none; width: calc(16 * var(--u)); height: calc(16 * var(--u)); max-width: none; }
+  .s12-bar__more { flex: none; display: flex; align-items: center; gap: calc(4 * var(--u)); font-size: calc(18 * var(--u)); font-weight: 600; line-height: 1.445; letter-spacing: -0.0002em; white-space: nowrap; }
+  .s12-bar__chev { flex: none; width: calc(24 * var(--u)); height: calc(24 * var(--u)); max-width: none; }   /* 시안: Arrows/arrow-up-right 24 */
   /* 통학 이동 띠 — PC 띠와 같은 틀에 통학 색·무늬(모바일 통학 배너 그림을 비율 유지해 채움). PC(1024~)에서는 숨김 */
   .s12-bar--daily { display: none; }
   .s12-bar--daily .s12-bar__link { --s12-daily: #ff4c6a; background: var(--s12-daily) url("assets/s12-strip/strip_daily_mo.webp") center / cover no-repeat; }   /* 통학 (시안 색 변수) */
@@ -1902,8 +1902,8 @@
     .s12__banner--all { min-height: calc(130 * var(--u)); background: var(--s12-green) url("assets/s12-strip/strip_all_mo.webp") center / 100% 100% no-repeat; }
     .s12__banner--daily { min-height: calc(103 * var(--u)); background: var(--s12-daily) url("assets/s12-strip/strip_daily_mo.webp") center / 100% 100% no-repeat; }
     .s12__title { font-family: "Itall", Pretendard, sans-serif; font-size: calc(20 * var(--u)); font-weight: 700; line-height: 1.35; letter-spacing: 0.02em; }
-    .s12__more { display: flex; align-items: center; gap: calc(8 * var(--u)); font-size: calc(16 * var(--u)); font-weight: 600; line-height: 1.5; letter-spacing: 0.0057em; white-space: nowrap; }
-    .s12__chev { flex: none; width: calc(16 * var(--u)); height: calc(16 * var(--u)); max-width: none; }
+    .s12__more { display: flex; align-items: center; gap: 0; font-size: calc(16 * var(--u)); font-weight: 600; line-height: 1.5; letter-spacing: 0.0057em; white-space: nowrap; }
+    .s12__chev { flex: none; width: calc(24 * var(--u)); height: calc(24 * var(--u)); max-width: none; }
   }
 
   /* ===== 공용 모달 (s00-modal) — 잇올패스 · 실전바이오리듬 · 하루 일과표 · 교습비 환불규정 · 유튜브 영상 =====
@@ -1915,6 +1915,7 @@
     --mu: 1px;
     --lpm-w: 800;                               /* 모달 폭(시안 px) */
     --lpm-pad: calc(24 * var(--mu));            /* 모달 안쪽 여백 */
+    --lpm-pad-r: 0px;                           /* 오른쪽 여백 — 스크롤바 칸(PC 24 · 모바일 20)이 여백 자리를 대신함 */
     --lpm-gap: calc(32 * var(--mu));            /* 본문 덩어리 사이 간격 */
     --lpm-neutral: #7a7a7c;                     /* color/semantic/text/neutral */
     --lpm-line: #e1e3e5;                        /* color/semantic/line/normal */
@@ -1928,7 +1929,8 @@
     max-width: none;
     max-height: min(600px, calc(100vh - 40px));     /* PC 모달 최대 높이 600 */
     max-height: min(600px, calc(100dvh - 40px));
-    margin: auto; padding: 0; border: 0; overflow: hidden;
+    margin: auto; padding: 0; border: 0;
+    overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;   /* 모달 전체가 스크롤 영역 → 막대는 늘 모달 맨 위에서 시작 */
     border-radius: calc(16 * var(--mu));
     background: var(--white);                   /* color/semantic/background/normal */
     color: var(--ink);
@@ -1950,7 +1952,7 @@
   .lpm__head {
     flex: none; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start;
     gap: calc(8 * var(--mu)) calc(12 * var(--mu));
-    padding: var(--lpm-pad) var(--lpm-pad) 0;
+    padding: var(--lpm-pad) var(--lpm-pad-r) 0 var(--lpm-pad);
   }
   .lpm__heading { display: flex; flex-direction: column; align-items: flex-start; gap: calc(12 * var(--mu)); }
   .lpm__title { font-size: calc(22 * var(--mu)); font-weight: 600; line-height: 1.45; letter-spacing: -0.0194em; color: var(--ink-strong); }
@@ -1962,7 +1964,7 @@
   /* --- 탭: 고른 탭 아래 선(잉크)이 미끄러지듯 이동 --- */
   .lpm__tabs {
     position: relative; flex: none; display: flex;
-    margin: calc(20 * var(--mu)) var(--lpm-pad) 0;
+    margin: calc(20 * var(--mu)) var(--lpm-pad-r) 0 var(--lpm-pad);
     /* 시안 틀에는 아래 1px 선(color/semantic/line/normal)이 있지만 시안 화면에는 보이지 않는다 — 높이 1px 만 남기고 그리지 않음 */
     border-bottom: 1px solid transparent;
   }
@@ -1982,32 +1984,33 @@
   .lpm__tabs[data-active="1"] .lpm__tab-ink { transform: translateX(100%); }
   .lpm__tabs[data-active="2"] .lpm__tab-ink { transform: translateX(200%); }
 
-  /* --- 본문: 화면이 낮으면 이 안에서만 스크롤 --- */
+  /* --- 위 고정 묶음(제목 · 탭): 스크롤해도 맨 위에 남는다 --- */
+  .lpm__top { position: sticky; top: 0; z-index: 2; flex: none; background: var(--white); }
+
+  /* --- 본문 --- */
   .lpm__scroll {
-    flex: 0 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
-    padding: var(--lpm-gap) var(--lpm-pad) var(--lpm-pad);
+    flex: none;
+    padding: var(--lpm-gap) var(--lpm-pad-r) var(--lpm-pad) var(--lpm-pad);
   }
   .lpm--bio .lpm__scroll { padding-top: calc(20 * var(--mu)); }
 
   /* --- 모달 안 스크롤바: 얇은 막대(4) · 둥근 끝 · 바탕 없음. 모달 가장자리·둥근 모서리에 닿지 않게 띄움 --- */
-  .lpm__scroll, .lpm--video, .lpm__day { --lpm-bar: #c4c6c8; --lpm-bar-hover: #a3a5a8; }
-  .lpm__scroll::-webkit-scrollbar, .lpm--video::-webkit-scrollbar { width: 24px; }   /* = 오른쪽 여백(PC 24) */
+  .lpm, .lpm__day { --lpm-bar: #bebfc1;   /* color/semantic/line/strong */ --lpm-bar-hover: #a3a5a8; }
+  .lpm::-webkit-scrollbar { width: 24px; }   /* = 오른쪽 여백(PC 24) */
   .lpm__day::-webkit-scrollbar { height: 12px; }
-  /* 스크롤바 칸이 오른쪽 여백 자리를 그대로 쓴다: 칸을 늘 확보하고 오른쪽 여백은 0 → 스크롤이 있든 없든 글 오른쪽 끝이 닫기 버튼과 맞음 */
-  .lpm__scroll { scrollbar-gutter: stable; padding-right: 0; }
-  .lpm__scroll::-webkit-scrollbar-track, .lpm--video::-webkit-scrollbar-track { margin: 16px 0; background: transparent; }
+  .lpm::-webkit-scrollbar-track { margin: 16px 0; background: transparent; }
   .lpm__day::-webkit-scrollbar-track { background: transparent; }
-  .lpm__scroll::-webkit-scrollbar-thumb, .lpm--video::-webkit-scrollbar-thumb, .lpm__day::-webkit-scrollbar-thumb {
+  .lpm::-webkit-scrollbar-thumb, .lpm__day::-webkit-scrollbar-thumb {
     border: 4px solid transparent; border-radius: 9999px; background: var(--lpm-bar) padding-box;
   }
   /* 세로 막대는 오른쪽 여백 칸의 가운데: (24 - 4) ÷ 2 = 10. 테두리를 네 방향 모두 같게 줘야 위아래 끝이 둥글게 그려짐 */
-  .lpm__scroll::-webkit-scrollbar-thumb, .lpm--video::-webkit-scrollbar-thumb { border-width: 10px; }
-  .lpm__scroll::-webkit-scrollbar-thumb:hover, .lpm--video::-webkit-scrollbar-thumb:hover, .lpm__day::-webkit-scrollbar-thumb:hover { background-color: var(--lpm-bar-hover); }
-  .lpm__scroll::-webkit-scrollbar-button, .lpm--video::-webkit-scrollbar-button, .lpm__day::-webkit-scrollbar-button { display: none; }   /* 위아래 화살표 없음 */
+  .lpm::-webkit-scrollbar-thumb { border-width: 10px; }
+  .lpm::-webkit-scrollbar-thumb:hover, .lpm__day::-webkit-scrollbar-thumb:hover { background-color: var(--lpm-bar-hover); }
+  .lpm::-webkit-scrollbar-button, .lpm__day::-webkit-scrollbar-button { display: none; }   /* 위아래 화살표 없음 */
   /* 파이어폭스만 표준 속성으로 얇게 — 크롬은 이 속성을 받으면 위의 둥근 막대 대신 기본 막대(화살표·뾰족한 끝)를 그려서 크롬에는 주지 않음 */
   @supports (-moz-appearance: none) {
-    .lpm__scroll, .lpm--video, .lpm__day { scrollbar-width: thin; scrollbar-color: var(--lpm-bar) transparent; }
-    .lpm__scroll { padding-right: calc(var(--lpm-pad) - 8px); }   /* thin 막대 칸은 약 8 */
+    .lpm, .lpm__day { scrollbar-width: thin; scrollbar-color: var(--lpm-bar) transparent; }
+    .lpm { --lpm-pad-r: calc(var(--lpm-pad) - 8px); }   /* thin 막대 칸은 약 8 */
   }
   .lpm__panels.is-sizing { overflow: hidden; }  /* 탭을 바꿀 때 높이가 부드럽게 변하는 동안만 */
   .lpm__panel { display: flex; flex-direction: column; gap: var(--lpm-gap); }
@@ -2074,6 +2077,64 @@
   .lpm__time { display: inline-flex; align-items: center; gap: calc(4 * var(--mu)); white-space: nowrap; }
   /* 바뀐 시간 강조 — 기숙 시안 보드에는 통학 분홍(#ff4c6a, 변수 '통학')이 남아 있어 기숙 포인트 색으로 바꿈 */
   .lpm__time-new { padding: 0 calc(6 * var(--mu)); border-radius: calc(4 * var(--mu)); background: var(--point); font-weight: 600; color: var(--white); }
+
+  /* --- 기본 수업 · 유료 특강 — 새 모달 스타일(시안 6326:4232): 배지 + 제목, 검정 머리 표, 흰 행 · 회색 구분선, ※ 각주 --- */
+  .lpm__badge {
+    align-self: flex-start; padding: calc(4 * var(--mu)) calc(8 * var(--mu)); border-radius: calc(6 * var(--mu)); background: var(--hero-bg);
+    font-size: calc(13 * var(--mu)); font-weight: 500; line-height: 1.385; letter-spacing: 0.0194em; color: var(--point);
+  }
+  .lpm--class .lpm__scroll, .lpm--special .lpm__scroll { padding-top: calc(20 * var(--mu)); }
+  .lpm__panel--loose { gap: calc(40 * var(--mu)); }
+  .lpm__block { display: flex; flex-direction: column; gap: calc(16 * var(--mu)); }
+  /* 열 너비 = 시안 열 px ÷ 표 폭 752 (시안 6344:1423) */
+  .lpm__col-90 { width: 11.968%; }
+  .lpm__col-128 { width: 17.021%; }
+  .lpm__col-150 { width: 19.947%; }
+  .lpm__col-170 { width: 22.606%; }
+  .lpm__col-177 { width: 23.537%; }
+  .lpm__col-178 { width: 23.670%; }
+  .lpm__col-184 { width: 24.468%; }
+  .lpm__col-220 { width: 29.255%; }
+  .lpm__col-246 { width: 32.713%; }
+  .lpm__col-266 { width: 35.372%; }
+  .lpm__col-432 { width: 57.447%; }
+  /* 여러 줄에 걸친 칸(모의고사): 왼쪽 세로선을 이 칸이 그리고, 옆 칸의 오른쪽 선은 지워 두 줄이 겹치지 않게 */
+  .lpm__table--season tbody td:not(.lpm__cell-wrap) { border-right: 0; }
+  .lpm__table--season .lpm__cell-wrap { border-left: 1px solid var(--lpm-line); }
+  .lpm__cell-line { display: inline-flex; align-items: center; justify-content: center; gap: calc(4 * var(--mu)); }
+  .lpm__cell-stack { display: inline-flex; flex-direction: column; align-items: center; gap: calc(4 * var(--mu)); }
+  .lpm__sub { font-size: calc(13 * var(--mu)); font-weight: 400; line-height: 1.385; letter-spacing: 0.0194em; color: var(--lpm-neutral); }
+  .lpm__new {
+    flex: none; padding: calc(2 * var(--mu)) calc(6 * var(--mu)); border-radius: calc(4 * var(--mu)); background: #fff1f2;   /* color/atomic/red/95 */
+    font-size: calc(13 * var(--mu)); font-weight: 600; line-height: 1.385; letter-spacing: 0.0194em; color: #e60f19;          /* color/semantic/primary/normal */
+  }
+  .lpm__arrow { flex: none; width: calc(12 * var(--mu)); height: calc(14 * var(--mu)); background: var(--point); clip-path: polygon(0 0, 100% 50%, 0 100%); }
+  /* 특강 구성 / 수준별 수학 — 둥근 버튼 둘, 고른 쪽 검정 바탕이 미끄러지듯 이동 */
+  .lpm__seg {
+    --seg-w: calc(166 * var(--mu)); --seg-gap: calc(16 * var(--mu)); --seg-pad: calc(6 * var(--mu));
+    position: relative; align-self: flex-start; display: grid; grid-template-columns: repeat(2, var(--seg-w)); column-gap: var(--seg-gap);
+    padding: var(--seg-pad); border-radius: 9999px; background: #e6e8ea;
+  }
+  .lpm__seg-ink {
+    position: absolute; left: var(--seg-pad); top: var(--seg-pad); bottom: var(--seg-pad); width: var(--seg-w);
+    border-radius: 9999px; background: var(--ink); transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+  }
+  .lpm__seg[data-active="1"] .lpm__seg-ink { transform: translateX(calc(100% + var(--seg-gap))); }
+  .lpm__seg-btn {
+    position: relative; height: calc(40 * var(--mu)); border-radius: 9999px;
+    font-size: calc(16 * var(--mu)); font-weight: 500; line-height: 1.5; letter-spacing: 0.0057em; color: var(--lpm-neutral); transition: color .3s ease;
+  }
+  .lpm__seg-btn[aria-selected="true"] { color: var(--white); }
+  .lpm__seg-btn:focus-visible { outline: 2px solid var(--point); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { .lpm__seg-ink, .lpm__seg-btn { transition: none; } }
+  /* 표가 좁은 화면에서 넘칠 때 옆으로 밀어서 보는 상자 (PC 에서는 표가 다 들어옴) */
+  .lpm__hscroll { --lpm-bar: #bebfc1;   /* color/semantic/line/strong */ --lpm-bar-hover: #a3a5a8; overflow-x: auto; }
+  .lpm__hscroll::-webkit-scrollbar { height: 12px; }
+  .lpm__hscroll::-webkit-scrollbar-track { background: transparent; }
+  .lpm__hscroll::-webkit-scrollbar-button { display: none; }
+  .lpm__hscroll::-webkit-scrollbar-thumb { border: 4px solid transparent; border-radius: 9999px; background: var(--lpm-bar) padding-box; }
+  .lpm__hscroll::-webkit-scrollbar-thumb:hover { background-color: var(--lpm-bar-hover); }
+  @supports (-moz-appearance: none) { .lpm__hscroll { scrollbar-width: thin; scrollbar-color: var(--lpm-bar) transparent; } }
 
   /* --- 하루 일과표 (탭 2개 · 표 한 개씩) ---
      시안 행 높이 PC 40 · 모바일 38. 화면이 낮으면 표가 모달 안에 다 보이도록 행 높이를 줄인다(최소 PC 28 · 모바일 26).
@@ -2172,7 +2233,7 @@
     width: min(calc(var(--lpm-w) * var(--mu)), calc(100% - 40px), calc((min(600px, 100dvh - 40px) - var(--lpm-chrome)) * 16 / 9 + var(--lpm-pad) * 2));
     overflow-y: auto;
   }
-  .lpm__video { flex: none; margin: calc(20 * var(--mu)) var(--lpm-pad) var(--lpm-pad); aspect-ratio: 16 / 9; background: var(--ink-strong); }
+  .lpm__video { flex: none; margin: calc(20 * var(--mu)) var(--lpm-pad-r) var(--lpm-pad) var(--lpm-pad); aspect-ratio: 16 / 9; background: var(--ink-strong); }
   .lpm__video iframe { display: block; width: 100%; height: 100%; border: 0; }
 
   /* 모바일 시안의 줄바꿈 자리는 PC 에서 숨김 */
@@ -2183,8 +2244,8 @@
   /* ===== 모바일 (화면 폭 599px 이하) — 모바일 시안(모달 폭 350) 값 ===== */
   @media (max-width: 599px) {
     /* 모바일 오른쪽 여백 20 → 스크롤바 칸 20, 막대는 가운데 ((20 - 4) ÷ 2 = 8) */
-    .lpm__scroll::-webkit-scrollbar, .lpm--video::-webkit-scrollbar { width: 20px; }
-    .lpm__scroll::-webkit-scrollbar-thumb, .lpm--video::-webkit-scrollbar-thumb { border-width: 8px; }
+    .lpm::-webkit-scrollbar { width: 20px; }
+    .lpm::-webkit-scrollbar-thumb { border-width: 8px; }
     .lpm {
       max-height: min(500px, calc(100vh - 40px));   /* 모바일 모달 최대 높이 500 */
       max-height: min(500px, calc(100dvh - 40px));
@@ -2223,6 +2284,16 @@
     .lpm__day { padding-bottom: calc(12 * var(--mu)); }
     .lpm__day-label { gap: calc(10 * var(--mu)); font-size: calc(13 * var(--mu)); line-height: 1.385; letter-spacing: 0.0194em; }
     .lpm__daytable { flex: none; width: calc(780 * var(--mu)); min-width: 0; }
+    /* 기본 수업 · 유료 특강 모바일: 표는 글자 길이만큼 넓어지고 옆으로 밀어서 봄 */
+    .lpm__hscroll { padding-bottom: calc(8 * var(--mu)); }
+    .lpm__table--wide { table-layout: auto; width: max-content; min-width: 100%; }
+    .lpm__table--wide col { width: auto; }
+    .lpm__table--wide thead th:first-child, .lpm__table--wide thead th:last-child { width: auto; }
+    .lpm__panel--loose { gap: calc(32 * var(--mu)); }
+    .lpm__block { gap: calc(12 * var(--mu)); }
+    .lpm__seg { --seg-w: 1fr; --seg-gap: calc(8 * var(--mu)); --seg-pad: calc(4 * var(--mu)); align-self: stretch; grid-template-columns: 1fr 1fr; }
+    .lpm__seg-ink { width: calc((100% - var(--seg-pad) * 2 - var(--seg-gap)) / 2); }
+    .lpm__seg-btn { height: calc(36 * var(--mu)); font-size: calc(14 * var(--mu)); line-height: 1.429; letter-spacing: 0.0145em; }
     .lpm__daytable th, .lpm__daytable td { font-size: calc(13 * var(--mu)); line-height: 1.385; letter-spacing: 0.0194em; }
     /* 안내 문구: 시안 12px(Caption1) → 최소 글자 13px 규칙으로 13px */
     .lpm__marks li { align-items: flex-start; }
@@ -3217,8 +3288,7 @@
                 </tbody>
               </table>
 
-              <!-- 수업 카드: 기본 수업(강조) / 선택형 유료 특강
-                   '자세히 보기'는 기획안상 재수우선선발반 기본 수업·유료 특강 모달을 다시 쓰는 자리지만, 기숙 시안에 그 모달이 없어 아직 연결하지 않음 -->
+              <!-- 수업 카드: 기본 수업(강조) / 선택형 유료 특강 — '자세히 보기'는 공용 모달(s00-modal)의 기본 수업 · 유료 특강을 연다 -->
               <ul class="s06__lessons">
                 <li class="s06__lesson s06__lesson--main">
                   <div class="s06__lesson-text">
@@ -3232,7 +3302,7 @@
                       <li class="s06__check">시즌 2(3~5월) 수능특강 <span class="s06__new">NEW</span></li>
                     </ul>
                   </div>
-                  <button type="button" class="s06__btn s06__btn--line">
+                  <button type="button" class="s06__btn s06__btn--line" data-modal-open="lpm-class" data-modal-tab="season" aria-haspopup="dialog">
                     <span class="sr-only">기본 수업 </span>자세히 보기
                     <img src="assets/s06-ready02/ic_chevron_right_point.svg" alt="" width="24" height="24" loading="lazy" aria-hidden="true">
                   </button>
@@ -3246,7 +3316,7 @@
                       <li class="s06__check">1:1 맞춤 클리닉 · 테마 특강</li>
                     </ul>
                   </div>
-                  <button type="button" class="s06__btn s06__btn--line">
+                  <button type="button" class="s06__btn s06__btn--line" data-modal-open="lpm-special" aria-haspopup="dialog">
                     <span class="sr-only">선택형 유료 특강 </span>자세히 보기
                     <img src="assets/s06-ready02/ic_chevron_right_point.svg" alt="" width="24" height="24" loading="lazy" aria-hidden="true">
                   </button>
@@ -4133,12 +4203,12 @@
         <section class="s12" aria-labelledby="s12-title">
           <a class="s12__banner s12__banner--all" href="https://dormitory.itall.com/recruit?tab=all" target="_blank" rel="noopener">
             <h2 class="s12__title" id="s12-title">누적된 몰입공부 시간,<br>2028 합격으로 BOOM!</h2>
-            <span class="s12__more">전체 모집 프로그램 보기<img class="s12__chev" src="assets/s12-strip/ic_chevron.svg" width="16" height="16" alt="" aria-hidden="true" loading="lazy"></span>
+            <span class="s12__more">전체 모집 프로그램 보기<img class="s12__chev" src="assets/s12-strip/ic_arrow_up_right.svg" width="24" height="24" alt="" aria-hidden="true" loading="lazy"></span>
           <span class="sr-only"> (새 창)</span></a>
           <!-- 통학 재수정규반으로 가는 배너 (주소는 임시 — 통학 페이지 주소가 정해지면 바꿔야 함) -->
           <a class="s12__banner s12__banner--daily" href="https://www.itall.com/recruit?tab=all" target="_blank" rel="noopener">
             <span class="s12__title">2월까지 기다리지 말고 지금 시작!</span>
-            <span class="s12__more">통학 재수정규반<img class="s12__chev" src="assets/s12-strip/ic_chevron.svg" width="16" height="16" alt="" aria-hidden="true" loading="lazy"></span>
+            <span class="s12__more">통학 재수정규반<img class="s12__chev" src="assets/s12-strip/ic_arrow_up_right.svg" width="24" height="24" alt="" aria-hidden="true" loading="lazy"></span>
           <span class="sr-only"> (새 창)</span></a>
         </section>
       </div>
@@ -4149,7 +4219,7 @@
     <div class="s12-bar">
       <a class="s12-bar__link" href="https://dormitory.itall.com/recruit?tab=all" target="_blank" rel="noopener">
         <span class="s12-bar__title">누적된 몰입공부 시간, 2028 합격으로 BOOM!</span>
-        <span class="s12-bar__more">전체 모집 프로그램 보기<img class="s12-bar__chev" src="assets/s12-strip/ic_chevron.svg" width="16" height="16" alt="" aria-hidden="true" loading="lazy"></span>
+        <span class="s12-bar__more">전체 모집 프로그램 보기<img class="s12-bar__chev" src="assets/s12-strip/ic_arrow_up_right.svg" width="24" height="24" alt="" aria-hidden="true" loading="lazy"></span>
       <span class="sr-only"> (새 창)</span></a>
     </div>
     <!-- 통학 재수정규반 이동 띠 — 태블릿 폭(화면 600~1023)에서만 보인다.
@@ -4157,7 +4227,7 @@
     <div class="s12-bar s12-bar--daily">
       <a class="s12-bar__link" href="https://www.itall.com/recruit?tab=all" target="_blank" rel="noopener">
         <span class="s12-bar__title">2월까지 기다리지 말고 지금 시작!</span>
-        <span class="s12-bar__more">통학 재수정규반<img class="s12-bar__chev" src="assets/s12-strip/ic_chevron.svg" width="16" height="16" alt="" aria-hidden="true" loading="lazy"></span>
+        <span class="s12-bar__more">통학 재수정규반<img class="s12-bar__chev" src="assets/s12-strip/ic_arrow_up_right.svg" width="24" height="24" alt="" aria-hidden="true" loading="lazy"></span>
       <span class="sr-only"> (새 창)</span></a>
     </div>
   </main>
@@ -4211,7 +4281,7 @@
       <!-- 통학 재수정규반으로 가는 배너 (주소는 임시 — 통학 페이지 주소가 정해지면 바꿔야 함) -->
       <a class="pbanner" href="https://www.itall.com/recruit?tab=all" target="_blank" rel="noopener">
         <span class="pbanner__title">2월까지 기다리지 말고 지금 시작!</span>
-        <span class="pbanner__link">통학 재수정규반 <img src="assets/ui/ic_chevron_banner.svg" alt="" width="16" height="16" aria-hidden="true"></span>
+        <span class="pbanner__link">통학 재수정규반 <img src="assets/ui/ic_arrow_up_right_banner.svg" alt="" width="24" height="24" aria-hidden="true"></span>
       <span class="sr-only"> (새 창)</span></a>
     </div>
   </aside>
@@ -4338,6 +4408,7 @@
 
 <!-- ===== 1. 잇올패스 (탭 3개) ===== -->
 <dialog class="lpm" id="lpm-itallpass" role="dialog" aria-modal="true" aria-labelledby="lpm-itallpass-title" tabindex="-1">
+  <div class="lpm__top">
   <div class="lpm__head">
     <div class="lpm__heading">
       <h2 class="lpm__title" id="lpm-itallpass-title">잇올패스</h2>
@@ -4349,6 +4420,7 @@
     <button class="lpm__tab" type="button" role="tab" id="lpm-itallpass-tab-free" aria-controls="lpm-itallpass-panel-free" aria-selected="false" tabindex="-1" data-tab="free">무료패스</button>
     <button class="lpm__tab" type="button" role="tab" id="lpm-itallpass-tab-contents" aria-controls="lpm-itallpass-panel-contents" aria-selected="false" tabindex="-1" data-tab="contents">콘텐츠패스</button>
     <span class="lpm__tab-ink" aria-hidden="true"></span>
+  </div>
   </div>
   <div class="lpm__scroll">
     <div class="lpm__panels">
@@ -4428,12 +4500,14 @@
 
 <!-- ===== 2. 실전바이오리듬 — 기숙 시안에는 '2028학년도 개편' 배지가 없음 ===== -->
 <dialog class="lpm lpm--bio" id="lpm-bio" role="dialog" aria-modal="true" aria-labelledby="lpm-bio-title" aria-describedby="lpm-bio-desc" tabindex="-1">
+  <div class="lpm__top">
   <div class="lpm__head">
     <div class="lpm__heading">
       <h2 class="lpm__title" id="lpm-bio-title">실전바이오리듬</h2>
     </div>
     <button class="lpm__close" type="button" data-modal-close aria-label="닫기"><img src="assets/s00-modal/ic_close.svg" alt="" aria-hidden="true" width="24" height="24"></button>
     <p class="lpm__desc" id="lpm-bio-desc">수능 체화의 일환으로 실제 수능과 동일한 흐름으로 <br class="lpm__br-mo">하루를 구성해 훈련하는 실전바이오리듬 <br class="lpm__br-mo">프로젝트를 실시합니다.</p>
+  </div>
   </div>
   <div class="lpm__scroll">
     <div class="lpm__panel">
@@ -4488,6 +4562,7 @@
      시안은 두 표를 위아래로 이어 붙였지만, 기획안 요청대로 탭으로 나눠 한 번에 한 표만 보여 준다(스크롤 없이 한눈에).
      화면이 낮으면 행 높이를 시안 값(PC 40 · 모바일 38)에서 조금씩 줄여 표 전체가 모달 안에 들어오게 한다(CSS --lpm-row). -->
 <dialog class="lpm lpm--daily" id="lpm-daily" role="dialog" aria-modal="true" aria-labelledby="lpm-daily-title" aria-describedby="lpm-daily-desc" tabindex="-1">
+  <div class="lpm__top">
   <div class="lpm__head">
     <div class="lpm__heading">
       <h2 class="lpm__title" id="lpm-daily-title">하루 일과표</h2>
@@ -4499,6 +4574,7 @@
     <button class="lpm__tab" type="button" role="tab" id="lpm-daily-tab-weekday" aria-controls="lpm-daily-panel-weekday" aria-selected="true" data-tab="weekday">월~토요일</button>
     <button class="lpm__tab" type="button" role="tab" id="lpm-daily-tab-sunday" aria-controls="lpm-daily-panel-sunday" aria-selected="false" tabindex="-1" data-tab="sunday">일요일</button>
     <span class="lpm__tab-ink" aria-hidden="true"></span>
+  </div>
   </div>
   <div class="lpm__scroll">
     <div class="lpm__panels">
@@ -4582,12 +4658,14 @@
 
 <!-- ===== 4. 교습비 환불규정 — 강조색은 시안 그대로 빨강(color/semantic/primary/normal) ===== -->
 <dialog class="lpm lpm--refund" id="lpm-refund" role="dialog" aria-modal="true" aria-labelledby="lpm-refund-title" aria-describedby="lpm-refund-desc" tabindex="-1">
+  <div class="lpm__top">
   <div class="lpm__head">
     <div class="lpm__heading">
       <h2 class="lpm__title" id="lpm-refund-title">교습비 환불규정</h2>
     </div>
     <button class="lpm__close" type="button" data-modal-close aria-label="닫기"><img src="assets/s00-modal/ic_close.svg" alt="" aria-hidden="true" width="24" height="24"></button>
     <p class="lpm__desc" id="lpm-refund-desc">(교습비 + 식비 + 기숙사비)</p>
+  </div>
   </div>
   <div class="lpm__scroll">
     <div class="lpm__panel">
@@ -4656,13 +4734,146 @@
 
 <!-- ===== 5. 유튜브 영상 — 제목과 영상은 여는 버튼의 data-modal-title · data-video 로 채운다 ===== -->
 <dialog class="lpm lpm--video" id="lpm-video" role="dialog" aria-modal="true" aria-labelledby="lpm-video-title" tabindex="-1">
+  <div class="lpm__top">
   <div class="lpm__head">
     <div class="lpm__heading">
       <h2 class="lpm__title" id="lpm-video-title">영상 보기</h2>
     </div>
     <button class="lpm__close" type="button" data-modal-close aria-label="닫기"><img src="assets/s00-modal/ic_close.svg" alt="" aria-hidden="true" width="24" height="24"></button>
   </div>
+  </div>
   <div class="lpm__video" data-modal-video></div>
+</dialog>
+
+<!-- ===== 6. 기본 수업 — 내용 시안 6326:3376 · 6326:3629 (PC) / 6326:3793 · 6326:3973 (MO), 모양은 새 모달 스타일(6326:4232 실전바이오리듬)
+     과목별 표 아래 '특강 구성 (시즌별) / 수준별 수학 수업' 버튼으로 아래 표만 바뀐다(data-modal-tab="season" | "math") ===== -->
+<dialog class="lpm lpm--class" id="lpm-class" role="dialog" aria-modal="true" aria-labelledby="lpm-class-title" tabindex="-1">
+  <div class="lpm__top">
+  <div class="lpm__head">
+    <div class="lpm__heading">
+      <p class="lpm__badge">2028 수능 대비</p>
+      <h2 class="lpm__title" id="lpm-class-title">기본 수업</h2>
+    </div>
+    <button class="lpm__close" type="button" data-modal-close aria-label="닫기"><img src="assets/s00-modal/ic_close.svg" alt="" aria-hidden="true" width="24" height="24"></button>
+  </div>
+  </div>
+  <div class="lpm__scroll">
+    <div class="lpm__panel lpm__panel--loose">
+      <div class="lpm__block">
+        <div class="lpm__hscroll">
+          <table class="lpm__table lpm__table--wide lpm__table--subject">
+            <caption class="sr-only">과목별 기본 수업</caption>
+            <colgroup><col class="lpm__col-128"><col class="lpm__col-184"><col class="lpm__col-184"><col class="lpm__col-128"><col class="lpm__col-128"></colgroup>
+            <thead>
+              <tr><th scope="col">과목</th><th scope="col">프로그램</th><th scope="col">주당</th><th scope="col">주간 수업 시수</th><th scope="col">수업시간</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="rowgroup" rowspan="3">국어</th><td>독서와 작문</td><td>1회</td><td>2T</td><td>100분</td></tr>
+              <tr><td>문학</td><td>1회</td><td>2T</td><td>100분</td></tr>
+              <tr><td><span class="lpm__cell-line"><span class="lpm__new">NEW</span> 화법과 언어</span></td><td>1회</td><td>2T</td><td>100분</td></tr>
+              <tr><th scope="rowgroup" rowspan="3">수학</th><td><span class="lpm__cell-line">대수 <span class="lpm__sub">*수준별 클래스</span></span></td><td>Class별 주 1회 2T</td><td>총 4T</td><td>200분</td></tr>
+              <tr><td><span class="lpm__cell-line">미적분Ⅰ <span class="lpm__sub">*수준별 클래스</span></span></td><td>Class별 주 1회 2T</td><td>총 4T</td><td>200분</td></tr>
+              <tr><td><span class="lpm__cell-line">확률과 통계 <span class="lpm__sub">*수준별 클래스</span></span></td><td>Class별 주 1회 2T</td><td>총 4T</td><td>200분</td></tr>
+              <tr><th scope="row">영어</th><td>핵심 테마</td><td>2회</td><td>3T</td><td>150분</td></tr>
+              <tr><th scope="row">통합사회</th><td><span class="lpm__cell-line"><span class="lpm__new">NEW</span> 핵심 테마</span></td><td>2회</td><td>3T</td><td>150분</td></tr>
+              <tr><th scope="row">통합과학</th><td><span class="lpm__cell-line"><span class="lpm__new">NEW</span> 핵심 테마</span></td><td>2회</td><td>3T</td><td>150분</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul class="lpm__notes" aria-label="참고">
+          <li>※ 1T는 50분으로 구성됩니다.</li>
+        </ul>
+      </div>
+
+      <div class="lpm__block">
+        <div class="lpm__seg" role="tablist" aria-label="기본 수업 상세" data-active="0">
+          <span class="lpm__seg-ink" aria-hidden="true"></span>
+          <button class="lpm__seg-btn" type="button" role="tab" id="lpm-class-tab-season" aria-controls="lpm-class-panel-season" aria-selected="true" data-tab="season">특강 구성 (시즌별)</button>
+          <button class="lpm__seg-btn" type="button" role="tab" id="lpm-class-tab-math" aria-controls="lpm-class-panel-math" aria-selected="false" tabindex="-1" data-tab="math">수준별 수학 수업</button>
+        </div>
+        <div class="lpm__panels">
+          <div class="lpm__panel" role="tabpanel" id="lpm-class-panel-season" aria-labelledby="lpm-class-tab-season" tabindex="0">
+            <div class="lpm__block">
+              <div class="lpm__hscroll">
+                <table class="lpm__table lpm__table--wide lpm__table--season">
+                  <caption class="sr-only">시즌별 특강 구성</caption>
+                  <colgroup><col class="lpm__col-150"><col class="lpm__col-432"><col class="lpm__col-170"></colgroup>
+                  <thead>
+                    <tr><th scope="col">시즌</th><th scope="col">수업 내용</th><th scope="col">모의고사</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><th scope="row">시즌 1 (12~2월)</th><td>기초 개념 + 수능 유형 특강(국·수·영·탐) + 강사 선택</td><td class="lpm__cell-wrap" rowspan="6">더 프리미엄 모의고사,<br>서바이벌 프로 모의고사,<br>기타 모의고사 활용</td></tr>
+                    <tr><th scope="row"><span class="lpm__cell-stack"><span class="lpm__new">NEW</span>시즌 2 (3~5월)</span></th><td>수능특강(국·수·영·탐) + 강사 선택</td></tr>
+                    <tr><th scope="row">시즌 3-1 (6~7월)</th><td>6월 평가원 모의고사 / 수능완성(국·수·영·탐) + 강사 선택</td></tr>
+                    <tr><th scope="row">시즌 3-2 (8월)</th><td>수능완성(국·수·영·탐) + 강사 선택</td></tr>
+                    <tr><th scope="row">시즌 4-1 (9~10월)</th><td>8월 평가원 모의고사 /<br class="lpm__br-pc"> 수능특강 + 완성 연계 예상 파이널Ⅰ(국·수·영·탐)</td></tr>
+                    <tr><th scope="row">시즌 4-2 (11월)</th><td>수능특강 + 완성 연계 예상 파이널Ⅱ(국·수·영·탐)</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <ul class="lpm__notes" aria-label="참고">
+                <li>※ 시즌 1(12~2월) 수업은 입소 후 12월 5주차부터 시작합니다.</li>
+                <li>※ 콘텐츠 구성은 시기에 따라 달라질 수 있습니다.</li>
+                <li>※ 2028 수능특강·수능완성의 통합사회·통합과학 발행 일정은 아직 EBS에서 공지되지 않았습니다. 시즌 1~2는 EBS 「수능 빌드업」 통합사회·통합과학으로 진행하고, 연계교재가 발행되면 교체합니다.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="lpm__panel" role="tabpanel" id="lpm-class-panel-math" aria-labelledby="lpm-class-tab-math" tabindex="0" hidden>
+            <div class="lpm__block">
+              <div class="lpm__hscroll">
+                <table class="lpm__table lpm__table--wide lpm__table--math">
+                  <caption class="sr-only">수준별 수학 수업</caption>
+                  <colgroup><col class="lpm__col-220"><col class="lpm__col-178"><col class="lpm__col-177"><col class="lpm__col-177"></colgroup>
+                  <thead>
+                    <tr><th scope="col">Class 구분</th><th scope="col">대수 (4T)</th><th scope="col">미적분Ⅰ (4T)</th><th scope="col">확률과 통계 (4T)</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><th scope="row"><span class="lpm__cell-stack">2·3등급 → 1등급 Class<span class="lpm__sub">*Class별 주 2T</span></span></th><td colspan="3"><span class="lpm__cell-stack">실전 개념 설명 및 핵심 기출 문제 풀이<span class="lpm__cell-line"><span class="lpm__arrow" aria-hidden="true"></span>유형별 응용 스킬 강의, 준킬러~킬러 문항 완전 정복</span></span></td></tr>
+                    <tr><th scope="row"><span class="lpm__cell-stack">4·5등급 → 3등급 Class<span class="lpm__sub">*Class별 주 2T</span></span></th><td colspan="3"><span class="lpm__cell-stack">주요 개념 설명 및 예제 풀이<span class="lpm__cell-line"><span class="lpm__arrow" aria-hidden="true"></span>실전 개념 설명 및 핵심 기출 문제 풀이, EBS 연계 학습</span></span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <ul class="lpm__notes" aria-label="참고">
+                <li>※ 1T는 50분으로 구성되며, 해당 클래스는 주별 시수를 나타냅니다.</li>
+                <li>※ 콘텐츠 구성은 시기에 따라 달라질 수 있습니다.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<!-- ===== 7. 유료 특강 — 내용 시안 6326:3553 (PC) / 6326:4140 (MO), 모양은 새 모달 스타일 ===== -->
+<dialog class="lpm lpm--special" id="lpm-special" role="dialog" aria-modal="true" aria-labelledby="lpm-special-title" tabindex="-1">
+  <div class="lpm__top">
+  <div class="lpm__head">
+    <div class="lpm__heading">
+      <p class="lpm__badge">2028 수능 대비</p>
+      <h2 class="lpm__title" id="lpm-special-title">유료 특강</h2>
+    </div>
+    <button class="lpm__close" type="button" data-modal-close aria-label="닫기"><img src="assets/s00-modal/ic_close.svg" alt="" aria-hidden="true" width="24" height="24"></button>
+  </div>
+  </div>
+  <div class="lpm__scroll">
+    <div class="lpm__panel">
+      <div class="lpm__hscroll">
+        <table class="lpm__table lpm__table--wide lpm__table--special">
+          <caption class="sr-only">유료 특강 유형</caption>
+          <colgroup><col class="lpm__col-150"><col class="lpm__col-90"><col class="lpm__col-246"><col class="lpm__col-266"></colgroup>
+          <thead>
+            <tr><th scope="col">유형</th><th scope="col">인원</th><th scope="col">대상</th><th scope="col">특징</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">1:1 맞춤 클리닉</th><td>1명</td><td>단기 취약점 보완을 원하는 학생</td><td>학생별 학습 성향과 이해도를 반영한<br>개별 진도·밀착관리 프로그램</td></tr>
+            <tr><th scope="row"><span class="lpm__cell-stack"><span class="lpm__new">NEW</span>소규모 그룹 특강</span></th><td>2~4명</td><td><span class="lpm__cell-stack">같은 보완 포인트를 가진 학생들과<br>함께 학습하고 싶은 학생<span class="lpm__sub">*예: 기존 미적·기하 출신의 확통 기초,<br>화작 출신의 문법 기초 등</span></span></td><td><span class="lpm__cell-stack">1:1의 밀착도와 테마 특강의<br>비용 효율을 절충한 프로그램<span class="lpm__sub">*필요한 부분이 같은 학생끼리 편성해 진도를<br>한 방향으로 이끄는 특강</span></span></td></tr>
+            <tr><th scope="row">테마 특강</th><td>12명 이내</td><td>핵심 테마 학습을 희망하는 학생</td><td>학습 관리를 세세히 진행하여<br>실력을 올려주는 단과 특강</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </dialog>
 <script>
 /* S2 · BENEFIT
@@ -5817,7 +6028,7 @@
       document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
     });
     tab.parentNode.setAttribute('data-active', tabs.indexOf(tab));   /* 아래 선 위치는 CSS 가 옮김 */
-    dlg.querySelector('.lpm__scroll').scrollTop = 0;
+    if (!tab.closest('.lpm__scroll')) dlg.scrollTop = 0;   /* 위 탭을 바꿀 때만 맨 위로(본문 안 탭은 제자리) */
     /* 탭마다 내용 길이가 달라 모달 높이가 바뀐다 — 뚝 끊기지 않게 높이를 이어 준다 */
     var after = box.offsetHeight;
     if (animate && !reduce.matches && box.animate && before !== after) {
@@ -5861,8 +6072,7 @@
 
     lock();
     dlg.showModal();
-    var scroll = dlg.querySelector('.lpm__scroll');
-    if (scroll) scroll.scrollTop = 0;
+    dlg.scrollTop = 0;
     list(dlg.querySelectorAll('.lpm__day')).forEach(function (el) { el.scrollLeft = 0; });   /* 하루 일과표 가로 스크롤 처음으로 */
     dlg.querySelector('.lpm__title').focus();
     void dlg.offsetWidth;               /* 시작 상태를 한 번 그린 뒤 */
