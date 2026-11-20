@@ -316,6 +316,7 @@
 const SHOW_CHIP = true; // 라벨은 썸네일·팝업 이미지에 함께 넣는 방식 (시안과 같게 마감 임박 · 대기 접수만 노출)
 const CHIP = {'마감 임박':'#FF323C','대기 접수':'#9353E0'};
 const CHIP1 = {'마감 임박':'#FF323C','대기 접수':'#8B32D9'}; // 1안 시안 색 (라벨 색상은 1안·2안 확정 후 가이드로 정리)
+const CHIP3 = {'마감 임박':'#FF323C','대기 접수':'#9D2FCA'}; // 실무 의견 탭: 시안 토큰 값 (red/60 · purple/50)
 const DATA = [
   {t:'2027 통학 윈터스쿨', s:'윈터패스 <b>최대 15% 할인</b> +<br>윈터스쿨 종료 후 <b>최대 3개월 30%</b> 할인', c:'마감 임박', img:'img/kv-1.png'},
   {t:'2027 기숙 윈터스쿨', s:'이천캠프 <b>마감 (대기접수 중)</b><br>여주캠프 <b>마감 임박</b>', c:'대기 접수', img:'img/kv-2.png'},
@@ -517,8 +518,8 @@ function build1MO(){ $('#ls1').innerHTML = items1().map(row1).join(''); $('#ls1'
 /* 3안 — PC는 1안과 같은 줄(카드만 3안), MO는 2안 바텀시트(내용 높이만큼 열림 · 끌어올리기 없음) */
 /* 줄바꿈: 메인은 PC 2줄 → MO 한 줄(줄바꿈을 띄어쓰기로), 서브는 PC에서 입력한 줄바꿈을 MO에도 그대로 씀 */
 const card3 = (d,i) => `<li style="--i:${i}"><a class="c1 c3" href="#" target="_blank" rel="noopener">
-  <span class="tx"><p class="lg">${d.lg}</p><p class="tt">${d.t}</p><p class="sub">${d.s}</p></span><img class="ob" src="${d.img}" alt=""><span class="bb">자세히 보기</span>${SHOW_CHIP&&d.c?`<span class="tab" style="background:${CHIP1[d.c]}">${d.c}</span>`:''}</a></li>`;
-const row3 = d => `<li><a class="row" href="#" target="_blank" rel="noopener"><span class="thumb${SHOW_CHIP&&d.c?' hb':''}"><img src="${d.img}" alt="" loading="lazy">${SHOW_CHIP&&d.c?`<span class="band" style="background:${CHIP1[d.c]};color:#F6F7F8">${d.c}</span>`:''}</span>
+  <span class="tx"><p class="lg">${d.lg}</p><p class="tt">${d.t}</p><p class="sub">${d.s}</p></span><img class="ob" src="${d.img}" alt=""><span class="bb">자세히 보기</span>${SHOW_CHIP&&d.c?`<span class="tab" style="background:${CHIP3[d.c]}">${d.c}</span>`:''}</a></li>`;
+const row3 = d => `<li><a class="row" href="#" target="_blank" rel="noopener"><span class="thumb${SHOW_CHIP&&d.c?' hb':''}"><img src="${d.img}" alt="" loading="lazy">${SHOW_CHIP&&d.c?`<span class="band" style="background:${CHIP3[d.c]};color:#F6F7F8">${d.c}</span>`:''}</span>
   <span class="tx"><p class="lg">${d.lg}</p><p class="tt">${d.t.replace('\n',' ')}</p><p class="sub">${d.s.split(String.fromCharCode(10)).join("<br>")}</p></span>
   <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M8 5l5 5-5 5" stroke="#B1B2B5" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>`;
 function build3PC(){
