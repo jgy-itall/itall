@@ -159,8 +159,12 @@
   .c1.c3{height:360px;background-image:none}
   .c3 .tx{top:38px}
   .c3 .lg{font-size:14px;font-weight:600;white-space:nowrap}
-  .c3 .tt{margin-top:8px;font-size:32px;line-height:38px}
-  .c3 .sub{margin-top:12px}
+  /* 색은 시안의 컬러 토큰 값: 메인 text/strong #0D0F14 · 서브 text/normal #262628 · 강조 primary/normal #E60F19 · dormitory/strong #269336 · 버튼 common/black #0D0F14 */
+  .c3 .tt{margin-top:8px;font-size:32px;line-height:38px;color:#0D0F14}
+  .c3 .sub{margin-top:12px;color:#262628}
+  .c3 .bb{background:#0D0F14}
+  .c3 .r,.v3 .r{color:#E60F19}
+  .c3 .g,.v3 .g{color:#269336}
   /* 오브제는 모두 100×100 — 버튼 위 120 영역의 가운데(위아래 10) */
   .c3 .ob{position:absolute;left:50%;bottom:42px;width:100px;height:100px;object-fit:contain;transform:translateX(-50%)}
   /* ── 3안 MO : 2안 바텀시트 목록 + 썸네일 72(회색 배경 고정 · PC와 같은 오브제) · 5개가 모두 보이게 내용 높이만큼 열림 ── */
@@ -178,7 +182,7 @@
   /* MO 행에도 브랜드 라벨 (SemiBold 13 · 회색) — 라벨 · 제목 · 서브 간격 4 */
   .v3 .row .lg{font-size:13px;line-height:20px;font-weight:600;color:var(--neutral)}
   .v3 .row .tt{margin-top:4px;letter-spacing:.0057em}
-  .v3 .row .sub{color:#333;letter-spacing:.0145em} /* 서브 문구 색은 PC와 같음 (기본 #333 · 강조는 브랜드 컬러) */
+  .v3 .row .sub{color:#262628;letter-spacing:.0145em} /* 서브 문구 색은 PC와 같음 (기본 #333 · 강조는 브랜드 컬러) */
   /* 행 높이는 서브 줄 수와 상관없이 125 고정(마지막 행은 구분선이 없어 124) · 간격 16 */
   .v3 .row{gap:16px;height:125px}
   .v3 .ls>li:last-child .row{height:124px}
@@ -511,10 +515,11 @@ function build1PC(){
 function build1MO(){ $('#ls1').innerHTML = items1().map(row1).join(''); $('#ls1').scrollTop = 0; }
 
 /* 3안 — PC는 1안과 같은 줄(카드만 3안), MO는 2안 바텀시트(내용 높이만큼 열림 · 끌어올리기 없음) */
+/* 줄바꿈: 메인은 PC 2줄 → MO 한 줄(줄바꿈을 띄어쓰기로), 서브는 PC에서 입력한 줄바꿈을 MO에도 그대로 씀 */
 const card3 = (d,i) => `<li style="--i:${i}"><a class="c1 c3" href="#" target="_blank" rel="noopener">
   <span class="tx"><p class="lg">${d.lg}</p><p class="tt">${d.t}</p><p class="sub">${d.s}</p></span><img class="ob" src="${d.img}" alt=""><span class="bb">자세히 보기</span>${SHOW_CHIP&&d.c?`<span class="tab" style="background:${CHIP1[d.c]}">${d.c}</span>`:''}</a></li>`;
-const row3 = d => `<li><a class="row" href="#" target="_blank" rel="noopener"><span class="thumb${SHOW_CHIP&&d.c?' hb':''}"><img src="${d.img}" alt="" loading="lazy">${SHOW_CHIP&&d.c?`<span class="band" style="background:${CHIP[d.c]}">${d.c}</span>`:''}</span>
-  <span class="tx"><p class="lg">${d.lg}</p><p class="tt">${d.t.replace('\n',' ')}</p><p class="sub">${d.ms}</p></span>
+const row3 = d => `<li><a class="row" href="#" target="_blank" rel="noopener"><span class="thumb${SHOW_CHIP&&d.c?' hb':''}"><img src="${d.img}" alt="" loading="lazy">${SHOW_CHIP&&d.c?`<span class="band" style="background:${CHIP1[d.c]};color:#F6F7F8">${d.c}</span>`:''}</span>
+  <span class="tx"><p class="lg">${d.lg}</p><p class="tt">${d.t.replace('\n',' ')}</p><p class="sub">${d.s.split(String.fromCharCode(10)).join("<br>")}</p></span>
   <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M8 5l5 5-5 5" stroke="#B1B2B5" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>`;
 function build3PC(){
   const n = items3().length, cols = Math.max(2, n);
