@@ -158,8 +158,8 @@
   #pc1Dim.up{padding-bottom:16vh}
   .c1.c3{height:360px;background-image:none}
   .c3 .tx{top:38px}
-  .c3 .lg{font-size:14px;font-weight:600}
-  .c3 .tt{margin-top:12px;font-size:32px;line-height:38px}
+  .c3 .lg{font-size:14px;font-weight:600;white-space:nowrap}
+  .c3 .tt{margin-top:8px;font-size:32px;line-height:38px}
   .c3 .sub{margin-top:12px}
   /* 오브제는 모두 100×100 — 버튼 위 120 영역의 가운데(위아래 10) */
   .c3 .ob{position:absolute;left:50%;bottom:42px;width:100px;height:100px;object-fit:contain;transform:translateX(-50%)}
@@ -167,15 +167,18 @@
   .sheet.v3,.sheet.v3.full{height:auto;max-height:calc(100% - 56px)}
   /* 화면이 낮아 시트가 다 못 들어가면 목록만 스크롤 */
   .sheet.v3 .ls{flex:0 1 auto;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:none}
-  .sheet.v3 #moCount{display:none} /* 최종은 개수 숫자 없음 */
+  /* 실무 의견: 시트 머리는 손잡이만 (제목 · 개수 없음) — 높이 24, 손잡이 40×4 · 위 12 */
+  .sheet.v3 #shTitle{display:none}
+  .sheet.v3 .hd{height:24px;padding:0}
+  .sheet.v3 .hd::before{top:12px;width:40px;margin-left:-20px}
   .v3 .thumb{width:72px;height:72px}
   /* 썸네일 안 오브제는 모두 48×48 — 가운데, 라벨 띠가 있으면 위 2 */
   .v3 .thumb img{position:absolute;left:50%;top:50%;width:48px;height:48px;object-fit:contain;transform:translate(-50%,-50%)}
   .v3 .thumb.hb img{top:2px;transform:translateX(-50%)}
   /* MO 행에도 브랜드 라벨 (SemiBold 13 · 회색) — 라벨 · 제목 · 서브 간격 4 */
   .v3 .row .lg{font-size:13px;line-height:20px;font-weight:600;color:var(--neutral)}
-  .v3 .row .tt{margin-top:4px}
-  .v3 .row .sub{color:#333} /* 서브 문구 색은 PC와 같음 (기본 #333 · 강조는 브랜드 컬러) */
+  .v3 .row .tt{margin-top:4px;letter-spacing:.0057em}
+  .v3 .row .sub{color:#333;letter-spacing:.0145em} /* 서브 문구 색은 PC와 같음 (기본 #333 · 강조는 브랜드 컬러) */
   /* 행 높이는 서브 줄 수와 상관없이 125 고정(마지막 행은 구분선이 없어 124) · 간격 16 */
   .v3 .row{gap:16px;height:125px}
   .v3 .ls>li:last-child .row{height:124px}
@@ -326,14 +329,15 @@ const DATA1 = [
   {lg:'잇올 기숙학원', t:'2028 기숙\n재수우선선발반', s:'얼리버드 <span class="g">260만 원</span> 할인', ms:'얼리버드 <span class="g">260만 원</span> 할인', btn:'자세히 보기'},
   {lg:'잇올 스파르타 · 잇올 몰입관', t:'다산캠프\n1+1 혜택', s:'최초 등록 시 <span class="b">1+1</span> 적용', ms:'최초 등록 시 <span class="b">1+1</span> 적용', btn:'자세히 보기'}
 ];
+/* 브랜드가 3개 모두 해당하면 라벨은 '잇올' 한 단어로 씀 (예: 기말고사패스) */
 /* 3안 데이터 — PC는 1안 틀(문구 크게 · 오브제 작게), MO는 2안 바텀시트 목록. 오브제는 홈 메인 배너 3D 오브제, 서브 문구는 PC·MO 동일(최대 5)
    오브제 크기: PC 100×100 · MO 썸네일(72) 안 48×48 */
 const DATA3 = [
   {lg:'잇올 스파르타 · 잇올 몰입관', t:'2027 통학\n윈터스쿨', s:'윈터패스 최대 <span class="r">15%</span> 할인', ms:'윈터패스 최대 <span class="r">15%</span> 할인', c:'마감 임박'},
-  {lg:'잇올 기숙학원', t:'2027 기숙\n윈터스쿨', s:'이천·여주캠프\n<span class="g">대기접수</span> 진행 중', ms:'이천·여주캠프 <span class="g">대기접수</span> 진행 중', c:'대기 접수'},
+  {lg:'잇올 기숙학원', t:'2027 기숙\n윈터스쿨', s:'이천·여주캠프\n<span class="g">대기 접수</span> 진행 중', ms:'이천·여주캠프 <span class="g">대기 접수</span> 진행 중', c:'대기 접수'},
   {lg:'잇올 스파르타 · 잇올 몰입관', t:'2028 통학\n재수우선선발반', s:'비기닝패스 <span class="r">50%</span> 할인', ms:'비기닝패스 <span class="r">50%</span> 할인'},
   {lg:'잇올 기숙학원', t:'2028 기숙\n재수우선선발반', s:'얼리버드 <span class="g">260만 원</span> 할인', ms:'얼리버드 <span class="g">260만 원</span> 할인'},
-  {lg:'잇올 스파르타 · 잇올 몰입관', t:'2027 고등\n기말고사패스', s:'11월 23일~12월 24일\n최대 <span class="r">70%</span> 할인', ms:'11월 23일~12월 24일<br>최대 <span class="r">70%</span> 할인'}
+  {lg:'잇올', t:'2027 고등\n기말고사패스', s:'11월 23일~12월 24일\n최대 <span class="r">70%</span> 할인', ms:'11월 23일~12월 24일<br>최대 <span class="r">70%</span> 할인'}
 ].map((d,i)=>({...d, img:`img/o3-${i+1}.png`}));
 /* 기존안 데이터 — 지금 홈페이지 팝업 이미지(2026-11-05 itall.com 캡처에서 잘라냄, 최대 6) */
 const DATA0 = ['2027 통학 윈터스쿨','2027 기숙 윈터스쿨','2028 통학 재수우선선발반','2028 기숙 재수우선선발반','잇올 몰입관 다산캠프 1+1 혜택','기말고사패스']
