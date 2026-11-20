@@ -156,6 +156,10 @@
   /* ── 3안 PC : 1안 틀 + 문구 크게(메인 32) · 오브제 작게(100, 홈 메인 배너 3D 오브제) · 카드 240×360 ── */
   /* 최종 PC 팝업은 화면 정가운데보다 조금 위 (아래 여백 16vh → 8vh만큼 올라감) */
   #pc1Dim.up{padding-bottom:16vh}
+  /* 실무 의견: 상단 바 '오늘 하루 보지 않기'는 체크박스 없이 글자만 (누르면 닫힘) */
+  #pc1Dim.up .bar input{display:none}
+  /* 상단 바 글자: Body1 SemiBold 16/24 · 0.57% · 흰색, 카드 위 24 */
+  #pc1Dim.up .bar{margin-bottom:24px;color:#fff;font-size:16px;line-height:24px;font-weight:600;letter-spacing:.0057em}
   .c1.c3{height:360px;background-image:none}
   .c3 .tx{top:38px}
   /* 글자는 시안의 텍스트 스타일 값: 라벨 Label1 SemiBold 14/20 · 1.45% / 메인 Black 32/38 / 서브 · 버튼 Body1 SemiBold 16/24 · 0.57% */
@@ -310,7 +314,7 @@
 </section>
 
 <div class="panel" id="panel">
-  <div class="seg" id="segVar"><span class="pill"></span><button data-a="0">기존안</button><button data-a="3">실무 의견</button><button data-a="1">1안</button><button data-a="2">2안</button></div>
+  <div class="seg" id="segVar"><span class="pill"></span><button data-a="0">기존안</button><button data-a="3">최종안</button><button data-a="1">1안</button><button data-a="2">2안</button></div>
   <div class="seg" id="segView"><span class="pill"></span><button data-v="pc">PC</button><button data-v="mo">MO</button></div>
   <select id="cnt" aria-label="등록 개수"></select>
   <select id="spd" aria-label="자동 넘김 간격"><option value="1000">1초</option><option value="2000" selected>2초</option><option value="3000">3초</option><option value="4000">4초</option></select>
@@ -376,6 +380,8 @@ document.querySelectorAll('#segVar button').forEach(b=>b.onclick=async()=>{
   if (toPC) { view='pc'; return render(); }
   setSeg(); await close(); open(); });
 fillCount();
+/* 최종안만 보여 줌. 주소 뒤에 ?all 을 붙이면 기존안 · 1안 · 2안 탭이 함께 보임 */
+if (!new URLSearchParams(location.search).has('all')) $('#segVar').style.display = 'none';
 $('#cnt').onchange = e => { count = +e.target.value; refresh(); };
 $('#spd').onchange = e => { gap = +e.target.value; restart(); };
 $('#reopen').onclick = async () => { await close(); open(); };
@@ -567,6 +573,7 @@ async function open(){
 function isOpen(){ return DIMS.some(d=>$(d).classList.contains('on')); }
 async function close(){ const was = isOpen(); DIMS.forEach(d=>$(d).classList.remove('on')); clearInterval(timer); if (was) await wait(460); }
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);
+$('#pc1Dim .bar label').addEventListener('click', e => { if ($('#pc1Dim').classList.contains('up')) { e.preventDefault(); close(); } });
 addEventListener('keydown', e => { if (e.key==='Escape') close(); if (variant==='2' && view==='pc' && $('#pcDim').classList.contains('on')) { if (e.key==='ArrowRight') { step(1); restart(); } if (e.key==='ArrowLeft') { step(-1); restart(); } } });
 DIMS.forEach(d => $(d).addEventListener('click', e => { if (e.target === $(d)) close(); }));
 
