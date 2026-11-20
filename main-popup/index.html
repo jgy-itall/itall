@@ -158,11 +158,14 @@
   #pc1Dim.up{padding-bottom:16vh}
   .c1.c3{height:360px;background-image:none}
   .c3 .tx{top:38px}
-  .c3 .lg{font-size:14px;font-weight:600;white-space:nowrap}
+  /* 글자는 시안의 텍스트 스타일 값: 라벨 Label1 SemiBold 14/20 · 1.45% / 메인 Black 32/38 / 서브 · 버튼 Body1 SemiBold 16/24 · 0.57% */
+  .c3 .lg{font-size:14px;line-height:20px;font-weight:600;letter-spacing:.0145em;white-space:nowrap}
   /* 색은 시안의 컬러 토큰 값: 메인 text/strong #0D0F14 · 서브 text/normal #262628 · 강조 primary/normal #E60F19 · dormitory/strong #269336 · 버튼 common/black #0D0F14 */
-  .c3 .tt{margin-top:8px;font-size:32px;line-height:38px;color:#0D0F14}
-  .c3 .sub{margin-top:12px;color:#262628}
-  .c3 .bb{background:#0D0F14}
+  .c3 .tt{margin-top:12px;font-size:32px;line-height:38px;color:#0D0F14}
+  .c3 .sub{margin-top:12px;font-size:16px;line-height:24px;font-weight:600;letter-spacing:.0057em;color:#262628}
+  .c3 .bb{background:#0D0F14;font-size:16px;font-weight:600;letter-spacing:.0057em}
+  /* 강조 라벨 글자: Label2 SemiBold 13/18 · 1.94% (PC 탭 · MO 띠 공통) */
+  .c3 .tab,.v3 .thumb .band{font-size:13px;font-weight:600;letter-spacing:.0194em}
   .c3 .r,.v3 .r{color:#E60F19}
   .c3 .g,.v3 .g{color:#269336}
   /* 오브제는 모두 100×100 — 버튼 위 120 영역의 가운데(위아래 10) */
@@ -180,7 +183,9 @@
   .v3 .thumb img{position:absolute;left:50%;top:50%;width:48px;height:48px;object-fit:contain;transform:translate(-50%,-50%)}
   .v3 .thumb.hb img{top:2px;transform:translateX(-50%)}
   /* MO 행에도 브랜드 라벨 (SemiBold 13 · 회색) — 라벨 · 제목 · 서브 간격 4 */
-  .v3 .row .lg{font-size:13px;line-height:20px;font-weight:600;color:var(--neutral)}
+  /* MO 글자: 라벨 Label2 SemiBold 13/18 · 1.94% / 제목 Body1 SemiBold 16/24 · 0.57% / 서브 Label1 Medium 14/20 · 1.45% / 하단 바 Label1 SemiBold 14 */
+  .v3 .row .lg{font-size:13px;line-height:18px;font-weight:600;letter-spacing:.0194em;color:var(--neutral)}
+  .sheet.v3 .foot button{font-weight:600;letter-spacing:.0145em}
   .v3 .row .tt{margin-top:4px;letter-spacing:.0057em}
   .v3 .row .sub{color:#262628;letter-spacing:.0145em} /* 서브 문구 색은 PC와 같음 (기본 #333 · 강조는 브랜드 컬러) */
   /* 행 높이는 서브 줄 수와 상관없이 125 고정(마지막 행은 구분선이 없어 124) · 간격 16 */
