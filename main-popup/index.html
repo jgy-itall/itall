@@ -176,6 +176,8 @@
   .c3 .ob{position:absolute;left:50%;bottom:42px;width:100px;height:100px;object-fit:contain;transform:translateX(-50%)}
   /* ── 3안 MO : 2안 바텀시트 목록 + 썸네일 72(회색 배경 고정 · PC와 같은 오브제) · 5개가 모두 보이게 내용 높이만큼 열림 ── */
   .sheet.v3,.sheet.v3.full{height:auto;max-height:calc(100% - 56px)}
+  /* 넓은 화면(태블릿 등)에서는 시트를 최대 640 폭(Material Design 바텀시트 기준)으로 아래 가운데에 둠 */
+  .sheet.v3{max-width:640px;margin:0 auto}
   /* 화면이 낮아 시트가 다 못 들어가면 목록만 스크롤 */
   .sheet.v3 .ls{flex:0 1 auto;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:none}
   /* 실무 의견: 시트 머리는 손잡이만 (제목 · 개수 없음) — 높이 24, 손잡이 40×4 · 위 12 */
@@ -372,12 +374,16 @@ function fillCount(){ const max = ({'0':DATA0,'1':DATA1,'2':DATA,'3':DATA3})[var
 function pillTo(seg, b){ const pill = seg.querySelector('.pill'); seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', x===b)); pill.style.left = b.offsetLeft+'px'; pill.style.width = b.offsetWidth+'px'; }
 function setSeg(){ pillTo($('#segView'), $(`#segView [data-v="${view}"]`)); pillTo($('#segVar'), $(`#segVar [data-a="${variant}"]`)); }
 document.querySelectorAll('#segView button').forEach(b=>b.onclick=()=>{ if (view===b.dataset.v) return; view=b.dataset.v; render(); });
-/* 안 탭을 누르면 항상 PC로 (MO는 MO 버튼을 눌렀을 때만). 768 미만 화면은 render()에서 MO 유지 */
+/* 모바일로 바뀌는 폭: 개선안은 1024 미만(1024 이상은 PC 팝업을 화면에 맞춰 줄임), 나머지 안은 768 미만 */
+const bp = () => variant==='3' ? 1024 : 768;
+/* 안 탭을 누르면 항상 PC로 (MO는 MO 버튼을 눌렀을 때만). 모바일 폭에서는 render()에서 MO 유지 */
 document.querySelectorAll('#segVar button').forEach(b=>b.onclick=async()=>{
-  const same = variant===b.dataset.a, toPC = view!=='pc' && innerWidth >= 768;
-  if (same && !toPC) return;
+  const same = variant===b.dataset.a;
   if (!same) { variant=b.dataset.a; count = COUNT[variant]; fillCount(); }
+  const toPC = view!=='pc' && innerWidth >= bp(), toMO = view==='pc' && innerWidth < bp();
+  if (same && !toPC) return;
   if (toPC) { view='pc'; return render(); }
+  if (toMO) return render();
   setSeg(); await close(); open(); });
 fillCount();
 $('#cnt').onchange = e => { count = +e.target.value; refresh(); };
@@ -526,9 +532,9 @@ function build1MO(){ $('#ls1').innerHTML = items1().map(row1).join(''); $('#ls1'
 
 /* 3안 — PC는 1안과 같은 줄(카드만 3안), MO는 2안 바텀시트(내용 높이만큼 열림 · 끌어올리기 없음) */
 /* 줄바꿈: 메인은 PC 2줄 → MO 한 줄(줄바꿈을 띄어쓰기로), 서브는 PC에서 입력한 줄바꿈을 MO에도 그대로 씀 */
-const card3 = (d,i) => `<li style="--i:${i}"><a class="c1 c3" href="#" target="_blank" rel="noopener">
+const card3 = (d,i) => `<li style="--i:${i}"><a class="c1 c3" href="#">
   <span class="tx"><p class="lg">${d.lg}</p><p class="tt">${d.t}</p><p class="sub">${d.s}</p></span><img class="ob" src="${d.img}" alt=""><span class="bb">자세히 보기</span>${SHOW_CHIP&&d.c?`<span class="tab" style="background:${CHIP3[d.c]}">${d.c}</span>`:''}</a></li>`;
-const row3 = d => `<li><a class="row" href="#" target="_blank" rel="noopener"><span class="thumb${SHOW_CHIP&&d.c?' hb':''}"><img src="${d.img}" alt="" loading="lazy">${SHOW_CHIP&&d.c?`<span class="band" style="background:${CHIP3[d.c]};color:#F6F7F8">${d.c}</span>`:''}</span>
+const row3 = d => `<li><a class="row" href="#"><span class="thumb${SHOW_CHIP&&d.c?' hb':''}"><img src="${d.img}" alt="" loading="lazy">${SHOW_CHIP&&d.c?`<span class="band" style="background:${CHIP3[d.c]};color:#F6F7F8">${d.c}</span>`:''}</span>
   <span class="tx"><p class="lg">${d.lg}</p><p class="tt">${d.t.replace('\n',' ')}</p><p class="sub">${d.s.split(String.fromCharCode(10)).join("<br>")}</p></span>
   <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M8 5l5 5-5 5" stroke="#B1B2B5" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>`;
 function build3PC(){
@@ -577,7 +583,7 @@ DIMS.forEach(d => $(d).addEventListener('click', e => { if (e.target === $(d)) c
 
 let first = true;
 async function render(){
-  const mobile = innerWidth < 768;
+  const mobile = innerWidth < bp();
   if (mobile) view = 'mo';
   document.body.classList.toggle('is-mobile', mobile);
   $('#segView').style.display = mobile ? 'none' : '';
@@ -599,7 +605,9 @@ async function refresh(){
   if (view==='pc') { const tr = $('#track'); tr.classList.add('fading'); await wait(300); buildPC(); await frame(); tr.classList.remove('fading'); }
   else { const ls = $('#list'); ls.style.opacity = 0; await wait(300); buildMO(); await frame(); ls.style.opacity = 1; }
 }
-addEventListener('resize', ()=>{ fit(); });
+/* 창 크기를 바꾸다 전환 폭을 넘으면 PC ↔ 모바일 화면을 바꿈 */
+let rzT = null;
+addEventListener('resize', ()=>{ fit(); clearTimeout(rzT); rzT = setTimeout(()=>{ const m = innerWidth < bp(); if (m === document.body.classList.contains('is-mobile')) return; if (!m) view = 'pc'; render(); }, 150); });
 render();
 </script>
 </body>
