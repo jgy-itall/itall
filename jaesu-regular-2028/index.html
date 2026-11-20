@@ -40,7 +40,7 @@
     --ink-neutral: #7a7a7c;      /* color/semantic/text/neutral */
     --fill: #f1f2f4;             /* color/semantic/fill/normal */
     --cta: #d0121b;              /* 우측 패널 '선착순 예약하기' 버튼 (시안 값) */
-    --dorm: #1197a6;             /* 기숙 이동 배너 바탕 (시안 값) */
+    --priority-bg: #ff4c6a;      /* 우측 패널 '통학 재수우선선발반' 배너 바탕 (시안 색 변수 '통학') */
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -222,7 +222,7 @@
     .hero__deco--sparkle { --x: 296; --y: 89; --w: 41.4; --h: 41.4; }
   }
 
-  /* ===== 우측 패널 (시안 '콘텐츠 하이라이트' 6167:4914) — 재수우선선발반 랜딩의 패널과 같은 구조 ===== */
+  /* ===== 우측 패널 (최종본 '콘텐츠 하이라이트' 6574:4192) — 재수우선선발반 랜딩의 패널과 같은 구조 ===== */
   .panel__stack { display: flex; flex-direction: column; gap: 16px; }          /* 실서버: gap-[16px] */
   .panel__group { display: flex; flex-direction: column; gap: 10px; }          /* 실서버: 프로모션·유의사항 묶음 gap-2.5 */
   .pcard { background: var(--white); border-radius: 24px; }
@@ -261,10 +261,11 @@
   .notice__lead { font-size: 14px; font-weight: 500; line-height: 1.429; letter-spacing: 0.203px; color: var(--ink); margin-bottom: 10px; }
   .notice__list li { font-size: 13px; line-height: 1.385; letter-spacing: 0.2522px; color: var(--ink-neutral); }
   .notice__list li::before { content: "※ "; }
-  /* 기숙 재수정규반 이동 배너 (시안 6167:5425, 349×103) — 바탕은 시안의 색 + 무늬 이미지를 합친 그림(2배 크기, 모바일 기숙 배너와 같은 그림) */
+  /* 통학 재수우선선발반 이동 배너 (최종본 패널 맨 아래 6574:4492 · 원본 6574:4510, 349×103)
+     바탕은 시안 배치대로 바탕색 + 무늬 사진(흰 그라데이션 60% 덮음)을 '선형 번'으로 합친 그림(2배 크기) */
   .pbanner {
     display: flex; flex-direction: column; gap: 12px; padding: 20px; border-radius: 12px; color: var(--white);
-    background: var(--dorm) url("assets/ui/banner_dorm.webp") center / 100% 100% no-repeat;
+    background: var(--priority-bg) url("assets/ui/banner_priority.webp") center / 100% 100% no-repeat;
   }
   .pbanner__title { font-family: "Itall", Pretendard, sans-serif; font-size: 20px; font-weight: 700; line-height: 1.35; letter-spacing: 0.02em; }
   .pbanner__link { display: flex; align-items: center; gap: 0; font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0.0912px; }
@@ -305,18 +306,19 @@
     .page-head__back { display: block; }
     .crumb { display: none; }
   }
-  /* 패널이 본문 위로 올라가는 폭(1024 미만)에서는 기숙 이동 배너를 패널에서 빼고 페이지 맨 아래에 둔다
+  /* 패널이 본문 위로 올라가는 폭(1024 미만)에서는 통학 재수우선선발반 배너를 패널에서 빼고 페이지 맨 아래에 둔다
      (태블릿: 본문 카드 아래 띠 s12-strip.after.html / 모바일: 본문 안 마지막 블록 s12-strip.html) */
   @media (max-width: 1023px) {
     .pbanner { display: none; }
   }
 
-  /* ===== S2 · BENEFIT 혜택 (Figma PC 6167:5504, 847 × 961 · 모바일 6138:72, 390 × 1218) ===== */
+  /* ===== S2 · BENEFIT 혜택 (Figma 최종본 PC 6574:3214, 847 × 929 · 모바일 6574:1691, 390 × 1222) ===== */
   .s02 {
     --s02-neutral: #7a7a7c;       /* color/semantic/text/neutral */
     --s02-fill: #f1f2f4;          /* color/semantic/fill/normal · color/semantic/background/alternative */
     --s02-fill-alt: #f6f7f8;      /* color/semantic/fill/alternative */
     --s02-line: #e1e3e5;          /* color/semantic/line/normal */
+    --s02-line-strong: #bebfc1;   /* color/semantic/line/strong — 모바일 자세히 보기 버튼 테두리 */
     --s02-yellow: #ffff86;        /* 할인율 숫자 색 (시안에 변수 없음) */
     --s02-grad-end: #ff7a80;      /* 쿠폰 카드 그라데이션 아래쪽 색 (시안에 변수 없음) */
     display: flex; flex-direction: column; gap: calc(32 * var(--u));
@@ -335,7 +337,7 @@
   /* 혜택 카드 3종 — 왼쪽 쿠폰 카드 1개 + 오른쪽 카드 2개 */
   .s02__body { display: flex; flex-direction: column; gap: calc(16 * var(--u)); }
   .s02__cards { display: grid; grid-template-columns: calc(336 * var(--u)) minmax(0, 1fr); gap: calc(16 * var(--u)); }
-  .s02__card { position: relative; display: flex; flex-direction: column; min-width: 0; padding: calc(28 * var(--u)); border-radius: calc(24 * var(--u)); background: var(--s02-fill); }
+  .s02__card { position: relative; display: flex; flex-direction: column; min-width: 0; padding: calc(20 * var(--u)) calc(28 * var(--u)); border-radius: calc(24 * var(--u)); background: var(--s02-fill); }
 
   /* 공통: 라벨(칩 + 조건) */
   .s02__label { display: flex; align-items: center; gap: calc(8 * var(--u)); }
@@ -344,22 +346,21 @@
   .s02__cond { font-size: calc(13 * var(--u)); font-weight: 500; line-height: 1.385; letter-spacing: 0.0194em; color: var(--s02-neutral); white-space: nowrap; }
   .s02__cond--white { font-size: calc(14 * var(--u)); font-weight: 600; line-height: 1.429; letter-spacing: 0.0145em; color: rgba(255, 255, 255, .92); }
 
-  /* 공통: 흰색 알약 버튼 */
-  .s02__btn { display: flex; align-items: center; justify-content: center; gap: calc(8 * var(--u)); width: 100%; padding: calc(8 * var(--u)) calc(16 * var(--u)); border-radius: calc(9999 * var(--u)); background: var(--white); font-size: calc(15 * var(--u)); font-weight: 500; line-height: 1.625; letter-spacing: 0.0096em; color: var(--ink-strong); text-align: center; white-space: nowrap; }
+  /* 공통: 흰색 알약 버튼 — PC 는 폭 260 으로 카드 가운데 (모바일은 꽉 채움) */
+  .s02__btn { display: flex; align-items: center; justify-content: center; gap: calc(8 * var(--u)); align-self: center; width: calc(260 * var(--u)); padding: calc(8 * var(--u)) calc(8 * var(--u)) calc(8 * var(--u)) calc(16 * var(--u)); border-radius: calc(9999 * var(--u)); background: var(--white); font-size: calc(14 * var(--u)); font-weight: 500; line-height: 1.429; letter-spacing: 0.0145em; color: var(--ink-strong); text-align: center; white-space: nowrap; }
   .s02__btn-icon { flex: none; width: calc(24 * var(--u)); height: calc(24 * var(--u)); }
 
   /* 혜택 1 · 정규패스 쿠폰 */
-  .s02__card--coupon { grid-row: 1 / span 2; justify-content: space-between; overflow: hidden; padding: calc(20 * var(--u)) calc(20 * var(--u)) calc(28 * var(--u)); border-radius: calc(20 * var(--u)); background: linear-gradient(to bottom, var(--point), var(--s02-grad-end)); }
+  .s02__card--coupon { grid-row: 1 / span 2; justify-content: space-between; overflow: hidden; padding: calc(20 * var(--u)) calc(20 * var(--u)) calc(28 * var(--u)); border-radius: calc(20 * var(--u)); background: linear-gradient(to bottom, var(--point), var(--s02-grad-end)); }   /* 아래 28 = 카드 여백 20 + 안쪽 8 */
   .s02__coupon-top { display: flex; flex-direction: column; gap: calc(16 * var(--u)); padding-bottom: calc(20 * var(--u)); }
-  .s02__label--coupon { flex-direction: column; align-items: flex-start; gap: calc(12 * var(--u)); }
   .s02__coupon-title { display: flex; flex-direction: column; align-items: flex-start; font-size: calc(24 * var(--u)); font-weight: 600; line-height: 1.45; letter-spacing: -0.023em; color: var(--white); white-space: nowrap; }
   .s02__coupon-rate { display: flex; align-items: baseline; gap: calc(8 * var(--u)); }
   /* margin-right: 브라우저는 마지막 글자 뒤에도 자간(-)을 넣어 '할인'이 시안보다 당겨진다 → 그만큼 되돌림 */
-  .s02__coupon-num { margin-right: 0.03em; font-size: calc(72 * var(--u)); font-weight: 800; line-height: 1.18; letter-spacing: -0.03em; color: var(--s02-yellow); }
+  .s02__coupon-num { margin-right: 0.03em; font-size: calc(72 * var(--u)); font-weight: 800; line-height: 1.08; letter-spacing: -0.03em; color: var(--s02-yellow); }
   .s02__coupon-bottom { display: flex; flex-direction: column; gap: calc(20 * var(--u)); }
   .s02__coupon-desc { font-size: calc(15 * var(--u)); font-weight: 500; line-height: 1.625; letter-spacing: 0.0096em; color: var(--white); }
   /* 절취선 — 카드 양옆으로 11 씩 나가 있어 반원 홈으로 보인다 */
-  .s02__coupon-cut { position: absolute; left: calc(-11 * var(--u)); top: calc(314 * var(--u)); width: calc(358 * var(--u)); height: calc(22 * var(--u)); max-width: none; pointer-events: none; }
+  .s02__coupon-cut { position: absolute; left: calc(-11 * var(--u)); top: calc(279 * var(--u)); width: calc(358 * var(--u)); height: calc(22 * var(--u)); max-width: none; pointer-events: none; }
   .s02__coupon-cut--mo { display: none; }
 
   /* 혜택 2 · 3 */
@@ -407,7 +408,7 @@
     .s02__note-toggle, .s02__note-region, .s02__note-toggle[aria-expanded="true"] + .s02__note-region { transition: none; }
   }
 
-  /* ----- 모바일 (Figma 6138:72, 390 × 1218) ----- */
+  /* ----- 모바일 (Figma 6574:1691, 390 × 1222) ----- */
   @container page (max-width: 599px) {
     .s02 { gap: calc(24 * var(--u)); padding: calc(60 * var(--u)) calc(20 * var(--u)); }
     .s02__head { gap: calc(12 * var(--u)); }
@@ -418,13 +419,14 @@
     .s02__cards { grid-template-columns: minmax(0, 1fr); gap: calc(12 * var(--u)); }
     .s02__card { padding: calc(20 * var(--u)); border-radius: calc(16 * var(--u)); }
     .s02__label { justify-content: space-between; }
-    .s02__btn { height: calc(40 * var(--u)); padding-top: 0; padding-bottom: 0; }
+    .s02__btn { width: 100%; height: calc(40 * var(--u)); padding-top: 0; padding-bottom: 0; }
+    /* 혜택 2 · 3 버튼만 회색 테두리 (안쪽 1px) */
+    .s02__btn--line { border: 1px solid var(--s02-line-strong); }
 
     /* 혜택 1 */
     .s02__card--coupon { grid-row: auto; justify-content: flex-start; gap: calc(48 * var(--u)); padding-bottom: calc(28 * var(--u)); border-radius: calc(20 * var(--u)); }
-    .s02__label--coupon { flex-direction: row; align-items: center; }
-    .s02__coupon-rate { align-items: flex-end; }
-    .s02__coupon-num { margin-right: 0.0282em; font-size: calc(40 * var(--u)); line-height: 1.3; letter-spacing: -0.0282em; }
+    .s02__label--coupon { gap: calc(12 * var(--u)); }
+    .s02__coupon-num { margin-right: 0.0282em; font-size: calc(48 * var(--u)); line-height: 1.16; letter-spacing: -0.0282em; }
     .s02__coupon-cut { top: calc(184 * var(--u)); width: calc(372 * var(--u)); }
     .s02__coupon-cut--pc { display: none; }
     .s02__coupon-cut--mo { display: block; }
@@ -432,7 +434,6 @@
     /* 혜택 2 · 3 */
     .s02__card--scholar .s02__info { gap: calc(12 * var(--u)); }
     .s02__name-row { align-items: center; }
-    .s02__star { position: static; font-size: inherit; line-height: inherit; }   /* 모바일 시안의 별표는 위첨자가 아님 */
     /* 모바일 시안의 태그 순서: #명문대 #반수생 #업키 #성적 #내신 */
     .s02__tag--univ { order: 1; }
     .s02__tag--half { order: 2; }
@@ -449,7 +450,7 @@
     .s02__br-mo { display: inline; }
   }
 
-  /* ===== S3 · CHECK 체크리스트 (Figma PC 6167:5595, 847 × 702 · MO 6138:163, 390 × 722) ===== */
+  /* ===== S3 · CHECK 체크리스트 (Figma 최종본 PC 6574:3305, 847 × 702 · MO 6574:1782, 390 × 722) ===== */
   .s03 {
     --s03-bg: #fff4f6;            /* 시안 배경색 (변수 없음) */
     --s03-line: #e1e3e5;          /* color/semantic/line/normal */
@@ -496,7 +497,7 @@
     .s03__mo-br { display: inline; }
   }
 
-  /* ===== 브릿지 띠 · 하나라도 해당된다면 (Figma PC 6167:5622, 847 × 136 · MO 6138:190, 390 × 142) ===== */
+  /* ===== 브릿지 띠 · 하나라도 해당된다면 (Figma 최종본 PC 6574:3332, 847 × 136 · MO 6574:1809, 390 × 142) ===== */
   .s03b {
     --s03b-accent: #ffff86;       /* 강조 문구 노랑 (변수 없음) */
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(8 * var(--u));
@@ -516,7 +517,7 @@
     .s03b__desc { font-size: calc(16 * var(--u)); line-height: 1.5; letter-spacing: 0.0057em; }
   }
 
-  /* ===== S4 · READY — 타임라인 (Figma PC 6248:6943, 847 × 664 · MO 6248:7039, 390 × 886) =====
+  /* ===== S4 · READY — 타임라인 (Figma 최종본 PC 6574:3335, 847 × 664 · MO 6574:1812, 390 × 930) =====
      PC: 세 칸 가로 — 칸마다 위 CHANGE 글 → 가운데 선과 점 → 아래 READY 카드. 선은 칸 사이에서 끊기지 않고, 점은 각 칸 끝에 있다.
      모바일: 세 줄 세로 — 왼쪽에 점과 세로선, 오른쪽에 CHANGE 글과 READY 카드 */
   .s04 {
@@ -573,14 +574,14 @@
   .s04__more {
     margin-top: auto;
     display: flex; align-items: center; justify-content: center; gap: calc(8 * var(--u));
-    width: 100%; min-height: calc(40 * var(--u)); padding: calc(8 * var(--u) - 1px) calc(16 * var(--u));
+    width: 100%; min-height: calc(40 * var(--u)); padding: calc(8 * var(--u) - 1px) calc(8 * var(--u)) calc(8 * var(--u) - 1px) calc(16 * var(--u));   /* 최종본: 왼쪽 16 · 오른쪽 8 */
     border: 1px solid var(--s04-btn-line); border-radius: 9999px; background: var(--white);
-    font-size: calc(15 * var(--u)); font-weight: 500; line-height: 1.6; letter-spacing: 0.0096em; color: var(--ink-strong);   /* Body2/Normal_Medium */
+    font-size: max(13px, calc(14 * var(--u))); font-weight: 500; line-height: 1.429; letter-spacing: 0.0145em; color: var(--ink-strong);   /* Label1/Normal_Medium (최종본 15 → 14) */
     white-space: nowrap;
   }
   .s04__more-icon { flex: none; width: calc(24 * var(--u)); height: calc(24 * var(--u)); }
 
-  /* ----- 모바일 (Figma 6248:7039, 390 × 886) ----- */
+  /* ----- 모바일 (Figma 최종본 6574:1812, 390 × 930) ----- */
   @container page (max-width: 599px) {
     .s04 { gap: calc(28 * var(--u)); padding: calc(60 * var(--u)) calc(20 * var(--u)); }
     .s04__head { gap: calc(12 * var(--u)); }
@@ -607,13 +608,12 @@
     .s04__ready-head { flex-direction: row; align-items: center; }
     .s04__ready-label { font-size: calc(13 * var(--u)); line-height: 1.385; letter-spacing: 0.0194em; }       /* Label2/SemiBold */
     .s04__ready-title { font-size: calc(18 * var(--u)); line-height: 1.445; letter-spacing: -0.0002em; }      /* Headline1/SemiBold */
-    .s04__ready-desc { font-size: calc(14 * var(--u)); line-height: 1.429; letter-spacing: 0.0145em; }        /* Label1/Normal_Regular · SemiBold */
+    .s04__ready-desc { font-size: calc(15 * var(--u)); line-height: 1.6; letter-spacing: 0.0096em; }          /* Body2/Normal_Regular · SemiBold (최종본 14 → 15, 행간 1.625 를 Figma 처럼 24px 로) */
     .s04__br-pc { display: none; }
     .s04__br-mo { display: inline; }
-    .s04__more { gap: calc(4 * var(--u)); padding: calc(8 * var(--u) - 1px) calc(12 * var(--u)); }
   }
 
-  /* ===== S5 · READY 01 · 3중 담임제 (Figma PC 6167:5665, 847 × 906 · MO 6155:7931, 390 × 882) ===== */
+  /* ===== S5 · READY 01 · 3중 담임제 (Figma 최종본 PC 6574:3379, 847 × 906 · MO 6574:1866, 390 × 882) ===== */
   .s05 {
     --s05-bg: #fff4f6;                          /* 시안 직접 지정 색(변수 없음) */
     --s05-neutral: #7a7a7c;                     /* color/semantic/text/neutral */
@@ -679,7 +679,7 @@
   .s05__node-num { position: relative; font-size: calc(16 * var(--u)); font-weight: 600; line-height: 1.5; letter-spacing: 0.0057em; color: var(--white); }
 
 
-  /* ----- 모바일 (Figma 6155:7931, 390 × 882) — 카드가 세로로 쌓이고 선은 가운데 한 줄 ----- */
+  /* ----- 모바일 (Figma 최종본 6574:1866, 390 × 882) — 카드가 세로로 쌓이고 선은 가운데 한 줄 ----- */
   @container page (max-width: 599px) {
     .s05 { gap: calc(32 * var(--u)); padding: calc(60 * var(--u)) calc(20 * var(--u)); }
     .s05__head { gap: calc(12 * var(--u)); }
@@ -710,7 +710,7 @@
     .s05__node-num { font-size: calc(13 * var(--u)); line-height: 1.385; letter-spacing: 0.0194em; }           /* Label2/SemiBold */
   }
 
-  /* ===== S6 · READY 02 학습 지원 (Figma PC 6167:5708, 847 × 942 · 모바일 6155:7976, 390 × 1236) ===== */
+  /* ===== S6 · READY 02 학습 지원 (Figma 최종본 PC 6574:3422, 847 × 942 · 모바일 6574:1911, 390 × 1236) ===== */
   .s06 {
     --s06-neutral: #7a7a7c;                 /* color/semantic/text/neutral */
     --s06-fill: #f6f7f8;                    /* color/semantic/fill/alternative */
@@ -768,16 +768,17 @@
   .s06.is-in .s06__step:nth-child(3) .s06__rail::after { transition-delay: 1.08s; }
   .s06.is-in .s06__step:nth-child(4) .s06__no { transition-delay: 1.44s; }
 
-  /* 카드 — 시안의 테두리 1px 는 카드 크기 바깥에 더해진다(안쪽 여백 20 + 테두리 1) */
+  /* 카드 — 시안의 테두리 1px 는 카드 크기 바깥에 더해진다(안쪽 여백 20 + 테두리 1)
+     위 줄: 이름(왼쪽) · 영문 태그(카드 오른쪽 끝) / 아래 줄: 설명(왼쪽) · 자세히 보기(오른쪽, 글 아래 끝에 맞춤) */
   .s06__card {
     flex: 1 0 0; min-width: 0; box-sizing: content-box;
-    display: flex; align-items: flex-end; gap: calc(16 * var(--u));
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: calc(6 * var(--u)); row-gap: calc(6 * var(--u));
     padding: calc(20 * var(--u)) calc(24 * var(--u));
     border: 1px solid var(--s06-line); border-radius: calc(12 * var(--u));
     background: var(--s06-fill);
   }
-  .s06__text { flex: 1 0 0; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: calc(6 * var(--u)); }
-  .s06__name-row { display: flex; align-items: center; gap: calc(8 * var(--u)); white-space: nowrap; }
+  .s06__name-row { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: calc(8 * var(--u)); white-space: nowrap; }
+  .s06__text { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: calc(6 * var(--u)); }
   .s06__name { font-size: calc(20 * var(--u)); font-weight: 800; line-height: 1.4; letter-spacing: -0.012em; color: var(--ink-strong); }
   .s06__tag { font-size: max(12px, calc(14 * var(--u))); font-weight: 600; line-height: 1.429; letter-spacing: 0.0145em; color: var(--point); }
   .s06__desc { font-size: calc(16 * var(--u)); font-weight: 600; line-height: 1.5; letter-spacing: 0.0057em; color: var(--ink); }
@@ -785,12 +786,12 @@
 
   /* 자세히 보기 버튼 (버튼 · 링크 모양 같음) */
   .s06__more {
-    flex: none; display: flex; align-items: center; justify-content: center; gap: calc(8 * var(--u));
+    flex: none; align-self: end; display: flex; align-items: center; justify-content: center; gap: calc(8 * var(--u));
     width: calc(140 * var(--u)); height: calc(40 * var(--u));
-    padding: 0 calc(16 * var(--u));
+    padding: 0 calc(8 * var(--u)) 0 calc(16 * var(--u));   /* 시각 보정: 오른쪽 아이콘 버튼은 오른쪽 여백 8 */
     border: 1px solid var(--point); border-radius: 9999px;
     background: var(--white);
-    font-size: calc(15 * var(--u)); font-weight: 500; line-height: 1.625; letter-spacing: 0.0096em;
+    font-size: max(12px, calc(14 * var(--u))); font-weight: 500; line-height: 1.429; letter-spacing: 0.0145em;
     color: var(--ink-strong); text-align: center; white-space: nowrap;
     transition: background-color .2s ease;
   }
@@ -813,18 +814,16 @@
     .s06__rail { width: calc(32 * var(--u)); }
     .s06__no { width: calc(32 * var(--u)); height: calc(32 * var(--u)); font-size: max(12px, calc(13 * var(--u))); line-height: 1.385; letter-spacing: 0.0194em; }
 
-    /* 카드: 글 아래에 버튼이 한 줄을 다 차지 */
-    .s06__card { flex-direction: column; align-items: stretch; padding: calc(20 * var(--u)); }
-    .s06__text { flex: none; align-items: stretch; }
-    .s06__name-row { justify-content: space-between; }
+    /* 카드: 이름 줄 → 설명 → 버튼(한 줄을 다 차지, 설명과 16 간격) */
+    .s06__card { grid-template-columns: minmax(0, 1fr); padding: calc(20 * var(--u)); }
+    .s06__text { align-items: stretch; }
     .s06__desc { font-size: calc(15 * var(--u)); line-height: 1.6; letter-spacing: 0.0096em; }   /* 시안 1.625 → Figma 가 24px 로 그림 */
-    .s06__more { width: 100%; }
+    .s06__more { width: 100%; margin-top: calc(10 * var(--u)); }
   }
 
-  /* ===== S7 · READY 03 입시전략 (Figma PC 6167:5771, 847 × 734 · 모바일 6138:339, 390 × 918) ===== */
+  /* ===== S7 · READY 03 입시전략 (Figma 최종본 PC 6574:3493, 847 × 748 · 모바일 6574:1974, 390 × 922) ===== */
   .s07 {
     --s07-bg: #fff4f6;                      /* PC 시안 배경(변수 없음) */
-    --s07-bg-mo: #f6f7f8;                   /* 모바일 시안 배경: color/semantic/fill/alternative */
     --s07-neutral: #7a7a7c;                 /* color/semantic/text/neutral */
     --s07-line: #e1e3e5;                    /* color/semantic/line/normal */
     --s07-photo-bg: #e6e8ea;                /* color/semantic/fill/strong — 사진이 뜨기 전 바탕 */
@@ -866,16 +865,16 @@
   /* '100만 명' 뒤 별표: PC 시안은 위 첨자(글자 크기의 64.5%) */
   .s07__star { font-size: 0.645em; line-height: 0; vertical-align: 0.39em; }
 
-  .s07__notes { display: flex; flex-wrap: wrap; gap: calc(2 * var(--u)) calc(12 * var(--u)); }
+  .s07__notes { display: flex; flex-wrap: wrap; gap: calc(4 * var(--u)) calc(12 * var(--u)); }
   .s07__note { font-size: max(12px, calc(13 * var(--u))); font-weight: 400; line-height: 1.385; letter-spacing: 0.0194em; color: var(--ink-alt); }   /* color/semantic/text/alternative */
 
   /* 버튼 2개 */
   .s07__cta { display: flex; justify-content: center; gap: calc(12 * var(--u)); }
   .s07__btn {
     flex: none; display: flex; align-items: center; justify-content: center; gap: calc(8 * var(--u));
-    width: calc(320 * var(--u)); height: calc(48 * var(--u)); padding: 0 calc(16 * var(--u));
+    width: calc(260 * var(--u)); height: calc(40 * var(--u)); padding: 0 calc(8 * var(--u)) 0 calc(16 * var(--u));   /* 최종본: 260 × 40, 왼쪽 16 · 오른쪽 8 */
     border-radius: 9999px;
-    font-size: calc(16 * var(--u)); font-weight: 500; line-height: 1.5; letter-spacing: 0.0057em;
+    font-size: max(13px, calc(14 * var(--u))); font-weight: 500; line-height: 1.429; letter-spacing: 0.0145em;   /* Label1/Normal_Medium */
     color: var(--s07-btn-text); text-align: center; white-space: nowrap;
     transition: opacity .2s ease;
   }
@@ -891,9 +890,9 @@
     .s07__desc .s07__br { display: none; }
   }
 
-  /* ----- 모바일 (Figma 6138:339) ----- */
+  /* ----- 모바일 (Figma 최종본 6574:1974) ----- */
   @container page (max-width: 599px) {
-    .s07 { padding: calc(60 * var(--u)) calc(20 * var(--u)); background: var(--s07-bg-mo); }
+    .s07 { padding: calc(60 * var(--u)) calc(20 * var(--u)); }   /* 최종본: 모바일 배경도 PC 와 같은 분홍 */
     .s07__head { gap: calc(12 * var(--u)); }
     /* 시안 행간 1.625(15px → 24.375px)를 Figma 는 24px 로 그린다 → 같은 높이가 되게 1.6 */
     .s07__kicker { font-size: calc(15 * var(--u)); line-height: 1.6; letter-spacing: 0.0096em; }
@@ -906,10 +905,9 @@
     .s07__cards { flex-direction: column; gap: calc(12 * var(--u)); }
     .s07__card { flex: none; flex-direction: row; align-items: stretch; }
     .s07__photo { width: calc(120 * var(--u)); height: auto; }
+    .s07__photo--concert img { object-position: 55% 50%; }   /* 시안 자르기 위치(가로 30%~75%) */
     .s07__text { flex: 1 0 0; min-width: 0; padding: calc(20 * var(--u)); }
     .s07__name { font-size: calc(16 * var(--u)); line-height: 1.5; letter-spacing: 0.0057em; }
-    /* 모바일 시안의 별표는 위 첨자가 아니라 본문과 같은 크기 */
-    .s07__star { font-size: inherit; line-height: inherit; vertical-align: baseline; }
 
     .s07__notes { flex-direction: column; flex-wrap: nowrap; gap: calc(2 * var(--u)); }
 
@@ -921,7 +919,7 @@
     .s07__desc .s07__br { display: none; }
   }
 
-  /* ===== S8 · RESULT & REVIEW (시안 PC 6167:5797, 847 × 1747 / 모바일 6138:365, 390 × 1745) ===== */
+  /* ===== S8 · RESULT & REVIEW (최종본 1119: 시안 PC 6574:3523, 847 × 1750 / 모바일 6574:2004, 390 × 1740) ===== */
   .s08 {
     --s08-line: #e1e3e5;         /* color/semantic/line/normal */
     --s08-fill: #f1f2f4;         /* color/semantic/fill/normal · background/alternative */
@@ -935,7 +933,7 @@
     background: var(--white);
     overflow: hidden;
   }
-  .s08__br-mo, .s08__only-mo { display: none; }
+  .s08__br-mo { display: none; }
 
   /* --- 머리글 --- */
   .s08__kicker {
@@ -975,10 +973,10 @@
     font-size: calc(13 * var(--u)); font-weight: 500; line-height: 1.385; letter-spacing: 0.0194em; white-space: nowrap;
     transition: background-color .25s ease, color .25s ease;
   }
-  /* 화살표: 펼치면 위로 돌고, 글자색(#7a7a7c)에 맞춰 조금 어두워진다 (#97989a × 0.807 ≒ #7a7a7c = 시안의 펼침 아이콘 색) */
+  /* 펼치면 바탕만 흰색으로 바뀌고 화살표가 위로 돈다 (펼침 시안 6574:4588: 글자·아이콘 #97989a 그대로) */
   .s08__basis-ico { flex: none; width: calc(16 * var(--u)); height: calc(16 * var(--u)); }
-  .s08__basis-btn[aria-expanded="true"] { background: var(--white); color: var(--s08-neutral); }
-  .s08__basis-btn[aria-expanded="true"] .s08__basis-ico { transform: rotate(180deg); filter: brightness(.807); }
+  .s08__basis-btn[aria-expanded="true"] { background: var(--white); }
+  .s08__basis-btn[aria-expanded="true"] .s08__basis-ico { transform: rotate(180deg); }
   .s08__basis-panel {
     width: 100%; margin-top: calc(16 * var(--u));
     padding: calc(20 * var(--u) - 1px) calc(28 * var(--u) - 1px);
@@ -1056,17 +1054,20 @@
   .s08__track, .s08__mvp-list { transition: transform .3s cubic-bezier(.25, .1, .25, 1); }
   .s08__track { display: flex; align-items: stretch; gap: calc(16 * var(--u)); width: max-content; }
 
-  /* 후기 카드 (300 × 551) */
+  /* 후기 카드 (300 × 562) — 머리(태그·제목) / 구분선 / 수능 등급 + 주요 합격 대학 / 구분선 / 후기 글 / 센터·이름 */
   .s08__card {
-    position: relative; flex: none; display: flex; flex-direction: column;
-    width: calc(300 * var(--u)); min-height: calc(551 * var(--u));
+    position: relative; flex: none; display: flex; flex-direction: column; gap: calc(16 * var(--u));
+    width: calc(300 * var(--u)); min-height: calc(562 * var(--u));
     padding: calc(24 * var(--u)) calc(20 * var(--u));
     border-radius: calc(16 * var(--u)); background: var(--s08-fill);
   }
+  .s08__card-top { display: flex; flex-direction: column; gap: calc(12 * var(--u)); }
   .s08__card-tags { font-size: calc(13 * var(--u)); font-weight: 600; line-height: 1.385; letter-spacing: 0.0194em; color: var(--point); white-space: pre; }
-  .s08__card-title { margin-top: calc(12 * var(--u)); font-size: calc(18 * var(--u)); font-weight: 600; line-height: 1.445; letter-spacing: -0.0002em; color: var(--ink-strong); }
+  .s08__card-title { font-size: calc(18 * var(--u)); font-weight: 600; line-height: 1.445; letter-spacing: -0.0002em; color: var(--ink-strong); }
   .s08__card-quote { position: absolute; top: calc(24 * var(--u)); right: calc(20 * var(--u)); width: calc(30 * var(--u)); height: calc(24 * var(--u)); }
-  .s08__grade { margin-top: calc(16 * var(--u)); padding-top: calc(16 * var(--u)); border-top: 1px solid var(--s08-line); }
+  /* 구분선(1px) + 간격 16 — 등급 묶음 위, 후기 글 위 */
+  .s08__card-info, .s08__card-body { padding-top: calc(16 * var(--u)); border-top: 1px solid var(--s08-line); }
+  .s08__card-info { display: flex; flex-direction: column; gap: calc(12 * var(--u)); }
   .s08__grade-head { display: flex; align-items: center; justify-content: space-between; }
   .s08__grade-label { font-size: calc(13 * var(--u)); font-weight: 600; line-height: 1.385; letter-spacing: 0.0194em; color: var(--s08-neutral); white-space: nowrap; }
   .s08__grade-badge {
@@ -1074,47 +1075,46 @@
     border: 1px solid var(--point); border-radius: 9999px; background: var(--s08-red-95);
     font-size: calc(12 * var(--u)); font-weight: 600; line-height: 1.334; letter-spacing: 0.0252em; color: var(--point); white-space: nowrap;
   }
-  .s08__grade-list { display: flex; gap: calc(4 * var(--u)); margin-top: calc(12 * var(--u)); }
+  .s08__grade-list { display: flex; gap: calc(4 * var(--u)); margin-top: calc(10 * var(--u)); }
   .s08__grade-cell {
     flex: 1 0 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: calc(2 * var(--u));
     padding: calc(8 * var(--u)) 0; border-radius: calc(4 * var(--u)); background: var(--white); white-space: nowrap;
   }
   .s08__grade-cell dt { font-size: calc(13 * var(--u)); font-weight: 500; line-height: 1.385; letter-spacing: 0.0194em; color: var(--ink-alt); }
   .s08__grade-cell dd { font-size: calc(18 * var(--u)); font-weight: 600; line-height: 1.445; letter-spacing: -0.0002em; color: var(--point); }
+  /* 주요 합격 대학 (라벨 13 · 학교 14 포인트색) */
+  .s08__pass { display: flex; flex-direction: column; gap: calc(4 * var(--u)); }
+  .s08__pass-label { font-size: calc(13 * var(--u)); font-weight: 600; line-height: 1.385; letter-spacing: 0.0194em; color: var(--s08-neutral); }
+  .s08__pass-name { font-size: calc(14 * var(--u)); font-weight: 600; line-height: 1.429; letter-spacing: 0.0145em; color: var(--point); }
   .s08__card-body {
     flex: 1 0 auto; display: flex; flex-direction: column; gap: calc(8 * var(--u));
-    margin-top: calc(16 * var(--u));
     font-size: calc(13 * var(--u)); font-weight: 400; line-height: 1.385; letter-spacing: 0.0194em; color: var(--ink);
   }
-  .s08__card-body--line { padding-top: calc(16 * var(--u)); border-top: 1px solid var(--s08-line); }   /* 시안에서 첫 카드에만 있는 구분선 */
   .s08__who {
-    display: flex; flex-direction: column; gap: calc(8 * var(--u));
-    min-height: calc(100 * var(--u)); margin-top: calc(16 * var(--u));
-    padding: calc(10 * var(--u)) calc(12 * var(--u));
-    border-radius: calc(4 * var(--u)); background: var(--white);
+    padding: calc(12 * var(--u)) calc(16 * var(--u));
+    border-radius: calc(8 * var(--u)); background: var(--white);
     font-size: calc(13 * var(--u)); font-weight: 500; line-height: 1.385; letter-spacing: 0.0194em;
   }
   .s08__who-meta { display: flex; align-items: center; justify-content: space-between; color: var(--s08-neutral); white-space: nowrap; }
-  .s08__who-pass { color: var(--ink-strong); }
   .s08__note { margin-top: calc(20 * var(--u)); font-size: calc(13 * var(--u)); font-weight: 400; line-height: 1.385; letter-spacing: 0.0194em; color: var(--ink-alt); }
 
-  /* --- 버튼 2개 --- */
+  /* --- 버튼 2개 (260 × 40) --- */
   .s08__cta { display: flex; justify-content: center; gap: calc(12 * var(--u)); margin-top: calc(80 * var(--u)); }
   .s08__cta-btn {
     display: flex; align-items: center; justify-content: center; gap: calc(8 * var(--u));
-    width: calc(320 * var(--u)); height: calc(48 * var(--u)); padding: 0 calc(16 * var(--u));
+    width: calc(260 * var(--u)); height: calc(40 * var(--u)); padding: 0 calc(8 * var(--u)) 0 calc(16 * var(--u));
     border-radius: 9999px; color: var(--s08-btn-text);
-    font-size: calc(16 * var(--u)); font-weight: 500; line-height: 1.5; letter-spacing: 0.0057em; white-space: nowrap;
+    font-size: calc(14 * var(--u)); font-weight: 500; line-height: 1.429; letter-spacing: 0.0145em; white-space: nowrap;
   }
   .s08__cta-btn img { width: calc(24 * var(--u)); height: calc(24 * var(--u)); }
   .s08__cta-btn--result { background: var(--s08-btn-gray); }
   .s08__cta-btn--story { background: var(--ink-strong); }   /* color/semantic/common/black */
 
-  /* ===== 모바일 (시안 6138:365, 390 × 1745) — 이 구간의 --u 는 390 기준 ===== */
+  /* ===== 모바일 (시안 6574:2004, 390 × 1740) — 이 구간의 --u 는 390 기준 ===== */
   @container page (max-width: 599px) {
     .s08 { --s08-pad: calc(20 * var(--u)); padding: calc(60 * var(--u)) var(--s08-pad); }
-    .s08__br-mo, .s08__only-mo { display: inline; }
-    .s08__only-pc { display: none; }
+    .s08__br-mo { display: inline; }
+    .s08__br-pc { display: none; }
 
     .s08__kicker { font-size: calc(15 * var(--u)); line-height: 1.625; letter-spacing: 0.0096em; }
     .s08__title { margin-top: calc(12 * var(--u)); font-size: calc(28 * var(--u)); line-height: 1.358; letter-spacing: -0.0236em; }
@@ -1157,7 +1157,7 @@
     .s08__track, .s08__mvp-list, .s08__basis-btn, .s08__mvp-dot { transition: none; }
   }
 
-  /* ===== S9 · SPACE 시설 + SYSTEM 몰입공부 시스템 (Figma PC 6167:6168, 847 × 1411 · MO 6138:736, 390 × 1553) ===== */
+  /* ===== S9 · SPACE 시설 + SYSTEM 몰입공부 시스템 (Figma 최종본 PC 6574:3960, 847 × 1405 · MO 6574:2443, 390 × 1545) ===== */
   .s09 {
     --s09-bg: #f6f7f8;            /* color/semantic/fill/alternative */
     --s09-line: #e1e3e5;          /* color/semantic/line/normal */
@@ -1172,7 +1172,7 @@
     background: var(--s09-bg);
     overflow: hidden;
   }
-  .s09__br-mo, .s09__sp-mo { display: none; }   /* 모바일 시안에만 있는 줄바꿈 · 띄어쓰기 */
+  .s09__br-mo { display: none; }   /* 모바일 시안에만 있는 줄바꿈 */
 
   /* ----- 머리말 (SPACE · SYSTEM 공통) ----- */
   .s09__head { display: flex; flex-direction: column; align-items: flex-start; gap: calc(16 * var(--u)); }
@@ -1253,16 +1253,22 @@
   }
   .s09__type-name { display: flex; align-items: center; gap: calc(8 * var(--u)); font-size: calc(18 * var(--u)); font-weight: 600; line-height: 1.445; letter-spacing: -0.0002em; color: var(--ink-strong); white-space: nowrap; }
   .s09__type-no { font-size: calc(15 * var(--u)); line-height: 1.6; letter-spacing: 0.0096em; color: var(--point); }
-  /* 세 칸으로 나뉜 좁은 카드라 글자 최소값을 낮게 둔다(12px 로 막으면 본문 폭 600~680 에서 시안과 다른 자리에서 줄이 바뀜) */
-  .s09__type-tags { font-size: max(10px, calc(14 * var(--u))); font-weight: 400; line-height: 1.429; letter-spacing: 0.0145em; color: var(--s09-neutral); }
+  /* 태그: "#" 과 글자 사이 2, 태그끼리 세로 간격 2. 두 줄로 넘어가면 글자 시작선에 맞춰 이어진다.
+     세 칸으로 나뉜 좁은 카드라 글자 최소값을 낮게 둔다(12px 로 막으면 본문 폭 600~680 에서 시안과 다른 자리에서 줄이 바뀜) */
+  .s09__tags {
+    display: flex; flex-direction: column; gap: calc(2 * var(--u));
+    font-size: max(10px, calc(14 * var(--u))); font-weight: 400; line-height: 1.429; letter-spacing: 0.0145em; color: var(--s09-neutral);
+  }
+  .s09__tag { display: flex; gap: calc(2 * var(--u)); }
+  .s09__tag-hash { flex: none; min-width: calc(9 * var(--u)); }   /* 시안의 "#" 칸 폭 9 */
 
-  /* 시설 영상으로 둘러보기 */
+  /* 시설 영상 보기 (260 × 40, 왼쪽 여백 16 · 오른쪽 8) */
   .s09__video-wrap { display: flex; justify-content: center; }
   .s09__video {
     display: flex; align-items: center; justify-content: center; gap: calc(8 * var(--u));
-    width: calc(260 * var(--u)); padding: calc(12 * var(--u)) calc(16 * var(--u));
+    width: calc(260 * var(--u)); padding: calc(8 * var(--u)) calc(8 * var(--u)) calc(8 * var(--u)) calc(16 * var(--u));
     border-radius: 9999px; background: var(--ink-strong);   /* color/semantic/common/black */
-    font-size: calc(16 * var(--u)); font-weight: 600; line-height: 1.5; letter-spacing: 0.0057em; color: var(--s09-text-white); white-space: nowrap;
+    font-size: max(12px, calc(14 * var(--u))); font-weight: 500; line-height: 1.429; letter-spacing: 0.0145em; color: var(--s09-text-white); white-space: nowrap;
   }
   .s09__video-icon { flex: none; width: calc(24 * var(--u)); height: calc(24 * var(--u)); }
 
@@ -1314,7 +1320,7 @@
   @container page (max-width: 599px) {
     .s09 { --s09-step: calc(312 * var(--u)); gap: calc(60 * var(--u)); padding: calc(60 * var(--u)) calc(20 * var(--u)); }   /* 한 칸 = 사진 300 + 간격 12 */
     .s09__br-pc { display: none; }
-    .s09__br-mo, .s09__sp-mo { display: inline; }
+    .s09__br-mo { display: inline; }
 
     .s09__head { gap: calc(12 * var(--u)); }
     .s09__kicker { font-size: calc(15 * var(--u)); line-height: 1.6; letter-spacing: 0.0096em; }   /* 시안 1.625 → 정수 높이 24 */
@@ -1331,8 +1337,10 @@
     .s09__types { grid-template-columns: minmax(0, 1fr); gap: calc(12 * var(--u)); }
     .s09__type { padding: calc(16 * var(--u) - 1px); }
     .s09__type-name { font-size: calc(16 * var(--u)); line-height: 1.5; letter-spacing: 0.0057em; }
-    .s09__type-tags { font-size: calc(14 * var(--u)); white-space: pre-wrap; }   /* 태그 사이 띄어쓰기 두 칸을 시안 그대로 */
-    .s09__video { width: calc(280 * var(--u)); }
+    /* 모바일 태그: 01·02 는 한 줄에 나란히(간격 8), 03 은 세로로(간격 0) */
+    .s09__tags { flex-direction: row; flex-wrap: wrap; gap: calc(8 * var(--u)); font-size: calc(14 * var(--u)); }
+    .s09__tags--stack { flex-direction: column; gap: 0; }
+    .s09__video { width: calc(280 * var(--u)); font-size: calc(14 * var(--u)); }
 
     .s09__sys-btn { gap: calc(20 * var(--u)); padding: calc(20 * var(--u)); }
     .s09__sys-icon { width: calc(36 * var(--u)); height: calc(36 * var(--u)); }
@@ -1345,14 +1353,15 @@
     .s09__notes { gap: calc(2 * var(--u)); font-size: calc(13 * var(--u)); }
   }
 
-  /* ===== S10 · SERVICE 티처스 / 잇올 생활기록부 (Figma PC 6167:6280, 847 × 665 · MO 6138:848, 390 × 814) ===== */
+  /* ===== S10 · SERVICE 티처스리그 / 잇올 생활기록부 (Figma 최종본 PC 6574:4090, 847 × 751 · MO 6574:2573, 390 × 1000) ===== */
   .s10 {
     --s10-line: #e1e3e5;          /* color/semantic/line/normal */
+    --s10-note: #7a7a7c;          /* color/semantic/text/neutral (각주) */
     --s10-tint: #ffeaf0;          /* 배경 그라데이션의 아래쪽 분홍 (변수 없음) */
     display: flex; flex-direction: column; gap: calc(32 * var(--u));
     padding: calc(80 * var(--u));
     /* 아래에서 위로 분홍 → 흰색 (시안 그라데이션 값 그대로) */
-    background: linear-gradient(1.175deg, var(--s10-tint) 18.985%, rgba(255, 255, 255, 0) 98.727%), var(--white);
+    background: linear-gradient(1.327deg, var(--s10-tint) 18.985%, rgba(255, 255, 255, 0) 98.727%), var(--white);
   }
   .s10__head { display: flex; flex-direction: column; align-items: flex-start; gap: calc(16 * var(--u)); }
   /* 영문 머리말 — 앞의 짧은 막대는 장식 */
@@ -1376,15 +1385,20 @@
   .s10__name { font-size: calc(20 * var(--u)); font-weight: 800; line-height: 1.4; letter-spacing: -0.012em; color: var(--point); }
   .s10__lead { font-size: calc(16 * var(--u)); font-weight: 600; line-height: 1.5; letter-spacing: 0.0057em; color: var(--ink-strong); }
 
-  /* 목록 — 위의 가는 선이 시안의 구분선 */
-  .s10__list {
-    display: flex; flex-direction: column; gap: calc(8 * var(--u)); width: 100%;
-    padding-top: calc(16 * var(--u)); border-top: 1px solid var(--s10-line);
-  }
+  /* 가는 구분선 (시안 divider 1px) */
+  .s10__divider { flex: none; width: 100%; height: 1px; background: var(--s10-line); }
+  /* 목록 + 각주 — 같은 8 간격으로 이어짐 */
+  .s10__body { display: flex; flex-direction: column; gap: calc(8 * var(--u)); width: 100%; }
+  .s10__list { display: flex; flex-direction: column; gap: calc(8 * var(--u)); width: 100%; }
   .s10__li { display: flex; align-items: flex-start; gap: calc(8 * var(--u)); }
   .s10__dot { flex: none; width: calc(4 * var(--u)); height: calc(20 * var(--u)); max-width: none; }
   /* 작은 글자는 화면이 좁아져도 13px 아래로 내려가지 않게 막음 */
   .s10__li-text { flex: 1; min-width: 0; font-size: max(13px, calc(14 * var(--u))); font-weight: 400; line-height: 1.429; letter-spacing: 0.0145em; color: var(--ink); }
+
+  /* 84% 뒤 작은 * (시안 9.03px) — 줄 높이는 늘리지 않음 */
+  .s10__mark { position: relative; top: -0.45em; font-size: 0.645em; line-height: 1; }   /* 시안처럼 글자 윗선에 붙임 */
+  /* 각주 (Label2 13) */
+  .s10__note { font-size: max(13px, calc(13 * var(--u))); font-weight: 400; line-height: 1.385; letter-spacing: 0.0194em; color: var(--s10-note); }
 
   /* 자세히 보기 — 두 카드에서 같은 높이(카드 바닥)에 놓인다 */
   .s10__more {
@@ -1397,7 +1411,7 @@
   @container page (max-width: 599px) {
     .s10 {
       gap: calc(24 * var(--u)); padding: calc(60 * var(--u)) calc(20 * var(--u));
-      background: linear-gradient(3.122deg, var(--s10-tint) 38.921%, rgba(255, 255, 255, 0) 98.727%), var(--white);
+      background: linear-gradient(3.833deg, var(--s10-tint) 38.921%, rgba(255, 255, 255, 0) 98.727%), var(--white);
     }
     .s10__head { gap: calc(12 * var(--u)); }
     /* 시안 행간 1.625(24.375px)는 Figma 에서 24px 로 놓여 있어 1.6 으로 적음 (아래 15px 글자 모두) */
@@ -1407,7 +1421,6 @@
     .s10__card { flex: none; gap: calc(12 * var(--u)); padding: calc(20 * var(--u)); border-radius: calc(16 * var(--u)); }   /* 2026-11-17 시안 수정: 둥글기 12 → 16 */
     .s10__lead { font-size: calc(15 * var(--u)); line-height: 1.6; letter-spacing: 0.0096em; }
     .s10__pc-br { display: none; }
-    .s10__list { padding-top: calc(12 * var(--u)); }
     .s10__li-text { font-size: calc(14 * var(--u)); }
     .s10__more { margin-top: calc(8 * var(--u)); font-size: calc(15 * var(--u)); line-height: 1.6; letter-spacing: 0.0096em; }   /* 목록과의 간격 12 + 8 = 20 */
   }
@@ -1491,9 +1504,9 @@
   }
 
   /* ===== S12 · 하단 띠배너 =====
-     (1) PC: 본문 카드 바깥 아래의 띠 (Figma 6167:4901, 847 × 83) — s12-strip.after.html
-     (2) 모바일: 본문 안 마지막 블록 (Figma 6195:5009, 390 × 377) — s12-strip.html
-     바탕 무늬는 시안에서 내보낸 그림(색 + 무늬가 합쳐진 것)을 그대로 깐다. 제목 폰트 잇올체("Itall")는 template.html 에 이미 선언돼 있다 */
+     (1) PC: 본문 카드 바깥 아래의 띠 (통학 최종본 6574:4182, 847 × 83) — s12-strip.after.html
+     (2) 모바일: 본문 안 마지막 블록 (통학 최종본 6574:2666, 390 × 377) — s12-strip.html
+     바탕 무늬는 시안 배치대로 바탕색 + 무늬 사진(흰 그라데이션 60% 덮음)을 '선형 번(LINEAR_BURN)'으로 합친 그림(2배 크기)을 깐다. 제목 폰트 잇올체("Itall")는 template.html 에 이미 선언돼 있다 */
 
   /* (1) PC 띠 — 이 자리는 본문 카드(.wrap) 밖이라 --u 가 없다.
      띠는 본문 카드와 같은 부모(.layout__main) 안에서 같은 폭 규칙(가로 꽉 참 · 최대 847)을 받으므로 폭이 항상 본문 카드와 같다.
@@ -1516,13 +1529,13 @@
   .s12-bar__title { padding-top: calc(4 * var(--u)); font-family: "Itall", Pretendard, sans-serif; font-size: calc(24 * var(--u)); font-weight: 700; line-height: 1.35; letter-spacing: 0.02em; white-space: nowrap; }
   .s12-bar__more { flex: none; display: flex; align-items: center; gap: calc(4 * var(--u)); font-size: calc(18 * var(--u)); font-weight: 600; line-height: 1.445; letter-spacing: -0.0002em; white-space: nowrap; }
   .s12-bar__chev { flex: none; width: calc(24 * var(--u)); height: calc(24 * var(--u)); max-width: none; }   /* 시안: Arrows/arrow-up-right 24 */
-  /* 기숙 이동 띠 — PC 띠와 같은 틀에 기숙 색·무늬(모바일 기숙 배너 그림을 비율 유지해 채움). PC(1024~)에서는 숨김 */
-  .s12-bar--dorm { display: none; }
-  .s12-bar--dorm .s12-bar__link { --s12-dorm: #1197a6; background: var(--s12-dorm) url("assets/s12-strip/strip_dorm_mo.webp") center / cover no-repeat; }
+  /* 통학 재수우선선발반 이동 띠 — PC 띠와 같은 틀에 통학 색·무늬(모바일 배너 그림을 비율 유지해 채움). PC(1024~)에서는 숨김 */
+  .s12-bar--priority { display: none; }
+  .s12-bar--priority .s12-bar__link { --s12-priority: #ff4c6a; background: var(--s12-priority) url("assets/s12-strip/strip_priority_mo.webp") center / cover no-repeat; }   /* 시안 색 변수 '통학' */
   /* 본문 카드가 화면 끝까지 붙는 폭(1024 미만)에서는 띠도 모서리 없이 붙인다 (본문 카드와 같은 처리) */
   @media (max-width: 1023px) {
     .s12-bar__link { border-radius: 0; }
-    .s12-bar--dorm { display: block; }
+    .s12-bar--priority { display: block; }
   }
   /* 본문이 모바일 구성으로 바뀌는 폭(본문 폭 = 화면 폭 600 미만)에서는 숨김 — 아래 (2) 가 대신 나온다 */
   @media (max-width: 599px) {
@@ -1535,7 +1548,7 @@
     .s12 {
       --s12-bg: #e6e8ea;          /* color/semantic/fill/strong */
       --s12-red: #e60f19;         /* color/semantic/primary/normal */
-      --s12-dorm: #1197a6;        /* 기숙 이동 배너 바탕 (변수 없음) */
+      --s12-priority: #ff4c6a;    /* 통학 재수우선선발반 배너 바탕 (시안 색 변수 '통학') */
       display: flex; flex-direction: column; gap: calc(24 * var(--u));
       padding: calc(60 * var(--u)) calc(20 * var(--u));
       background: var(--s12-bg);
@@ -1547,7 +1560,7 @@
       color: var(--white);
     }
     .s12__banner--all { min-height: calc(130 * var(--u)); background: var(--s12-red) url("assets/s12-strip/strip_all_mo.webp") center / 100% 100% no-repeat; }
-    .s12__banner--dorm { min-height: calc(103 * var(--u)); background: var(--s12-dorm) url("assets/s12-strip/strip_dorm_mo.webp") center / 100% 100% no-repeat; }
+    .s12__banner--priority { min-height: calc(103 * var(--u)); background: var(--s12-priority) url("assets/s12-strip/strip_priority_mo.webp") center / 100% 100% no-repeat; }
     .s12__title { font-family: "Itall", Pretendard, sans-serif; font-size: calc(20 * var(--u)); font-weight: 700; line-height: 1.35; letter-spacing: 0.02em; }
     .s12__more { display: flex; align-items: center; gap: 0; font-size: calc(16 * var(--u)); font-weight: 600; line-height: 1.5; letter-spacing: 0.0057em; white-space: nowrap; }
     .s12__chev { flex: none; width: calc(24 * var(--u)); height: calc(24 * var(--u)); max-width: none; }
@@ -1569,7 +1582,7 @@
     --lpm-fill: #f1f2f4;                        /* color/semantic/fill/normal */
     --lpm-fill-alt: #f6f7f8;                    /* color/semantic/fill/alternative */
     --lpm-badge-bg: #fff1f2;                    /* color/atomic/red/95 */
-    --lpm-badge-ink: var(--point);              /* point #ff4c6a (모바일 시안은 color/semantic/primary/normal #e60f19) */
+    --lpm-badge-ink: var(--point);              /* point #ff4c6a (PC·MO 같음 — 11-19 최종본) */
     width: min(calc(var(--lpm-w) * var(--mu)), calc(100% - 40px));
     max-width: none;
     max-height: min(600px, calc(100vh - 40px));     /* PC 모달 최대 높이 600 */
@@ -1604,7 +1617,7 @@
   .lpm__title:focus { outline: none; }          /* 열릴 때 초점을 받는 자리 — 테두리는 그리지 않음 */
   .lpm__badge {
     padding: calc(4 * var(--mu)) calc(8 * var(--mu)); border-radius: calc(6 * var(--mu)); background: var(--lpm-badge-bg);
-    font-size: calc(13 * var(--mu)); font-weight: 500; line-height: 1.385; letter-spacing: 0.0194em; color: var(--lpm-badge-ink); text-align: center;
+    font-size: calc(13 * var(--mu)); font-weight: 600; line-height: 1.385; letter-spacing: 0.0194em; color: var(--lpm-badge-ink); text-align: center;
   }
   .lpm__close { display: grid; place-items: center; width: calc(32 * var(--mu)); height: calc(32 * var(--mu)); }
   .lpm__close img { width: calc(24 * var(--mu)); height: calc(24 * var(--mu)); }
@@ -1722,8 +1735,13 @@
     font-size: calc(15 * var(--mu)); font-weight: 500; line-height: 1.625; letter-spacing: 0.0096em;
   }
   .lpm__table tbody th, .lpm__table tbody td:not(:last-child) { border-right: 1px solid var(--lpm-line); }
-  .lpm__time { display: inline-flex; align-items: center; gap: calc(4 * var(--mu)); white-space: nowrap; }
-  .lpm__time-new { padding: 0 calc(6 * var(--mu)); border-radius: calc(4 * var(--mu)); background: var(--point); font-weight: 600; color: var(--white); }
+  /* 실전바이오리듬 '이후 표준 일과표와 동일' — 세 칸을 합친 회색 줄 (시안 #f1f2f4) */
+  .lpm__row-all td { background: var(--page-bg); }
+  /* 표 아래 안내 두 묶음(교시별 타종 안내 · 유의사항) — 묶음 사이 16, 제목·목록 사이 8 (PC·MO 같음) */
+  .lpm__note-groups { display: flex; flex-direction: column; gap: calc(16 * var(--mu)); }
+  .lpm__note-group { display: flex; flex-direction: column; gap: calc(8 * var(--mu)); }
+  .lpm__note-head { font-size: calc(13 * var(--mu)); font-weight: 700; line-height: 1.385; letter-spacing: 0.0194em; color: var(--lpm-neutral); }
+  .lpm__notes strong { font-weight: 700; }
 
   /* --- 유튜브 영상: 16:9 틀. 화면이 낮으면 영상이 잘리지 않게 모달 폭을 줄인다 --- */
   .lpm--video {
@@ -1763,6 +1781,10 @@
   @media (min-width: 600px) {
     .lpm__br-mo { display: none; }
   }
+  /* PC 시안의 줄바꿈 자리는 모바일에서 숨김 */
+  @media (max-width: 599px) {
+    .lpm__br-pc { display: none; }
+  }
 
   /* ===== 모바일 (화면 폭 599px 이하) — 모바일 시안(모달 폭 350) 값 ===== */
   @media (max-width: 599px) {
@@ -1777,14 +1799,14 @@
       --lpm-pad: calc(20 * var(--mu));
       --lpm-gap: calc(24 * var(--mu));
     }
-    .lpm--bio { --lpm-badge-ink: #e60f19; }    /* 모바일 시안의 배지 글자색: color/semantic/primary/normal */
     .lpm--video {
       --lpm-chrome: calc(92 * var(--mu));
       width: min(calc(var(--lpm-w) * var(--mu)), calc(100% - 40px), calc((min(500px, 100vh - 40px) - var(--lpm-chrome)) * 16 / 9 + var(--lpm-pad) * 2));
       width: min(calc(var(--lpm-w) * var(--mu)), calc(100% - 40px), calc((min(500px, 100dvh - 40px) - var(--lpm-chrome)) * 16 / 9 + var(--lpm-pad) * 2));
     }
     .lpm--centers .lpm__panel { gap: calc(20 * var(--mu)); }
-    .lpm__promo { flex-direction: column; gap: calc(8 * var(--mu)); padding: calc(12 * var(--mu)) calc(14 * var(--mu)); font-size: calc(14 * var(--mu)); line-height: 1.429; letter-spacing: 0.0145em; }
+    .lpm__promo { flex-direction: column; gap: calc(8 * var(--mu)); padding: calc(12 * var(--mu)) 0;   /* 시안 좌우 여백 0(글자 상자 282 가 가운데) — 14 를 두면 브라우저에서 '할인'이 다음 줄로 밀림 */
+      font-size: calc(14 * var(--mu)); line-height: 1.429; letter-spacing: 0.0145em; }
     .lpm__promo-label { font-size: calc(13 * var(--mu)); line-height: 1.385; letter-spacing: 0.0194em; }
     .lpm__tier-title { font-size: calc(16 * var(--mu)); line-height: 1.5; letter-spacing: 0.0057em; }
     .lpm__heading { gap: calc(8 * var(--mu)); }
@@ -2388,7 +2410,7 @@
           <img class="hero__cube-still" src="assets/cube_still.webp" alt="" width="328" height="341" aria-hidden="true">
         </section>
 
-        <!-- ===== S2 · BENEFIT 혜택 (Figma PC 6167:5504 · 모바일 6138:72) ===== -->
+        <!-- ===== S2 · BENEFIT 혜택 (Figma 최종본 PC 6574:3214 · 모바일 6574:1691) ===== -->
         <section class="s02" aria-labelledby="s02-title">
           <header class="s02__head">
             <p class="s02__kicker">BENEFIT</p>
@@ -2402,7 +2424,7 @@
               <li class="s02__card s02__card--coupon">
                 <div class="s02__coupon-top">
                   <p class="s02__label s02__label--coupon">
-                    <span class="s02__chip s02__chip--white">#혜택 1</span>
+                    <span class="s02__chip s02__chip--white">혜택 1</span>
                     <span class="s02__cond s02__cond--white">기간 내 결제 및 등원 시</span>
                   </p>
                   <h3 class="s02__coupon-title">
@@ -2415,8 +2437,8 @@
                   </h3>
                 </div>
                 <div class="s02__coupon-bottom">
-                  <p class="s02__coupon-desc">2027.02.15(월) ~ 2027.04.13(화) 기간 내 <br class="s02__br-pc">2개월 <br class="s02__br-mo">결제 및 등원 완료 시</p>
-                  <!-- 시안에 이 버튼으로 열리는 화면(대상 센터/캠프 목록)이 없어 동작은 아직 넣지 않음 -->
+                  <p class="s02__coupon-desc">2027.02.15(월) ~ 2027.04.13(화) 기간 내 <br>2개월 결제 및 등원 완료 시</p>
+                  <!-- 공용 모달(s00-modal)의 대상 센터/캠프 목록 모달을 연다 -->
                   <button type="button" class="s02__btn" data-modal-open="lpm-centers" aria-haspopup="dialog">대상 센터/캠프 자세히 보기<img class="s02__btn-icon" src="assets/s02-benefit/ic_chevron_right.svg" alt="" width="24" height="24" loading="lazy" aria-hidden="true"></button>
                 </div>
                 <!-- 쿠폰 절취선: 양쪽 반원 홈 + 점선 (PC · 모바일 폭이 달라 따로 둠) -->
@@ -2428,7 +2450,7 @@
               <li class="s02__card s02__card--scholar">
                 <div class="s02__info">
                   <p class="s02__label">
-                    <span class="s02__chip">#혜택 2</span>
+                    <span class="s02__chip">혜택 2</span>
                     <span class="s02__cond">성적·내신·합격 대학 기준 충족 시</span>
                   </p>
                   <div class="s02__detail">
@@ -2446,14 +2468,14 @@
                     </ul>
                   </div>
                 </div>
-                <a class="s02__btn" href="https://www.itall.com/scholarship?tab=allkey" target="_blank" rel="noopener"><span class="sr-only">2028 잇올 장학 </span>자세히 보기<img class="s02__btn-icon" src="assets/s02-benefit/ic_arrow_up_right.svg" alt="" width="24" height="24" loading="lazy" aria-hidden="true"><span class="sr-only"> (새 창)</span></a>
+                <a class="s02__btn s02__btn--line" href="https://www.itall.com/scholarship?tab=allkey" target="_blank" rel="noopener"><span class="sr-only">2028 잇올 장학 </span>자세히 보기<img class="s02__btn-icon" src="assets/s02-benefit/ic_arrow_up_right.svg" alt="" width="24" height="24" loading="lazy" aria-hidden="true"><span class="sr-only"> (새 창)</span></a>
               </li>
 
               <!-- 혜택 3 · 잇올패스 -->
               <li class="s02__card s02__card--pass">
                 <div class="s02__info">
                   <p class="s02__label">
-                    <span class="s02__chip">#혜택 3</span>
+                    <span class="s02__chip">혜택 3</span>
                     <span class="s02__cond">3개월 이상 결제 시</span>
                   </p>
                   <div class="s02__detail">
@@ -2469,13 +2491,13 @@
                   </div>
                 </div>
                 <!-- 공용 모달(s00-modal)의 잇올패스 · 환급패스 탭을 연다 -->
-                <button type="button" class="s02__btn" data-modal-open="lpm-itallpass" data-modal-tab="refund"><span class="sr-only">잇올패스 </span>자세히 보기<img class="s02__btn-icon" src="assets/s02-benefit/ic_chevron_right.svg" alt="" width="24" height="24" loading="lazy" aria-hidden="true"></button>
+                <button type="button" class="s02__btn s02__btn--line" data-modal-open="lpm-itallpass" data-modal-tab="refund" aria-haspopup="dialog"><span class="sr-only">잇올패스 </span>자세히 보기<img class="s02__btn-icon" src="assets/s02-benefit/ic_chevron_right.svg" alt="" width="24" height="24" loading="lazy" aria-hidden="true"></button>
               </li>
             </ul>
-            <p class="s02__foot">* 최대 100% 지원: 매월 10만 원 결제 후, 환급 조건 충족 시 10만 원 환급 (30일 기준)</p>
+            <p class="s02__foot">* 최대 100% 지원: 매월 10만 원 결제 후, 환급 조건 충족 시 <br class="s02__br-mo">10만 원 환급 (30일 기준)</p>
           </div>
 
-          <!-- 유의사항: 처음에는 접혀 있고, 누르면 펼쳐진다 (펼침 시안 PC 6167:6592 · 모바일 6167:6624) -->
+          <!-- 유의사항: 처음에는 접혀 있고, 누르면 펼쳐진다 (펼침 시안 PC 6574:4518 · 모바일 6574:4553) -->
           <div class="s02__note">
             <button type="button" class="s02__note-toggle" id="s02-note-toggle" aria-expanded="false" aria-controls="s02-note-region">유의사항<span class="s02__note-arrow" aria-hidden="true"><img class="s02__note-arrow-down" src="assets/s02-benefit/ic_chevron_down.svg" alt="" width="16" height="16" loading="lazy"><img class="s02__note-arrow-up" src="assets/s02-benefit/ic_chevron_up.svg" alt="" width="16" height="16" loading="lazy"></span></button>
             <div class="s02__note-region" id="s02-note-region" role="region" aria-labelledby="s02-note-toggle">
@@ -2495,7 +2517,7 @@
           </div>
         </section>
 
-        <!-- ============ S3 · CHECK 체크리스트 (Figma PC 6167:5595 · MO 6138:163) ============ -->
+        <!-- ============ S3 · CHECK 체크리스트 (Figma 최종본 PC 6574:3305 · MO 6574:1782) ============ -->
         <!-- 체크 표시는 화면에 들어올 때 위에서부터 차례로 켜진다(한 번만). 스크립트가 없거나 움직임 줄이기 설정이면 처음부터 체크된 상태.
              문장 안의 br 은 모바일 시안의 줄바꿈 자리(PC 에서는 한 줄이라 꺼 둠) -->
         <section class="s03" aria-labelledby="s03-title">
@@ -2527,14 +2549,14 @@
           </ul>
         </section>
 
-        <!-- ============ 브릿지 띠 · 하나라도 해당된다면 (Figma PC 6167:5622 · MO 6138:190) ============ -->
+        <!-- ============ 브릿지 띠 · 하나라도 해당된다면 (Figma 최종본 PC 6574:3332 · MO 6574:1809) ============ -->
         <section class="s03b" aria-labelledby="s03b-title">
           <!-- PC 는 한 줄, 모바일은 두 줄(쉼표 뒤에서 나뉨) -->
           <h2 class="s03b__title" id="s03b-title"><span class="s03b__line">하나라도 해당된다면,</span> <span class="s03b__line s03b__line--point">혼자 고민하지 마세요!</span></h2>
           <p class="s03b__desc">변화마다 준비된 답, 지금 잇올에서 시작하세요</p>
         </section>
 
-        <!-- S4 · READY — 타임라인 (Figma PC 6248:6943 · MO 6248:7039)
+        <!-- S4 · READY — 타임라인 (Figma 최종본 PC 6574:3335 · MO 6574:1812)
              CHANGE(위) → 선과 점 → READY 카드(아래). "자세히 보기"는 같은 페이지의 READY 01·02·03 섹션으로 이동한다 -->
         <section class="s04" aria-labelledby="s04-title">
           <div class="s04__head">
@@ -2555,7 +2577,7 @@
                     <p class="s04__ready-label">READY 01</p>
                     <h3 class="s04__ready-title">관리</h3>
                   </div>
-                  <p class="s04__ready-desc">학습 공백부터<br class="s04__br-pc"> 몰입 관리까지,<br class="s04__br-pc"> <strong>세 명의 담임과 함께</strong></p>
+                  <p class="s04__ready-desc">학습 공백부터<br class="s04__br-pc"> 몰입 관리까지,<br> <strong>세 명의 담임과 함께</strong></p>
                 </div>
                 <a class="s04__more" href="#s05-title">자세히 보기<span class="sr-only"> (READY 01 관리)</span><img class="s04__more-icon" src="assets/s04-change/ic_chevron_right.svg" alt="" aria-hidden="true" width="24" height="24" loading="lazy"></a>
               </div>
@@ -2573,7 +2595,7 @@
                     <p class="s04__ready-label">READY 02</p>
                     <h3 class="s04__ready-title">학습 지원</h3>
                   </div>
-                  <p class="s04__ready-desc">필요한 <strong>강의</strong>와<br class="s04__br-pc"> <strong>실전 콘텐츠</strong>로,<br class="s04__br-pc"> 내 페이스대로<br class="s04__br-mo"> 충분하게</p>
+                  <p class="s04__ready-desc">필요한 <strong>강의</strong>와<br class="s04__br-pc"> <strong>실전 콘텐츠</strong>로,<br> 내 페이스대로 충분하게</p>
                 </div>
                 <a class="s04__more" href="#s06-title">자세히 보기<span class="sr-only"> (READY 02 학습 지원)</span><img class="s04__more-icon" src="assets/s04-change/ic_chevron_right.svg" alt="" aria-hidden="true" width="24" height="24" loading="lazy"></a>
               </div>
@@ -2599,7 +2621,7 @@
           </ol>
         </section>
 
-        <!-- S5 · READY 01 · 3중 담임제 — 1 : 3 + 관계도 + 담임 카드 3종 (Figma PC 6167:5665 · MO 6155:7931)
+        <!-- S5 · READY 01 · 3중 담임제 — 1 : 3 + 관계도 + 담임 카드 3종 (Figma 최종본 PC 6574:3379 · MO 6574:1866)
              관계도의 선·동그라미는 SVG, 글자는 모두 실제 텍스트 -->
         <section class="s05" aria-labelledby="s05-title">
           <div class="s05__head">
@@ -2666,12 +2688,12 @@
           </div>
         </section>
 
-        <!-- ===== S6 · READY 02 학습 지원 (Figma PC 6167:5708 · 모바일 6155:7976) ===== -->
+        <!-- ===== S6 · READY 02 학습 지원 (Figma 최종본 PC 6574:3422 · 모바일 6574:1911 · 개발 노트 6574:4936) ===== -->
         <section class="s06" aria-labelledby="s06-title">
           <header class="s06__head">
             <p class="s06__kicker">READY 02 · 학습 지원</p>
             <h2 class="s06__title" id="s06-title">달라진 수능에도,<br>내 페이스대로 공부할 수 있도록</h2>
-            <p class="s06__lead">필요한 강의부터 실전 콘텐츠, 질문 해결까지. 나에게<br class="s06__br-mo"> 맞는 학습을 잇올이 지원합니다.</p>
+            <p class="s06__lead">필요한 강의부터 실전 콘텐츠, 질문 해결까지.<br class="s06__br-mo"> 나에게 맞는 학습을 잇올이 지원합니다.</p>
           </header>
 
           <!-- 학습 지원 흐름: LEARN → PRACTICE → ADAPT → Q&A. 왼쪽 번호·세로선은 장식(순서는 ol 이 알려 줌) -->
@@ -2679,11 +2701,11 @@
             <li class="s06__step">
               <div class="s06__rail" aria-hidden="true"><span class="s06__no">01</span></div>
               <div class="s06__card">
+                <div class="s06__name-row">
+                  <h3 class="s06__name">인강패스</h3>
+                  <p class="s06__tag">LEARN</p>
+                </div>
                 <div class="s06__text">
-                  <div class="s06__name-row">
-                    <h3 class="s06__name">인강패스</h3>
-                    <p class="s06__tag">LEARN</p>
-                  </div>
                   <p class="s06__desc">필요한 강의는 직접 선택하고,<br class="s06__br-mo"> 인강비 부담은 가볍게</p>
                   <p class="s06__note">인강 환급 또는 무료 제공</p>
                 </div>
@@ -2698,13 +2720,13 @@
             <li class="s06__step">
               <div class="s06__rail" aria-hidden="true"><span class="s06__no">02</span></div>
               <div class="s06__card">
+                <div class="s06__name-row">
+                  <h3 class="s06__name">실전 콘텐츠</h3>
+                  <p class="s06__tag">PRACTICE</p>
+                </div>
                 <div class="s06__text">
-                  <div class="s06__name-row">
-                    <h3 class="s06__name">실전 콘텐츠</h3>
-                    <p class="s06__tag">PRACTICE</p>
-                  </div>
                   <p class="s06__desc">부족한 부분은 채우고,<br class="s06__br-mo"> 실전 감각은 탄탄하게</p>
-                  <p class="s06__note">더프·서프 등 잇올 공식 모의고사부터 각종<br class="s06__br-mo"> N제까지,<br class="s06__br-pc"> 잇올 팔레트에서 한 번에</p>
+                  <p class="s06__note">더프·서프 등 잇올 공식 모의고사부터<br class="s06__br-mo"> 각종 N제까지,<br class="s06__br-pc"> 잇올 팔레트에서 한 번에</p>
                 </div>
                 <!-- 콘텐츠 하이라이트 랜딩으로 이동 -->
                 <a class="s06__more" href="https://www.itall.com/contents/672c65f37e5563cd327729df" target="_blank" rel="noopener">
@@ -2717,11 +2739,11 @@
             <li class="s06__step">
               <div class="s06__rail" aria-hidden="true"><span class="s06__no">03</span></div>
               <div class="s06__card">
+                <div class="s06__name-row">
+                  <h3 class="s06__name">실전바이오리듬</h3>
+                  <p class="s06__tag">ADAPT</p>
+                </div>
                 <div class="s06__text">
-                  <div class="s06__name-row">
-                    <h3 class="s06__name">실전바이오리듬</h3>
-                    <p class="s06__tag">ADAPT</p>
-                  </div>
                   <p class="s06__desc">혼자 공부해도,<br class="s06__br-mo"> 수능 당일의 리듬까지 익숙하게</p>
                   <p class="s06__note">실제 수능 흐름에 맞춘 하루 훈련</p>
                 </div>
@@ -2736,17 +2758,17 @@
             <li class="s06__step">
               <div class="s06__rail" aria-hidden="true"><span class="s06__no">04</span></div>
               <div class="s06__card">
-                <div class="s06__text">
-                  <div class="s06__name-row">
-                    <h3 class="s06__name">티처스</h3>
-                    <p class="s06__tag">Q&amp;A</p>
-                  </div>
-                  <p class="s06__desc">공부하다 막히는 순간,<br class="s06__br-mo"> 질문부터 상담까지 든든하게</p>
-                  <p class="s06__note">전문 교과 코치&amp;메디컬·SKY 출신 멘토의<br class="s06__br-mo"> 질의응답 및 학습 상담 지원</p>
+                <div class="s06__name-row">
+                  <h3 class="s06__name">티처스리그</h3>
+                  <p class="s06__tag">Q&amp;A</p>
                 </div>
-                <!-- 티처스 랜딩으로 이동 -->
+                <div class="s06__text">
+                  <p class="s06__desc">막히는 문제는 바로 묻고,<br class="s06__br-mo"> 공부 방향까지 명쾌하게</p>
+                  <p class="s06__note">5단계 티어로 경쟁하는<br class="s06__br-mo"> 명문대 출신 티처의 학습 Q&amp;A</p>
+                </div>
+                <!-- 티처스 페이지로 이동(개발 노트: www.itall.com/program/teachers) -->
                 <a class="s06__more" href="https://www.itall.com/program/teachers" target="_blank" rel="noopener">
-                  <span class="sr-only">티처스 </span>자세히 보기
+                  <span class="sr-only">티처스리그 </span>자세히 보기
                   <img class="s06__more-icon" src="assets/s06-ready02/ic_arrow_up_right.svg" alt="" width="24" height="24" loading="lazy" aria-hidden="true">
                 <span class="sr-only"> (새 창)</span></a>
               </div>
@@ -2754,11 +2776,11 @@
           </ol>
         </section>
 
-        <!-- ===== S7 · READY 03 입시전략 (Figma PC 6167:5771 · 모바일 6138:339) ===== -->
+        <!-- ===== S7 · READY 03 입시전략 (Figma 최종본 PC 6574:3493 · 모바일 6574:1974) ===== -->
         <section class="s07" aria-labelledby="s07-title">
           <header class="s07__head">
             <p class="s07__kicker">READY 03 · 입시전략</p>
-            <h2 class="s07__title" id="s07-title">입시 데이터와 입시콘서트로<br>전형 변화부터<br class="s07__br--mo"> 지원 전략까지 짚어 드립니다</h2>
+            <h2 class="s07__title" id="s07-title">입시 데이터와 입시콘서트로<br>전형 변화부터 지원 전략까지<br class="s07__br--mo"> 짚어 드립니다</h2>
           </header>
 
           <div class="s07__body">
@@ -2770,12 +2792,12 @@
                 </div>
                 <div class="s07__text">
                   <h3 class="s07__name">빅데이터 입시 분석</h3>
-                  <p class="s07__desc">누적 100만 명<span class="s07__star">*</span>의 입시 데이터를<br class="s07__br s07__br--mo"> 바탕으로, 달라진 전형에서 나의<br class="s07__br s07__br--mo"> 지원 방향을 점검합니다.</p>
+                  <p class="s07__desc">누적 100만 명<span class="s07__star">*</span>의 입시 데이터를<br class="s07__br s07__br--mo"> 바탕으로, 달라진 전형에서<br class="s07__br"> 나의 지원 방향을 점검합니다.</p>
                 </div>
               </li>
               <li class="s07__card">
-                <div class="s07__photo" aria-hidden="true">
-                  <img src="assets/s07-ready03/photo_concert.webp" alt="" width="444" height="272" loading="lazy">
+                <div class="s07__photo s07__photo--concert" aria-hidden="true">
+                  <img src="assets/s07-ready03/photo_concert.webp" alt="" width="576" height="304" loading="lazy">
                 </div>
                 <div class="s07__text">
                   <h3 class="s07__name">입시콘서트</h3>
@@ -2795,6 +2817,7 @@
 
             <ul class="s07__notes">
               <li class="s07__note">* 100만 명: 2017년 1월 ~ 2025년 3월 누적 기준</li>
+              <li class="s07__note">※ 학습 및 입시 서비스는 합격전략 연구소 '잇올 랩'에서 제공됩니다.</li>
               <li class="s07__note">※ 시기에 따라 프로그램 내용은 상이할 수 있습니다.</li>
             </ul>
           </div>
@@ -2812,7 +2835,7 @@
           </div>
         </section>
 
-        <!-- ============ S8 · RESULT & REVIEW (시안 PC 6167:5797 · 모바일 6138:365) ============
+        <!-- ============ S8 · RESULT & REVIEW (최종본 1119: 시안 PC 6574:3523 · 모바일 6574:2004) ============
              입결 수치 2종(카운트업) → 기준 확인(접힘) → MVP 합격 인터뷰 영상 3종 → 합격 후기 9장 → 버튼 2개 -->
         <section class="s08" aria-labelledby="s08-title">
           <div class="s08__top">
@@ -2834,15 +2857,15 @@
                 </li>
               </ul>
 
-              <!-- 기준 확인: 기본 접힘 (펼친 상태 시안 PC 6187:7373 · 모바일 6187:7396) -->
+              <!-- 기준 확인: 기본 접힘 (펼친 상태 시안 PC 6574:4588 · 모바일 6574:4611) -->
               <div class="s08__basis">
                 <button class="s08__basis-btn" type="button" aria-expanded="false" aria-controls="s08-basis-panel">기준 확인<img class="s08__basis-ico" src="assets/s08-result/ic_chevron_down.svg" alt="" aria-hidden="true" width="16" height="16" loading="lazy"></button>
                 <div class="s08__basis-panel" id="s08-basis-panel" hidden>
                   <ul class="s08__basis-list">
-                    <li><span class="s08__only-pc">메디컬 명문대 31% 합격: 2026학년도 합격수(12,211)대비 메디컬 명문대 합격수(3,767) 비율(소수점 첫째자리 반올림)</span><span class="s08__only-mo">메디컬 명문대 31% 합격: 2026학년도<br>합격수(12,211)대비 메디컬 명문대 합격수(3,767)<br>비율(소수점 첫째자리 반올림)</span></li>
-                    <li>의대 정원 12% 잇올 출신: 2026학년도 의대 정원(3,123) 대비 잇올 의대 합격증 수(371) 비율(소수점 첫째자리 반올림)</li>
-                    <li>명문대 기준: 서울대, 연세대(서울), 고려대(서울), KAIST, POSTECH, 서강대, 성균관대, 한양대(서울), 이대, 각 과기원(KENTECH 포함), 각 사관학교, 각 교대, 경찰대</li>
-                    <li>최종 업데이트 : 2026년 4월 5일 기준</li>
+                    <li><span>메디컬 명문대 31% 합격: 2026학년도 <br class="s08__br-mo">합격수(12,211) 대비 메디컬 명문대 합격수(3,767) <br class="s08__br-mo">비율(소수점 첫째자리 <br class="s08__br-pc">반올림)</span></li>
+                    <li><span>의대 정원 12% 잇올 출신: 2026학년도 의대 정원(3,123) 대비 잇올 의대 합격증 수(371) 비율(소수점 <br class="s08__br-mo">첫째자리 <br class="s08__br-pc">반올림)</span></li>
+                    <li><span>명문대 기준: 서울대, 연세대(서울), 고려대(서울), KAIST, POSTECH, 서강대, 성균관대, 한양대(서울), 이대, 각 <br class="s08__br-mo">과기원(KENTECH 포함), 각 사관학교, 각 교대, 경찰대</span></li>
+                    <li><span>최종 업데이트 : 2026년 4월 5일 기준</span></li>
                   </ul>
                 </div>
               </div>
@@ -2857,7 +2880,7 @@
               <ul class="s08__mvp-list" data-s08-track aria-labelledby="s08-mvp-title">
                 <li class="s08__mvp-item">
                   <button class="s08__video" type="button" data-modal-open="lpm-video" data-video="0EMlDIqMawY" data-modal-title="2026 잇올 MVP 합격 인터뷰">
-                    <img class="s08__video-thumb" src="assets/s08-result/mvp_grand.webp" alt="잇올 3개월 등원 후 울산대 의예과 합격" width="640" height="360" loading="lazy">
+                    <img class="s08__video-thumb" src="assets/s08-result/mvp_grand.webp" alt="잇올 3개월 등원 후 울산대 의예과 합격" width="640" height="367" loading="lazy">
                     <span class="s08__video-info">
                       <span class="s08__video-badge s08__video-badge--grand">대상</span>
                       <span class="s08__video-more">영상 보기<img src="assets/s08-result/ic_chevron_right.svg" alt="" aria-hidden="true" width="20" height="20" loading="lazy"></span>
@@ -2894,7 +2917,7 @@
           </div>
 
           <!-- 합격 후기 9장: 끝없이 이어지는 캐러셀. 화살표 · 좌우 방향키 · 끌기(스와이프)로 넘긴다
-               카드 문구는 시안의 후기 카드 9종(6064:1918 = 본문 트랙 6193:4200)과 카드 단위로 같다 -->
+               카드 문구는 시안의 후기 카드 9종(6574:4952 = 본문 트랙 6574:3584)과 카드 단위로 같다(1119 최종본: 주요 합격 대학이 등급 아래로 올라감) -->
           <div class="s08__review" data-s08-carousel="review">
             <div class="s08__review-head">
               <h3 class="s08__sub" id="s08-review-title">잇올을 선택한 <br class="s08__br-mo">합격생들의 이야기</h3>
@@ -2910,177 +2933,177 @@
             <div class="s08__view" data-s08-view tabindex="0" role="group" aria-roledescription="carousel" aria-labelledby="s08-review-title">
               <ul class="s08__track" data-s08-track>
                 <li class="s08__card">
-                  <p class="s08__card-tags">#자기주도학습  #시간관리</p>
-                  <h4 class="s08__card-title">잇올 시간표로 충분히 채운<br>몰입공부 시간</h4>
-                  <img class="s08__card-quote" src="assets/s08-result/ic_quote.svg" alt="" aria-hidden="true" width="30" height="24" loading="lazy">
-                  <div class="s08__grade">
-                    <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">정시·재수</p></div>
-                    <dl class="s08__grade-list">
-                      <div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>2</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>1</dd></div>
-                    </dl>
+                  <div class="s08__card-top">
+                    <p class="s08__card-tags">#자기주도학습  #시간관리</p>
+                    <h4 class="s08__card-title">잇올 시간표로 충분히 채운<br>몰입공부 시간</h4>
                   </div>
-                  <div class="s08__card-body s08__card-body--line">
-                    <p>혼자 공부하는 게 편해서 자습시간을 충분히 확보할 수 있는 잇올을 선택했습니다.</p>
+                  <img class="s08__card-quote" src="assets/s08-result/ic_quote.svg" alt="" aria-hidden="true" width="30" height="24" loading="lazy">
+                  <div class="s08__card-info">
+                    <div class="s08__grade">
+                      <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">정시·재수</p></div>
+                      <dl class="s08__grade-list"><div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>2</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>1</dd></div></dl>
+                    </div>
+                    <div class="s08__pass"><p class="s08__pass-label">주요 합격 대학</p><p class="s08__pass-name">서울대 의예과·가톨릭대 의예과·<br>단국대(천안) 의예과</p></div>
+                  </div>
+                  <div class="s08__card-body">
+                    <p>혼자 공부하는 게 편해서 자습시간을 충분히<br>확보할 수 있는 잇올을 선택했습니다.</p>
                     <p>엄격한 시간 관리와 정해진 시간표 덕분에 매일<br>꾸준히 공부할 수 있었고, 정기적인 모의고사와<br>잇올 팔레트의 다양한 학습 콘텐츠들도 도움이<br>됐습니다.</p>
                   </div>
-                  <div class="s08__who">
-                    <p class="s08__who-meta"><span>대전 유성센터</span><span>박00</span></p>
-                    <p class="s08__who-pass">[주요 합격 대학]<br>서울대 의예과 · 가톨릭대 의예과 ·<br>단국대(천안) 의예과</p>
-                  </div>
+                  <div class="s08__who"><p class="s08__who-meta"><span>대전 유성센터</span><span>박00</span></p></div>
                 </li>
                 <li class="s08__card">
-                  <p class="s08__card-tags">#7시간수면  #체계적관리</p>
-                  <h4 class="s08__card-title">규칙적인 생활에서<br>시작한 흔들림 없는 집중</h4>
+                  <div class="s08__card-top">
+                    <p class="s08__card-tags">#7시간수면  #체계적관리</p>
+                    <h4 class="s08__card-title">규칙적인 생활에서<br>시작한 흔들림 없는 집중</h4>
+                  </div>
                   <img class="s08__card-quote" src="assets/s08-result/ic_quote.svg" alt="" aria-hidden="true" width="30" height="24" loading="lazy">
-                  <div class="s08__grade">
-                    <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">정시·재수</p></div>
-                    <dl class="s08__grade-list">
-                      <div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>1</dd></div>
-                    </dl>
+                  <div class="s08__card-info">
+                    <div class="s08__grade">
+                      <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">정시·재수</p></div>
+                      <dl class="s08__grade-list"><div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>1</dd></div></dl>
+                    </div>
+                    <div class="s08__pass"><p class="s08__pass-label">주요 합격 대학</p><p class="s08__pass-name">고려대 의과대학·중앙대 의학부·<br>순천향대 의예과</p></div>
                   </div>
                   <div class="s08__card-body">
                     <p>체계적인 관리와 공부에 집중하기 좋은 학습 환경 때문에 잇올을 선택했습니다.</p>
-                    <p>철저한 출결 관리로 생활 리듬을 유지할 수 있었고, 충분한 수면을 확보하며 부족한 부분을 파악하고 보완하는 데 집중했습니다.</p>
+                    <p>철저한 출결 관리로 생활 리듬을 유지하고  충분한 수면을 확보하면서, 부족한 부분을 찾아<br>보완하는 데 집중했습니다.</p>
                   </div>
-                  <div class="s08__who">
-                    <p class="s08__who-meta"><span>강남센터</span><span>유00</span></p>
-                    <p class="s08__who-pass">[주요 합격 대학]<br>고려대 의과대학 · 중앙대 의학부 ·<br>순천향대 의예과</p>
-                  </div>
+                  <div class="s08__who"><p class="s08__who-meta"><span>강남센터</span><span>유00</span></p></div>
                 </li>
                 <li class="s08__card">
-                  <p class="s08__card-tags">#자기주도학습  #휴식관리</p>
-                  <h4 class="s08__card-title">공부할 때는 집중하고,<br>쉴 때는 충분히 쉬는 생활</h4>
+                  <div class="s08__card-top">
+                    <p class="s08__card-tags">#자기주도학습  #휴식관리</p>
+                    <h4 class="s08__card-title">공부할 때는 집중하고,<br>쉴 때는 충분히 쉬는 생활</h4>
+                  </div>
                   <img class="s08__card-quote" src="assets/s08-result/ic_quote.svg" alt="" aria-hidden="true" width="30" height="24" loading="lazy">
-                  <div class="s08__grade">
-                    <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">정시·재수</p></div>
-                    <dl class="s08__grade-list">
-                      <div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>2</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>1</dd></div>
-                    </dl>
+                  <div class="s08__card-info">
+                    <div class="s08__grade">
+                      <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">정시·재수</p></div>
+                      <dl class="s08__grade-list"><div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>2</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>1</dd></div></dl>
+                    </div>
+                    <div class="s08__pass"><p class="s08__pass-label">주요 합격 대학</p><p class="s08__pass-name">가톨릭대 의예과·중앙대 의학부</p></div>
                   </div>
                   <div class="s08__card-body">
                     <p>많은 수업을 듣기보다 자기주도학습 시간을<br>충분히 확보하는 것이 중요하다고 생각해 잇올을<br>선택했습니다.</p>
                     <p>집중하기 좋은 면학 분위기 덕분에 공부에 몰입할 수 있었고, 주말에는 충분한 휴식으로 재충전하며 꾸준히 공부했습니다.</p>
                     <p>잘 갖춰진 장학제도도 재수 생활의 경제적 부담을 덜어주는 데 큰 도움이 됐습니다.</p>
                   </div>
-                  <div class="s08__who">
-                    <p class="s08__who-meta"><span>구리 수택센터</span><span>김00</span></p>
-                    <p class="s08__who-pass">[주요 합격 대학]<br>가톨릭대 의예과 · 중앙대 의학부</p>
-                  </div>
+                  <div class="s08__who"><p class="s08__who-meta"><span>구리 수택센터</span><span>김00</span></p></div>
                 </li>
                 <li class="s08__card">
-                  <p class="s08__card-tags">#꾸준함  #시간관리</p>
-                  <h4 class="s08__card-title">지각 없이 꾸준히 지킨<br>나만의 공부 약속</h4>
+                  <div class="s08__card-top">
+                    <p class="s08__card-tags">#꾸준함  #시간관리</p>
+                    <h4 class="s08__card-title">지각 없이 꾸준히 지킨<br>나만의 공부 약속</h4>
+                  </div>
                   <img class="s08__card-quote" src="assets/s08-result/ic_quote.svg" alt="" aria-hidden="true" width="30" height="24" loading="lazy">
-                  <div class="s08__grade">
-                    <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">정시·재수</p></div>
-                    <dl class="s08__grade-list">
-                      <div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>2</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>1</dd></div>
-                    </dl>
+                  <div class="s08__card-info">
+                    <div class="s08__grade">
+                      <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">정시·재수</p></div>
+                      <dl class="s08__grade-list"><div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>2</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>1</dd></div></dl>
+                    </div>
+                    <div class="s08__pass"><p class="s08__pass-label">주요 합격 대학</p><p class="s08__pass-name">가톨릭대 의예과·단국대(천안) 의예과</p></div>
                   </div>
                   <div class="s08__card-body">
-                    <p>재수를 시작하며 지각하거나 조퇴하지 말자는 나만의 작은 목표를 세웠습니다.</p>
+                    <p>재수를 시작하며 지각하거나 조퇴하지 말자는<br>나만의 작은 목표를 세웠습니다.</p>
                     <p>규칙적으로 공부할 수 있는 잇올 환경이 좋았고,<br>주말에도 늦게까지 공부할 수 있었습니다.</p>
                     <p>잇올 공식 모의고사 실시와 이후 전국 잇올 학생<br>대상 등수(빌보드)도 동기부여가 됐습니다.</p>
                   </div>
-                  <div class="s08__who">
-                    <p class="s08__who-meta"><span>대치센터</span><span>홍00</span></p>
-                    <p class="s08__who-pass">[주요 합격 대학]<br>가톨릭대 의예과 · 단국대(천안) 의예과</p>
-                  </div>
+                  <div class="s08__who"><p class="s08__who-meta"><span>대치센터</span><span>홍00</span></p></div>
                 </li>
                 <li class="s08__card">
-                  <p class="s08__card-tags">#실전바이오리듬  #모의고사</p>
-                  <h4 class="s08__card-title">내 공부는 내 방식대로,<br>실전 준비는 체계적으로</h4>
+                  <div class="s08__card-top">
+                    <p class="s08__card-tags">#실전바이오리듬  #모의고사</p>
+                    <h4 class="s08__card-title">내 공부는 내 방식대로,<br>실전 준비는 체계적으로</h4>
+                  </div>
                   <img class="s08__card-quote" src="assets/s08-result/ic_quote.svg" alt="" aria-hidden="true" width="30" height="24" loading="lazy">
-                  <div class="s08__grade">
-                    <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">정시·N수</p></div>
-                    <dl class="s08__grade-list">
-                      <div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>1</dd></div>
-                    </dl>
+                  <div class="s08__card-info">
+                    <div class="s08__grade">
+                      <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">정시·N수</p></div>
+                      <dl class="s08__grade-list"><div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>1</dd></div></dl>
+                    </div>
+                    <div class="s08__pass"><p class="s08__pass-label">주요 합격 대학</p><p class="s08__pass-name">부산대 의예과·인제대 의예과·<br>가톨릭관동대 의학과·KAIST</p></div>
                   </div>
                   <div class="s08__card-body">
                     <p>제 계획대로 자율적으로 공부하면서도 모의고사로 부족한 부분을 점검할 수 있어 좋았습니다.</p>
-                    <p>수능 시간표에 맞춘 실전바이오리듬, 실제<br>학교에서 모의고사를 볼 수 있는 학교프로젝트가 실전 감각을 기르는 데 도움이 됐습니다.</p>
+                    <p>수능 시간표에 맞춘 실전바이오리듬,<br>실제 학교에서 모의고사를 볼 수 있는<br>학교프로젝트가 실전 감각을 기르는 데 도움이<br>됐습니다.</p>
                   </div>
-                  <div class="s08__who">
-                    <p class="s08__who-meta"><span>부산 경성대센터</span><span>정00</span></p>
-                    <p class="s08__who-pass">[주요 합격 대학]<br>부산대 의예과 · 인제대 의예과 · 가톨릭관동대 의학과 · KAIST</p>
-                  </div>
+                  <div class="s08__who"><p class="s08__who-meta"><span>부산 경성대센터</span><span>정00</span></p></div>
                 </li>
                 <li class="s08__card">
-                  <p class="s08__card-tags">#생활관리  #질의응답</p>
-                  <h4 class="s08__card-title">흐트러질 때마다 다시 잡아준<br>공부의 리듬</h4>
+                  <div class="s08__card-top">
+                    <p class="s08__card-tags">#생활관리  #질의응답</p>
+                    <h4 class="s08__card-title">흐트러질 때마다 다시 잡아준<br>공부의 리듬</h4>
+                  </div>
                   <img class="s08__card-quote" src="assets/s08-result/ic_quote.svg" alt="" aria-hidden="true" width="30" height="24" loading="lazy">
-                  <div class="s08__grade">
-                    <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">정시·N수</p></div>
-                    <dl class="s08__grade-list">
-                      <div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>1</dd></div>
-                    </dl>
+                  <div class="s08__card-info">
+                    <div class="s08__grade">
+                      <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">정시·N수</p></div>
+                      <dl class="s08__grade-list"><div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>1</dd></div></dl>
+                    </div>
+                    <div class="s08__pass"><p class="s08__pass-label">주요 합격 대학</p><p class="s08__pass-name">전남대 의학과·순천향대 의예과</p></div>
                   </div>
                   <div class="s08__card-body">
                     <p>군 전역 후 다시 공부를 시작하면서 약해진 의지가 걱정돼 잇올을 선택했습니다.</p>
                     <p>휴대폰·졸음·소음 관리가 공부에 집중하는 데<br>도움이 됐고, 선생님과 멘토의 질의응답을 통해<br>다양한 풀이 관점을 배울 수 있었습니다.</p>
                   </div>
-                  <div class="s08__who">
-                    <p class="s08__who-meta"><span>전주 중화산센터</span><span>이00</span></p>
-                    <p class="s08__who-pass">[주요 합격 대학]<br>전남대 의학과 · 순천향대 의예과</p>
-                  </div>
+                  <div class="s08__who"><p class="s08__who-meta"><span>전주 중화산센터</span><span>이00</span></p></div>
                 </li>
                 <li class="s08__card">
-                  <p class="s08__card-tags">#생활관리  #입시상담</p>
-                  <h4 class="s08__card-title">생활부터 학습, 입시까지<br>든든했던 관리</h4>
+                  <div class="s08__card-top">
+                    <p class="s08__card-tags">#생활관리  #입시상담</p>
+                    <h4 class="s08__card-title">생활부터 학습, 입시까지<br>든든했던 관리</h4>
+                  </div>
                   <img class="s08__card-quote" src="assets/s08-result/ic_quote.svg" alt="" aria-hidden="true" width="30" height="24" loading="lazy">
-                  <div class="s08__grade">
-                    <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">수시·N수</p></div>
-                    <dl class="s08__grade-list">
-                      <div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>2</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>2</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>2</dd></div>
-                    </dl>
+                  <div class="s08__card-info">
+                    <div class="s08__grade">
+                      <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">수시·N수</p></div>
+                      <dl class="s08__grade-list"><div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>2</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>2</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>2</dd></div></dl>
+                    </div>
+                    <div class="s08__pass"><p class="s08__pass-label">주요 합격 대학</p><p class="s08__pass-name">동국대(WISE) 의예과·경북대 치의예과·<br>대구한의대 한의예과</p></div>
                   </div>
                   <div class="s08__card-body">
                     <p>규칙적인 생활 관리를 받으면서도 원하는 공부를 주체적으로 할 수 있어 잇올을 선택했습니다.</p>
                     <p>생활 관리 선생님들의 점검과 교과 선생님들의<br>학습 피드백, 입시 담당 선생님의 원서 지원이<br>도움이 됐습니다.</p>
                   </div>
-                  <div class="s08__who">
-                    <p class="s08__who-meta"><span>광주 봉선센터</span><span>송00</span></p>
-                    <p class="s08__who-pass">[주요 합격 대학]<br>동국대(WISE) 의예과 · 경북대 치의예과 ·<br>대구한의대 한의예과</p>
-                  </div>
+                  <div class="s08__who"><p class="s08__who-meta"><span>광주 봉선센터</span><span>송00</span></p></div>
                 </li>
                 <li class="s08__card">
-                  <p class="s08__card-tags">#긴자습시간  #실전모의고사</p>
-                  <h4 class="s08__card-title">긴 자습시간에 쌓아 올린<br>나만의 실전 경쟁력</h4>
+                  <div class="s08__card-top">
+                    <p class="s08__card-tags">#긴자습시간  #실전모의고사</p>
+                    <h4 class="s08__card-title">긴 자습시간에 쌓아 올린<br>나만의 실전 경쟁력</h4>
+                  </div>
                   <img class="s08__card-quote" src="assets/s08-result/ic_quote.svg" alt="" aria-hidden="true" width="30" height="24" loading="lazy">
-                  <div class="s08__grade">
-                    <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">정시·N수</p></div>
-                    <dl class="s08__grade-list">
-                      <div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>2</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>2</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>2</dd></div>
-                    </dl>
+                  <div class="s08__card-info">
+                    <div class="s08__grade">
+                      <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">정시·N수</p></div>
+                      <dl class="s08__grade-list"><div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>2</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>2</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>2</dd></div></dl>
+                    </div>
+                    <div class="s08__pass"><p class="s08__pass-label">주요 합격 대학</p><p class="s08__pass-name">고신대 의예과·서울대 수의예과·<br>건국대 수의예과</p></div>
                   </div>
                   <div class="s08__card-body">
                     <p>여러 학원을 경험한 뒤 잇올의 가장 큰 장점은<br>충분한 공부량을 확보할 수 있다는 점이라고<br>느꼈습니다.</p>
                     <p>인강과 다양한 콘텐츠로 학습하면서 생활 담임<br>선생님들의 세심한 졸음 관리 덕분에 집중할 수<br>있었습니다.</p>
                   </div>
-                  <div class="s08__who">
-                    <p class="s08__who-meta"><span>마산센터</span><span>김00</span></p>
-                    <p class="s08__who-pass">[주요 합격 대학]<br>고신대 의예과 · 서울대 수의예과 ·<br>건국대 수의예과</p>
-                  </div>
+                  <div class="s08__who"><p class="s08__who-meta"><span>마산센터</span><span>김00</span></p></div>
                 </li>
                 <li class="s08__card">
-                  <p class="s08__card-tags">#학습환경  #하루공부량</p>
-                  <h4 class="s08__card-title">방해 요소를 줄이고<br>공부량을 늘린 하루</h4>
+                  <div class="s08__card-top">
+                    <p class="s08__card-tags">#학습환경  #하루공부량</p>
+                    <h4 class="s08__card-title">방해 요소를 줄이고<br>공부량을 늘린 하루</h4>
+                  </div>
                   <img class="s08__card-quote" src="assets/s08-result/ic_quote.svg" alt="" aria-hidden="true" width="30" height="24" loading="lazy">
-                  <div class="s08__grade">
-                    <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">정시·재수</p></div>
-                    <dl class="s08__grade-list">
-                      <div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>2</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>1</dd></div>
-                    </dl>
+                  <div class="s08__card-info">
+                    <div class="s08__grade">
+                      <div class="s08__grade-head"><p class="s08__grade-label">2026 수능 등급</p><p class="s08__grade-badge">정시·재수</p></div>
+                      <dl class="s08__grade-list"><div class="s08__grade-cell"><dt>국어</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>수학</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>영어</dt><dd>2</dd></div><div class="s08__grade-cell"><dt>탐구1</dt><dd>1</dd></div><div class="s08__grade-cell"><dt>탐구2</dt><dd>1</dd></div></dl>
+                    </div>
+                    <div class="s08__pass"><p class="s08__pass-label">주요 합격 대학</p><p class="s08__pass-name">서울대 항공우주공학과·연세대 전기전자공학부</p></div>
                   </div>
                   <div class="s08__card-body">
                     <p>아침부터 저녁까지 이어지는 공부시간이 공부량을 늘리는 데 도움이 됐습니다.</p>
                     <p>점심과 저녁에는 산책하며 리듬을 유지했고,<br>소음 등 집중을 방해하는 요소를 말씀드리면<br>관리자분들이 해결 방법을 찾아주셔서 좋았습니다.</p>
                   </div>
-                  <div class="s08__who">
-                    <p class="s08__who-meta"><span>성북센터</span><span>양00</span></p>
-                    <p class="s08__who-pass">[주요 합격 대학]<br>서울대 항공우주공학과 ·<br>연세대 전기전자공학부</p>
-                  </div>
+                  <div class="s08__who"><p class="s08__who-meta"><span>성북센터</span><span>양00</span></p></div>
                 </li>
               </ul>
             </div>
@@ -3093,11 +3116,11 @@
           </div>
         </section>
 
-        <!-- ============ S9 · SPACE 시설 + SYSTEM 몰입공부 시스템 (Figma PC 6167:6168 · MO 6138:736) ============ -->
+        <!-- ============ S9 · SPACE 시설 + SYSTEM 몰입공부 시스템 (Figma 최종본 PC 6574:3960 · MO 6574:2443) ============ -->
         <!-- 한 섹션 안에 두 덩어리: ① SPACE 시설 사진 캐러셀 + 공간 유형 3종 + 시설 영상 버튼  ② SYSTEM 아코디언 4종
-             · 캐러셀: 사진 9장이 끝없이 이어진다. 화살표 버튼 · 좌우 밀기(스와이프/드래그) · 키보드 ← → 로 한 장씩 이동
+             · 캐러셀: 사진 9장이 끝없이 이어지고 3초마다 자동으로 넘어간다. 화살표 버튼 · 좌우 밀기(스와이프/드래그) · 키보드 ← → 로 한 장씩 이동
              · 시설 영상 버튼은 공용 영상 모달(s00-modal)을 연다
-             · 아코디언: 처음엔 모두 접힘, 하나를 펼치면 나머지는 접힌다. 펼친 시안 PC 6198:2776 · 6203:2812 · 6203:2888 · 6203:2963 / MO 6200:2798 · 6203:3028 · 6203:3104 · 6203:3179
+             · 아코디언: 처음엔 모두 접힘, 하나를 펼치면 나머지는 접힌다. 펼친 시안 PC 6574:5326 · 5458 · 5518 · 5577 / MO 6574:5392 · 5629 · 5689 · 5748
              · 문장 안의 br 은 시안의 줄바꿈 자리: s09__br-pc = PC 에서만, s09__br-mo = 모바일에서만 -->
         <section class="s09" aria-labelledby="s09-title">
 
@@ -3118,7 +3141,7 @@
             </div>
 
             <div class="s09__body">
-              <!-- 시설 사진 캐러셀 (전체 카드 9장: Figma 6154:5911) — 섹션 양쪽 끝까지 보인다 -->
+              <!-- 시설 사진 캐러셀 (전체 카드 9장: Figma 6574:2701) — 섹션 양쪽 끝까지 보인다 -->
               <div class="s09__rail" id="s09-rail" role="group" aria-roledescription="carousel" aria-label="시설 사진 (좌우 화살표 키로 넘기기)" tabindex="0">
                 <ul class="s09__track">
                   <li class="s09__photo"><img src="assets/s09-space/space_1.webp" alt="잇올 스파르타 교실형 학습 공간" width="300" height="185" loading="lazy" draggable="false"><span class="s09__label s09__label--sparta">스파르타<span class="s09__label-bar">ㅣ</span>교실형</span></li>
@@ -3133,25 +3156,35 @@
                 </ul>
               </div>
 
-              <!-- 공간 유형 3종 -->
+              <!-- 공간 유형 3종 — 태그는 "#" 과 글자를 나눠 두 줄째가 글자 시작선에 맞게(시안 그대로).
+                   PC = 태그를 세로로 쌓음 · 모바일 = 01·02 는 한 줄에 나란히, 03 은 세로로 -->
               <ul class="s09__types">
                 <li class="s09__type">
                   <h3 class="s09__type-name"><span class="s09__type-no">01</span>교실형</h3>
-                  <p class="s09__type-tags">#시험장과 동일한 배치<br class="s09__br-pc"><span class="s09__sp-mo">  </span>#최대 1.2M 초대형 책상</p>
+                  <ul class="s09__tags">
+                    <li class="s09__tag"><span class="s09__tag-hash">#</span><span>시험장과 동일한 배치</span></li>
+                    <li class="s09__tag"><span class="s09__tag-hash">#</span><span>최대 1.2M 초대형 책상</span></li>
+                  </ul>
                 </li>
                 <li class="s09__type">
                   <h3 class="s09__type-name"><span class="s09__type-no">02</span>독서실형</h3>
-                  <p class="s09__type-tags">#분리된 개인 공간<br class="s09__br-pc"><span class="s09__sp-mo">  </span>#시야 방해 요소 차단</p>
+                  <ul class="s09__tags">
+                    <li class="s09__tag"><span class="s09__tag-hash">#</span><span>분리된 개인 공간</span></li>
+                    <li class="s09__tag"><span class="s09__tag-hash">#</span><span>시야 방해 요소 차단</span></li>
+                  </ul>
                 </li>
                 <li class="s09__type">
                   <h3 class="s09__type-name"><span class="s09__type-no">03</span>공용공간</h3>
-                  <p class="s09__type-tags">#리프레시 휴식 공간<br>#커피머신·냉장고·프린터기·<br class="s09__br-pc">전자레인지 등 편의시설 완비</p>
+                  <ul class="s09__tags s09__tags--stack">
+                    <li class="s09__tag"><span class="s09__tag-hash">#</span><span>리프레시 휴식 공간</span></li>
+                    <li class="s09__tag"><span class="s09__tag-hash">#</span><span>커피머신·냉장고·프린터기·<br class="s09__br-pc">전자레인지 등 편의시설 완비</span></li>
+                  </ul>
                 </li>
               </ul>
 
-              <!-- 시설 영상: 공용 영상 모달을 연다 -->
+              <!-- 시설 영상: 공용 영상 모달을 연다 (버튼 글자·모달 제목 모두 최종본 시안대로 "시설 영상 보기") -->
               <div class="s09__video-wrap">
-                <button type="button" class="s09__video" data-modal-open="lpm-video" data-video="LfDoBYVi0k8" data-modal-title="시설 영상으로 둘러보기" aria-haspopup="dialog">시설 영상으로 둘러보기<img class="s09__video-icon" src="assets/s09-space/ic_chevron_right.svg" alt="" width="24" height="24" loading="lazy" aria-hidden="true"></button>
+                <button type="button" class="s09__video" data-modal-open="lpm-video" data-video="LfDoBYVi0k8" data-modal-title="시설 영상 보기" aria-haspopup="dialog">시설 영상 보기<img class="s09__video-icon" src="assets/s09-space/ic_chevron_right.svg" alt="" width="24" height="24" loading="lazy" aria-hidden="true"></button>
               </div>
             </div>
           </div>
@@ -3304,7 +3337,7 @@
           </div>
         </section>
 
-        <!-- ============ S10 · SERVICE 티처스 / 잇올 생활기록부 (Figma PC 6167:6280 · MO 6138:848) ============ -->
+        <!-- ============ S10 · SERVICE 티처스리그 / 잇올 생활기록부 (Figma 최종본 PC 6574:4090 · MO 6574:2573) ============ -->
         <section class="s10" aria-labelledby="s10-title">
           <div class="s10__head">
             <p class="s10__kicker">SERVICE</p>
@@ -3313,35 +3346,43 @@
           <ul class="s10__cards">
             <li class="s10__card">
               <div class="s10__card-head">
-                <h3 class="s10__name">티처스</h3>
-                <!-- 소개 문구: PC 는 쉼표 뒤에서 두 줄, 모바일은 한 줄 -->
-                <p class="s10__lead">공부가 막히는 순간, <br class="s10__pc-br">질문부터 상담까지 한 번에</p>
+                <h3 class="s10__name">티처스리그</h3>
+                <!-- 소개 문구: PC 는 두 줄, 모바일은 한 줄 -->
+                <p class="s10__lead">검증된 선생님이 답하는 <br class="s10__pc-br">리그형 학습 Q&amp;A 플랫폼</p>
               </div>
-              <ul class="s10__list">
-                <li class="s10__li"><img class="s10__dot" src="assets/s10-service/ic_dot.svg" width="4" height="20" alt="" aria-hidden="true" loading="lazy"><p class="s10__li-text">학습 질문, 온·오프라인으로 언제든 질문 및 빠른 해결</p></li>
-                <li class="s10__li"><img class="s10__dot" src="assets/s10-service/ic_dot.svg" width="4" height="20" alt="" aria-hidden="true" loading="lazy"><p class="s10__li-text">평점·후기 기반 검증된 선생님 직접 선택</p></li>
-                <li class="s10__li"><img class="s10__dot" src="assets/s10-service/ic_dot.svg" width="4" height="20" alt="" aria-hidden="true" loading="lazy"><p class="s10__li-text">명문대 멘토의 합격 노하우 전수</p></li>
-                <li class="s10__li"><img class="s10__dot" src="assets/s10-service/ic_dot.svg" width="4" height="20" alt="" aria-hidden="true" loading="lazy"><p class="s10__li-text">잇올 재원생이라면 누구나 무료</p></li>
-              </ul>
-              <a class="s10__more" href="https://www.itall.com/program/teachers" target="_blank" rel="noopener">자세히 보기<span class="sr-only"> — 티처스</span><img class="s10__more-icon" src="assets/s10-service/ic_arrow_up_right.svg" width="24" height="24" alt="" aria-hidden="true" loading="lazy"><span class="sr-only"> (새 창)</span></a>
+              <div class="s10__divider" aria-hidden="true"></div>
+              <div class="s10__body">
+                <ul class="s10__list">
+                  <li class="s10__li"><img class="s10__dot" src="assets/s10-service/ic_dot.svg" width="4" height="20" alt="" aria-hidden="true" loading="lazy"><p class="s10__li-text">모르는 문제, 궁금한 순간 <br>바로 묻고 해결하는 학습 Q&amp;A</p></li>
+                  <li class="s10__li"><img class="s10__dot" src="assets/s10-service/ic_dot.svg" width="4" height="20" alt="" aria-hidden="true" loading="lazy"><p class="s10__li-text">리뷰로 쌓이는 리그 등급, 고난도 문제는 <br>상위 리그 선생님이 답변</p></li>
+                  <!-- 84% 뒤 * 는 아래 각주 표시(작은 글자) -->
+                  <li class="s10__li"><img class="s10__dot" src="assets/s10-service/ic_dot.svg" width="4" height="20" alt="" aria-hidden="true" loading="lazy"><p class="s10__li-text">지원자 2,850명 중 11%만 선발, <br>84%<span class="s10__mark">*</span>가 메디컬·SKY 출신</p></li>
+                  <li class="s10__li"><img class="s10__dot" src="assets/s10-service/ic_dot.svg" width="4" height="20" alt="" aria-hidden="true" loading="lazy"><p class="s10__li-text">후기·공부 고민을 나누는 <br>커뮤니티를 통해 함께 성장</p></li>
+                </ul>
+                <p class="s10__note">* 84% : 2025년 10월 기준</p>
+              </div>
+              <a class="s10__more" href="https://www.itall.com/program/teachers" target="_blank" rel="noopener">자세히 보기<span class="sr-only"> — 티처스리그</span><img class="s10__more-icon" src="assets/s10-service/ic_arrow_up_right.svg" width="24" height="24" alt="" aria-hidden="true" loading="lazy"><span class="sr-only"> (새 창)</span></a>
             </li>
             <li class="s10__card">
               <div class="s10__card-head">
                 <h3 class="s10__name">잇올 생활기록부</h3>
                 <p class="s10__lead">쌓여가는 학습 기록, <br class="s10__pc-br">학부모님과 함께 확인</p>
               </div>
-              <ul class="s10__list">
-                <li class="s10__li"><img class="s10__dot" src="assets/s10-service/ic_dot.svg" width="4" height="20" alt="" aria-hidden="true" loading="lazy"><p class="s10__li-text">출결·생활·학습, 데이터로 한눈에 확인</p></li>
-                <li class="s10__li"><img class="s10__dot" src="assets/s10-service/ic_dot.svg" width="4" height="20" alt="" aria-hidden="true" loading="lazy"><p class="s10__li-text">몰입시간까지 꼼꼼하게 점검</p></li>
-                <li class="s10__li"><img class="s10__dot" src="assets/s10-service/ic_dot.svg" width="4" height="20" alt="" aria-hidden="true" loading="lazy"><p class="s10__li-text">주간 리포트, 학생과 학부모 모두에게</p></li>
-                <li class="s10__li"><img class="s10__dot" src="assets/s10-service/ic_dot.svg" width="4" height="20" alt="" aria-hidden="true" loading="lazy"><p class="s10__li-text">데이터 기반 맞춤 학습·입시 전략 수립</p></li>
-              </ul>
+              <div class="s10__divider" aria-hidden="true"></div>
+              <div class="s10__body">
+                <ul class="s10__list">
+                  <li class="s10__li"><img class="s10__dot" src="assets/s10-service/ic_dot.svg" width="4" height="20" alt="" aria-hidden="true" loading="lazy"><p class="s10__li-text">출결·생활·학습 데이터를 한눈에 확인하고 <br>학습 과정을 체계적으로 기록</p></li>
+                  <li class="s10__li"><img class="s10__dot" src="assets/s10-service/ic_dot.svg" width="4" height="20" alt="" aria-hidden="true" loading="lazy"><p class="s10__li-text">매일의 출결과 생활 패턴을 살펴보며<br>학습 습관과 생활 리듬까지 점검</p></li>
+                  <li class="s10__li"><img class="s10__dot" src="assets/s10-service/ic_dot.svg" width="4" height="20" alt="" aria-hidden="true" loading="lazy"><p class="s10__li-text">몰입시간 리포트로 실제 공부 시간을 확인하고<br>학습 집중도와 루틴을 꼼꼼하게 점검</p></li>
+                  <li class="s10__li"><img class="s10__dot" src="assets/s10-service/ic_dot.svg" width="4" height="20" alt="" aria-hidden="true" loading="lazy"><p class="s10__li-text">학습·입시 상담 내역을 바탕으로<br>현재 상황에 맞는 맞춤 학습·입시 전략 수립</p></li>
+                </ul>
+              </div>
               <a class="s10__more" href="https://www.itall.com/program/life-record" target="_blank" rel="noopener">자세히 보기<span class="sr-only"> — 잇올 생활기록부</span><img class="s10__more-icon" src="assets/s10-service/ic_arrow_up_right.svg" width="24" height="24" alt="" aria-hidden="true" loading="lazy"><span class="sr-only"> (새 창)</span></a>
             </li>
           </ul>
         </section>
 
-        <!-- ============ S11 · 2028 잇올 장학 (Figma PC 6167:6338 · MO 6138:906) ============ -->
+        <!-- ============ S11 · 2028 잇올 장학 (최종본 PC 6574:4148 · MO 6574:2633) ============ -->
         <!-- 누적 인원·장학금·기준 기간은 시안 숫자 그대로 적어 둠(이전 랜딩에서는 다른 페이지와 같은 값으로 맞춰 쓰던 자리) -->
         <section class="s11" aria-labelledby="s11-title">
           <div class="s11__head">
@@ -3377,23 +3418,24 @@
           </div>
         </section>
 
-        <!-- ============ S12 · 마지막 블록 — 모바일 전용 (Figma 6195:5009, 390 × 377 · 배너 원본 6219:14278 · 6219:14254) ============ -->
+        <!-- ============ S12 · 마지막 블록 — 모바일 전용 (통학 최종본 6574:2666, 390 × 377 · 배너 원본 6574:2683 · 6574:2691) ============ -->
         <!-- 모바일 구성(본문 폭 600 미만)에서만 보인다. PC 에서는 같은 띠배너가 본문 카드 아래(s12-strip.after.html)에,
-             기숙 이동 배너가 우측 패널에 놓인다 -->
+             통학 재수우선선발반 배너가 우측 패널 맨 아래에 놓인다 -->
         <section class="s12" aria-labelledby="s12-title">
           <a class="s12__banner s12__banner--all" href="https://www.itall.com/recruit?tab=all" target="_blank" rel="noopener">
             <h2 class="s12__title" id="s12-title">누적된 몰입공부 시간,<br>2028 합격으로 BOOM!</h2>
             <span class="s12__more">전체 모집 프로그램 보기<img class="s12__chev" src="assets/s12-strip/ic_arrow_up_right.svg" width="24" height="24" alt="" aria-hidden="true" loading="lazy"></span>
           <span class="sr-only"> (새 창)</span></a>
-          <!-- 기숙 재수정규반으로 가는 배너 (주소는 임시 — 기숙 페이지가 열리면 바꿔야 함) -->
-          <a class="s12__banner s12__banner--dorm" href="https://dormitory.itall.com/recruit" target="_blank" rel="noopener">
-            <span class="s12__title">2월까지 기다리지 말고 지금 시작!</span>
-            <span class="s12__more">기숙 재수정규반<img class="s12__chev" src="assets/s12-strip/ic_arrow_up_right.svg" width="24" height="24" alt="" aria-hidden="true" loading="lazy"></span>
+          <!-- 통학 재수우선선발반으로 가는 배너 (2026-11-19 최종본: 예전 '기숙 재수정규반' 배너가 바뀜).
+               주소 = 통학 재수우선선발반 실서버 페이지 -->
+          <a class="s12__banner s12__banner--priority" href="https://www.itall.com/recruit/2028-jaesu-priority" target="_blank" rel="noopener">
+            <span class="s12__title">2월까지 기다리지 말고, 지금 시작!</span>
+            <span class="s12__more">통학 재수우선선발반<img class="s12__chev" src="assets/s12-strip/ic_arrow_up_right.svg" width="24" height="24" alt="" aria-hidden="true" loading="lazy"></span>
           <span class="sr-only"> (새 창)</span></a>
         </section>
       </div>
     </div>
-    <!-- ============ S12 · 하단 띠배너 — PC (Figma 6167:4901, 847 × 83 · 배너 원본 6219:14265) ============ -->
+    <!-- ============ S12 · 하단 띠배너 — PC (통학 최종본 6574:4182, 847 × 83 · 배너 원본 6574:4500) ============ -->
     <!-- 본문 카드 바깥 아래에 놓인다. 본문이 모바일 구성으로 바뀌는 폭(600 미만)에서는 숨기고,
          같은 내용이 본문 안 마지막 블록(s12-strip.html)으로 나온다 -->
     <div class="s12-bar">
@@ -3402,17 +3444,17 @@
         <span class="s12-bar__more">전체 모집 프로그램 보기<img class="s12-bar__chev" src="assets/s12-strip/ic_arrow_up_right.svg" width="24" height="24" alt="" aria-hidden="true" loading="lazy"></span>
       <span class="sr-only"> (새 창)</span></a>
     </div>
-    <!-- 기숙 재수정규반 이동 띠 — 태블릿 폭(화면 600~1023)에서만 보인다.
-         PC(1024~)에서는 우측 패널 맨 아래에, 모바일(~599)에서는 본문 안 마지막 블록에 같은 배너가 있다. 주소는 임시 -->
-    <div class="s12-bar s12-bar--dorm">
-      <a class="s12-bar__link" href="https://dormitory.itall.com/recruit" target="_blank" rel="noopener">
-        <span class="s12-bar__title">2월까지 기다리지 말고 지금 시작!</span>
-        <span class="s12-bar__more">기숙 재수정규반<img class="s12-bar__chev" src="assets/s12-strip/ic_arrow_up_right.svg" width="24" height="24" alt="" aria-hidden="true" loading="lazy"></span>
+    <!-- 통학 재수우선선발반 이동 띠 — 태블릿 폭(화면 600~1023)에서만 보인다.
+         PC(1024~)에서는 우측 패널 맨 아래에, 모바일(~599)에서는 본문 안 마지막 블록에 같은 배너가 있다 -->
+    <div class="s12-bar s12-bar--priority">
+      <a class="s12-bar__link" href="https://www.itall.com/recruit/2028-jaesu-priority" target="_blank" rel="noopener">
+        <span class="s12-bar__title">2월까지 기다리지 말고, 지금 시작!</span>
+        <span class="s12-bar__more">통학 재수우선선발반<img class="s12-bar__chev" src="assets/s12-strip/ic_arrow_up_right.svg" width="24" height="24" alt="" aria-hidden="true" loading="lazy"></span>
       <span class="sr-only"> (새 창)</span></a>
     </div>
   </main>
 
-  <!-- 우측 패널: 시안 '콘텐츠 하이라이트'(6167:4914). 아코디언은 실사이트처럼 처음에는 접혀 있다 -->
+  <!-- 우측 패널: 최종본 '콘텐츠 하이라이트'(6574:4192). 아코디언은 실사이트처럼 처음에는 접혀 있다 -->
   <aside class="panel" aria-label="모집 요약">
     <div class="panel__stack">
       <div class="pcard pcard--summary">
@@ -3458,10 +3500,11 @@
       </div>
       </div>
 
-      <!-- 기숙 재수정규반으로 가는 배너 (주소는 기숙 페이지가 열리면 바꿔야 함) -->
-      <a class="pbanner" href="https://dormitory.itall.com/recruit" target="_blank" rel="noopener">
-        <span class="pbanner__title">2월까지 기다리지 말고 지금 시작!</span>
-        <span class="pbanner__link">기숙 재수정규반 <img src="assets/ui/ic_arrow_up_right_banner.svg" alt="" width="24" height="24" aria-hidden="true"></span>
+      <!-- 통학 재수우선선발반으로 가는 배너 (2026-11-19 최종본: 예전 '기숙 재수정규반' 배너가 바뀜).
+           주소 = 통학 재수우선선발반 실서버 페이지 -->
+      <a class="pbanner" href="https://www.itall.com/recruit/2028-jaesu-priority" target="_blank" rel="noopener">
+        <span class="pbanner__title">2월까지 기다리지 말고, 지금 시작!</span>
+        <span class="pbanner__link">통학 재수우선선발반 <img src="assets/ui/ic_arrow_up_right_banner.svg" alt="" width="24" height="24" aria-hidden="true"></span>
       <span class="sr-only"> (새 창)</span></a>
     </div>
   </aside>
@@ -3580,11 +3623,11 @@
        data-modal-open="모달 id"            그 모달을 연다
        data-modal-tab="refund|free|contents" 열 때 먼저 보여 줄 탭(없으면 첫 탭)
        data-video="유튜브 id" + data-modal-title="제목"   영상 모달의 영상·제목
-     시안: 잇올패스 PC 6134:5·6134:49·6134:87 / MO 6160:101·6161:134·6161:207
-           인강패스 PC 6134:148·6134:190 / MO 6155:8744·6155:8789
-           실전바이오리듬 PC 6134:226 / MO 6164:99 · 영상 PC 6210:6535 / MO 6210:6617
-           해당 센터/캠프 리스트 PC 6297:4009 / MO 6297:4148
-     클래스 lpm__br-mo 줄바꿈은 모바일 시안의 줄바꿈 자리(PC 에서는 숨김) -->
+     시안(11-19 최종본 1:36): 잇올패스 PC 6574:1254·1293·1326 / MO 6574:2755·2901·2968
+           인강패스 PC 6574:1382·1528 / MO 6574:2795·2935
+           실전바이오리듬 PC 6574:1560 / MO 6574:3025 · 시설 영상 PC 6574:4634 / MO 6574:4642
+           해당 센터/캠프 리스트 PC 6574:1420 / MO 6574:2834
+     클래스 lpm__br-mo 줄바꿈은 모바일 시안의 줄바꿈 자리(PC 에서는 숨김), lpm__br-pc 는 그 반대 -->
 
 <!-- ===== 1. 잇올패스 (탭 3개) ===== -->
 <dialog class="lpm" id="lpm-itallpass" role="dialog" aria-modal="true" aria-labelledby="lpm-itallpass-title" tabindex="-1">
@@ -3740,22 +3783,22 @@
   </div>
 </dialog>
 
-<!-- ===== 3. 실전바이오리듬 ===== -->
+<!-- ===== 3. 실전바이오리듬 — 11-20 최종본 PC 6574:1560 · MO 6574:3025 (시즌1 · 4-1/4-2교시 · 타종 안내) ===== -->
 <dialog class="lpm lpm--bio" id="lpm-bio" role="dialog" aria-modal="true" aria-labelledby="lpm-bio-title" aria-describedby="lpm-bio-desc" tabindex="-1">
   <div class="lpm__top">
   <div class="lpm__head">
     <div class="lpm__heading">
       <p class="lpm__badge">2028학년도 개편</p>
-      <h2 class="lpm__title" id="lpm-bio-title">실전바이오리듬</h2>
+      <h2 class="lpm__title" id="lpm-bio-title">실전바이오리듬 시즌1</h2>
     </div>
     <button class="lpm__close" type="button" data-modal-close aria-label="닫기"><img src="assets/s00-modal/ic_close.svg" alt="" aria-hidden="true" width="24" height="24"></button>
-    <p class="lpm__desc" id="lpm-bio-desc">수능 체화의 일환으로 실제 수능과 동일한 흐름으로 <br class="lpm__br-mo">하루를 구성해 훈련하는 실전바이오리듬 <br class="lpm__br-mo">프로젝트를 실시합니다.</p>
+    <p class="lpm__desc" id="lpm-bio-desc">수능 체화를 위해 실제 수능 시간표에 맞춰 하루를 <br class="lpm__br-mo">구성하고, <br class="lpm__br-pc">시험 당일의 환경과 리듬에 적응하는 <br class="lpm__br-mo">실전바이오리듬 프로젝트를 실시합니다.</p>
   </div>
   </div>
   <div class="lpm__scroll">
     <div class="lpm__panel">
       <table class="lpm__table">
-        <caption class="sr-only">실전바이오리듬 시간표</caption>
+        <caption class="sr-only">실전바이오리듬 시즌1 시간표</caption>
         <thead>
           <tr>
             <th scope="col">구분</th>
@@ -3766,46 +3809,70 @@
         <tbody>
           <tr>
             <th scope="row">0교시</th>
-            <td>8:00 ~ 8:30</td>
+            <td>8:00 ~ 8:30 <br class="lpm__br-mo">(30분)</td>
             <td>자습</td>
           </tr>
           <tr>
             <th scope="row">1교시</th>
-            <td>8:40 ~ 10:00</td>
+            <td>8:40 ~ 10:00 <br class="lpm__br-mo">(80분)</td>
             <td>국어</td>
           </tr>
           <tr>
             <th scope="row">2교시</th>
-            <td>10:30 ~ 12:10</td>
+            <td>10:20 ~ 12:10 <br class="lpm__br-mo">(110분)</td>
             <td>수학</td>
           </tr>
           <tr>
             <th scope="row">3교시</th>
-            <td>13:10 ~ 14:20</td>
+            <td>13:10 ~ 14:20 <br class="lpm__br-mo">(70분)</td>
             <td>영어</td>
           </tr>
           <tr>
-            <th scope="row">4교시</th>
-            <td><span class="lpm__time">14:50 ~ <strong class="lpm__time-new">17:10</strong></span></td>
-            <td>한국사 및 탐구</td>
+            <th scope="row">4-1교시</th>
+            <td>14:40 ~ 15:20 <br class="lpm__br-mo">(40분)</td>
+            <td>한국사</td>
+          </tr>
+          <tr>
+            <th scope="row">4-2교시</th>
+            <td>15:35 ~ 17:10 <br class="lpm__br-mo">(95분)</td>
+            <td>탐구</td>
+          </tr>
+          <tr class="lpm__row-all">
+            <td colspan="3">이후 표준 일과표와 동일</td>
           </tr>
         </tbody>
       </table>
-      <ul class="lpm__notes" aria-label="유의사항">
-        <li>※ 2028학년도 기준</li>
-        <li>※ 실전바이오리듬은 수능 시간표와 동일하게 진행되며, 별도 <br class="lpm__br-mo">모의고사 제공은 없음</li>
-        <li>※ 상세한 내용은 각 시기별로 별도 안내</li>
-      </ul>
+      <div class="lpm__note-groups">
+        <div class="lpm__note-group">
+          <p class="lpm__note-head">[교시별 타종 안내]</p>
+          <ul class="lpm__notes">
+            <li>※ <strong>2교시(수학)</strong> : 실제 수능 예비령부터 타종</li>
+            <li>※ <strong>4-1교시(한국사)</strong> : 실제 수능 예비령부터 타종, <br class="lpm__br-mo">시험 종료 후 15분 휴식</li>
+            <li>※ <strong>4-2교시(탐구)</strong> : 실제 수능 사회·과학탐구 본령부터 타종</li>
+          </ul>
+        </div>
+        <div class="lpm__note-group">
+          <p class="lpm__note-head">[유의사항]</p>
+          <ul class="lpm__notes">
+            <li>※ 실전바이오리듬은 시즌1·2·3으로 나누어 운영되며, <br class="lpm__br-mo">실제 수능 시간표를 바탕으로 진행됩니다.</li>
+            <li>※ 별도의 모의고사는 제공되지 않습니다.</li>
+            <li>※ 시즌1은 2027년 1월 9일부터 6월 평가원 모의고사 <br class="lpm__br-mo">이전까지 주 1회(토요일 또는 일요일) 운영됩니다.</li>
+            <li>※ 센터/캠프별 운영 현황은 상이할 수 있으며, 운영 일정 및 일과표는 변경될 수 있습니다. 변경 시 사전에 안내드립니다.</li>
+            <li>※ 시즌2·3의 세부 운영 일정 및 일과표는 각 시기별로 추후 별도 안내드립니다.</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </dialog>
 
-<!-- ===== 4. 유튜브 영상 — 제목과 영상은 여는 버튼의 data-modal-title · data-video 로 채운다 ===== -->
+<!-- ===== 4. 유튜브 영상 — 제목과 영상은 여는 버튼의 data-modal-title · data-video 로 채운다(없으면 아래 제목)
+     최종본 시설 영상 모달 제목은 '시설 영상 보기' ===== -->
 <dialog class="lpm lpm--video" id="lpm-video" role="dialog" aria-modal="true" aria-labelledby="lpm-video-title" tabindex="-1">
   <div class="lpm__top">
   <div class="lpm__head">
     <div class="lpm__heading">
-      <h2 class="lpm__title" id="lpm-video-title">영상 보기</h2>
+      <h2 class="lpm__title" id="lpm-video-title">시설 영상 보기</h2>
     </div>
     <button class="lpm__close" type="button" data-modal-close aria-label="닫기"><img src="assets/s00-modal/ic_close.svg" alt="" aria-hidden="true" width="24" height="24"></button>
   </div>
@@ -3814,7 +3881,7 @@
 </dialog>
 
 <!-- ===== 5. 해당 센터/캠프 리스트 (BENEFIT 혜택 1 '대상 센터/캠프 자세히 보기') =====
-     시안 PC 6297:4009 (800) · MO 6297:4148 (350). 할인율별(15% · 10% · 5%) 묶음 -->
+     시안 PC 6574:1420 (800) · MO 6574:2834 (350). 할인율별(15% · 10% · 5%) 묶음 -->
 <dialog class="lpm lpm--centers" id="lpm-centers" role="dialog" aria-modal="true" aria-labelledby="lpm-centers-title" tabindex="-1">
   <div class="lpm__top">
   <div class="lpm__head">
@@ -3827,24 +3894,24 @@
   <div class="lpm__scroll">
     <div class="lpm__panel">
       <p class="lpm__promo"><span class="lpm__promo-label">정규패스</span><span>2027.02.15(월) ~ 2027.04.13(화)<br class="lpm__br-mo"> 기간 내 2개월 결제 및 등원 완료 시 <em>최대 15% 할인</em></span></p>
-      <!-- 할인율별 묶음 3개. 목록은 시안 예시 문구 그대로 — 실제 대상 목록(영기팀 구글시트)으로 교체 필요 -->
+      <!-- 할인율별 묶음 3개. 목록은 시안 예시 문구 그대로(줄바꿈 자리도 시안 그대로) — 실제 대상 목록(영기팀 구글시트)으로 교체 필요 -->
       <section class="lpm__tier" aria-labelledby="lpm-centers-15">
         <h3 class="lpm__tier-title" id="lpm-centers-15">15% 할인 센터/캠프</h3>
         <div class="lpm__centers">
           <section class="lpm__brand">
             <h4 class="lpm__brand-name lpm__brand-name--sparta">잇올 스파르타</h4>
             <ul>
-              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 1관/대치센터/서울대센터</li>
-              <li>[경기/인천] 광명센터/김포센터/동탄센터/부천센터 2관/수원 영통센터 1관/수원 영통센터 2관/안산센터/인천 연수송도센터 1관 (연수동)/인천 연수송도센터 2관 (송도동)/일산 백마센터</li>
-              <li>[충청] 세종센터/천안센터 1관/천안센터 2관/청주 동남센터/청주센터</li>
-              <li>[경상] 김해센터/대구 상인센터/대구 수성구센터 2관/부산 센텀센터 1관/부산 센텀센터 2관/부산 화명센터/부산대센터/울산 옥동센터 2관/창원 상남센터 1관/창원 상남센터 2관</li>
-              <li>[강원/전라/제주] 광주 봉선센터/광주 수완센터/광주 충장로센터/원주센터/전주 송천센터/전주 전북대센터/춘천센터</li>
+              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 <br class="lpm__br-mo">1관/대치센터/서울대센터</li>
+              <li>[경기/인천] 광명센터/김포센터/동탄센터/부천센터 2관/수원 영통센터 1관/수원 영통센터 2관/안산센터/인천 <br class="lpm__br-mo">연수송도센터 1관 (연수동)/<br class="lpm__br-pc">인천 연수송도센터 2관 <br class="lpm__br-mo">(송도동)/일산 백마센터</li>
+              <li>[충청] 세종센터/천안센터 1관/천안센터 2관/청주 <br class="lpm__br-mo">동남센터/청주센터</li>
+              <li>[경상] 김해센터/대구 상인센터/대구 수성구센터 <br class="lpm__br-mo">2관/부산 센텀센터 1관/부산 센텀센터 2관/부산 <br class="lpm__br-mo">화명센터/부산대센터/울산 옥동센터 2관/창원 <br class="lpm__br-pc">상남센터 1관/창원 상남센터 2관</li>
+              <li>[강원/전라/제주] 광주 봉선센터/광주 수완센터/광주 <br class="lpm__br-mo">충장로센터/원주센터/전주 송천센터/전주 <br class="lpm__br-mo">전북대센터/춘천센터</li>
             </ul>
           </section>
           <section class="lpm__brand">
             <h4 class="lpm__brand-name lpm__brand-name--molip">잇올 몰입관</h4>
             <ul>
-              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 1관/대치센터/서울대센터</li>
+              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 <br class="lpm__br-mo">1관/대치센터/서울대센터</li>
             </ul>
           </section>
         </div>
@@ -3855,17 +3922,17 @@
           <section class="lpm__brand">
             <h4 class="lpm__brand-name lpm__brand-name--sparta">잇올 스파르타</h4>
             <ul>
-              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 1관/대치센터/서울대센터</li>
-              <li>[경기/인천] 광명센터/김포센터/동탄센터/부천센터 2관/수원 영통센터 1관/수원 영통센터 2관/안산센터/인천 연수송도센터 1관 (연수동)/인천 연수송도센터 2관 (송도동)/일산 백마센터</li>
-              <li>[충청] 세종센터/천안센터 1관/천안센터 2관/청주 동남센터/청주센터</li>
-              <li>[경상] 김해센터/대구 상인센터/대구 수성구센터 2관/부산 센텀센터 1관/부산 센텀센터 2관/부산 화명센터/부산대센터/울산 옥동센터 2관/창원 상남센터 1관/창원 상남센터 2관</li>
-              <li>[강원/전라/제주] 광주 봉선센터/광주 수완센터/광주 충장로센터/원주센터/전주 송천센터/전주 전북대센터/춘천센터</li>
+              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 <br class="lpm__br-mo">1관/대치센터/서울대센터</li>
+              <li>[경기/인천] 광명센터/김포센터/동탄센터/부천센터 2관/수원 영통센터 1관/수원 영통센터 2관/안산센터/인천 <br class="lpm__br-mo">연수송도센터 1관 (연수동)/<br class="lpm__br-pc">인천 연수송도센터 2관 <br class="lpm__br-mo">(송도동)/일산 백마센터</li>
+              <li>[충청] 세종센터/천안센터 1관/천안센터 2관/청주 <br class="lpm__br-mo">동남센터/청주센터</li>
+              <li>[경상] 김해센터/대구 상인센터/대구 수성구센터 <br class="lpm__br-mo">2관/부산 센텀센터 1관/부산 센텀센터 2관/부산 <br class="lpm__br-mo">화명센터/부산대센터/울산 옥동센터 2관/창원 <br class="lpm__br-pc">상남센터 1관/창원 상남센터 2관</li>
+              <li>[강원/전라/제주] 광주 봉선센터/광주 수완센터/광주 <br class="lpm__br-mo">충장로센터/원주센터/전주 송천센터/전주 <br class="lpm__br-mo">전북대센터/춘천센터</li>
             </ul>
           </section>
           <section class="lpm__brand">
             <h4 class="lpm__brand-name lpm__brand-name--molip">잇올 몰입관</h4>
             <ul>
-              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 1관/대치센터/서울대센터</li>
+              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 <br class="lpm__br-mo">1관/대치센터/서울대센터</li>
             </ul>
           </section>
         </div>
@@ -3876,17 +3943,17 @@
           <section class="lpm__brand">
             <h4 class="lpm__brand-name lpm__brand-name--sparta">잇올 스파르타</h4>
             <ul>
-              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 1관/대치센터/서울대센터</li>
-              <li>[경기/인천] 광명센터/김포센터/동탄센터/부천센터 2관/수원 영통센터 1관/수원 영통센터 2관/안산센터/인천 연수송도센터 1관 (연수동)/인천 연수송도센터 2관 (송도동)/일산 백마센터</li>
-              <li>[충청] 세종센터/천안센터 1관/천안센터 2관/청주 동남센터/청주센터</li>
-              <li>[경상] 김해센터/대구 상인센터/대구 수성구센터 2관/부산 센텀센터 1관/부산 센텀센터 2관/부산 화명센터/부산대센터/울산 옥동센터 2관/창원 상남센터 1관/창원 상남센터 2관</li>
-              <li>[강원/전라/제주] 광주 봉선센터/광주 수완센터/광주 충장로센터/원주센터/전주 송천센터/전주 전북대센터/춘천센터</li>
+              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 <br class="lpm__br-mo">1관/대치센터/서울대센터</li>
+              <li>[경기/인천] 광명센터/김포센터/동탄센터/부천센터 2관/수원 영통센터 1관/수원 영통센터 2관/안산센터/인천 <br class="lpm__br-mo">연수송도센터 1관 (연수동)/<br class="lpm__br-pc">인천 연수송도센터 2관 <br class="lpm__br-mo">(송도동)/일산 백마센터</li>
+              <li>[충청] 세종센터/천안센터 1관/천안센터 2관/청주 <br class="lpm__br-mo">동남센터/청주센터</li>
+              <li>[경상] 김해센터/대구 상인센터/대구 수성구센터 <br class="lpm__br-mo">2관/부산 센텀센터 1관/부산 센텀센터 2관/부산 <br class="lpm__br-mo">화명센터/부산대센터/울산 옥동센터 2관/창원 <br class="lpm__br-pc">상남센터 1관/창원 상남센터 2관</li>
+              <li>[강원/전라/제주] 광주 봉선센터/광주 수완센터/광주 <br class="lpm__br-mo">충장로센터/원주센터/전주 송천센터/전주 <br class="lpm__br-mo">전북대센터/춘천센터</li>
             </ul>
           </section>
           <section class="lpm__brand">
             <h4 class="lpm__brand-name lpm__brand-name--molip">잇올 몰입관</h4>
             <ul>
-              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 1관/대치센터/서울대센터</li>
+              <li>[서울] 강동센터 1관/강동센터 2관/노량진센터 <br class="lpm__br-mo">1관/대치센터/서울대센터</li>
             </ul>
           </section>
         </div>
